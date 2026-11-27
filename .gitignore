@@ -1,0 +1,25 @@
+# dependencies
+node_modules
+
+# build
+dist
+*.tsbuildinfo
+
+# env — API 키가 들어 있음. 키 이름만 담은 .env.example을 커밋한다.
+.env
+.env.*
+!.env.example
+
+# test
+test-results
+playwright-report
+recordings
+coverage
+
+# claude code (개인 설정, 훅 캐시)
+.claude/settings.local.json
+.claude/.cache
+
+# os / editor
+.DS_Store
+*.log
