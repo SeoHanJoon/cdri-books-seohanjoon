@@ -14,7 +14,6 @@ function createMemoryStorage(): Storage {
   };
 }
 
-// Vitest는 Node 환경이고, Node의 localStorage는 --localstorage-file 없이는 쓸 수 없다.
 export function setupMemoryStorage() {
   beforeEach(() => {
     vi.stubGlobal('localStorage', createMemoryStorage());

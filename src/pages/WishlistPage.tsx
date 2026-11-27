@@ -33,8 +33,6 @@ export function WishlistPage() {
             onToggleLike={wishlist.toggle}
           />
           <LoadMoreFooter
-            // 감지 요소가 화면 안에 그대로 남으면 IntersectionObserver가 다시 알리지 않아서,
-            // 늘릴 때마다 새로 붙여 아직 화면 안이면 이어서 늘린다.
             key={paged.visibleItems.length}
             hasNextPage={paged.hasMore}
             isLoading={false}
