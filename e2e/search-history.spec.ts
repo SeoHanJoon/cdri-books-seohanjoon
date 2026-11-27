@@ -192,6 +192,20 @@ test.describe('드롭다운', () => {
     await expect(historyList(page)).toHaveCount(0);
   });
 
+  test('안쪽 빈 곳을 눌러도 닫히지 않고 입력창 포커스가 남는다', async ({ page }) => {
+    await openHistory(page);
+    const listBox = (await historyList(page).boundingBox())!;
+    const centerX = listBox.x + listBox.width / 2;
+
+    // 기록 줄 위(7px)·아래(16px) 여백, 입력 줄의 돋보기 아이콘
+    await page.mouse.click(centerX, listBox.y + 3);
+    await page.mouse.click(centerX, listBox.y + listBox.height - 6);
+    await page.getByRole('search').locator('svg').first().click();
+
+    await expect(historyList(page)).toBeVisible();
+    await expect(searchInput(page)).toBeFocused();
+  });
+
   test('Enter로 검색하면 닫힌다', async ({ page }) => {
     await openHistory(page);
     await searchInput(page).fill('고양이');

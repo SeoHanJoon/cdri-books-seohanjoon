@@ -1,15 +1,9 @@
 import { clsx } from 'clsx';
-import {
-  type FocusEvent,
-  type KeyboardEvent,
-  type ReactNode,
-  type SubmitEvent,
-  useRef,
-  useState,
-} from 'react';
+import { type MouseEvent, type ReactNode, type SubmitEvent, useRef, useState } from 'react';
 
 import { CloseIcon } from '@/components/ui/icons/CloseIcon';
 import { SearchIcon } from '@/components/ui/icons/SearchIcon';
+import { useDismiss } from '@/hooks/useDismiss';
 
 interface SearchBoxProps {
   value: string;
@@ -30,9 +24,12 @@ export function SearchBox({
   onHistorySelect,
   onHistoryRemove,
 }: SearchBoxProps) {
+  const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
   const showHistory = historyOpen && history.length > 0;
+
+  useDismiss(formRef, historyOpen, () => setHistoryOpen(false));
 
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,12 +37,9 @@ export function SearchBox({
     onSubmit();
   };
 
-  const handleBlur = (event: FocusEvent<HTMLFormElement>) => {
-    if (!event.currentTarget.contains(event.relatedTarget)) setHistoryOpen(false);
-  };
-
-  const handleKeyDown = (event: KeyboardEvent<HTMLFormElement>) => {
-    if (event.key === 'Escape') setHistoryOpen(false);
+  // 안쪽 빈 곳을 눌러도 포커스가 입력창에서 빠지지 않게 한다. 드롭다운은 열린 채 둔다.
+  const keepInputFocus = (event: MouseEvent<HTMLFormElement>) => {
+    if (!(event.target as Element).closest('input, button')) event.preventDefault();
   };
 
   const selectHistory = (keyword: string) => {
@@ -64,9 +58,9 @@ export function SearchBox({
       <div className="relative h-12.5 max-w-120 min-w-0 flex-1">
         <form
           role="search"
+          ref={formRef}
           onSubmit={handleSubmit}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
+          onMouseDown={keepInputFocus}
           className={clsx(
             'absolute inset-x-0 top-0 bg-light-gray',
             showHistory ? 'z-10 rounded-3xl' : 'rounded-full',
