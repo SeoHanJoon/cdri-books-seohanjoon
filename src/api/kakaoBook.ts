@@ -1,5 +1,7 @@
 import type { Book } from '@/types/book';
 
+export const KAKAO_BOOK_SEARCH_URL = 'https://dapi.kakao.com/v3/search/book';
+
 export interface KakaoBookDocument {
   title: string;
   contents: string;
