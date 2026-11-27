@@ -49,7 +49,9 @@ test('뒤로가기는 기록에 넣지 않고, 돌아간 검색을 다시 실행
   page,
 }) => {
   await search(page, '노르웨이 숲');
+  await expect(page.getByText('총 0건')).toBeVisible();
   await search(page, '무라카미 하루키');
+  await expect(page.getByText('총 866건')).toBeVisible();
   await page.goBack();
   await expect(searchInput(page)).toHaveValue('노르웨이 숲');
 
@@ -132,6 +134,12 @@ test('다른 탭에서 검색한 기록도 이어서 쌓인다', async ({ page, 
   await search(page, '노르웨이 숲');
   await search(otherTab, '무라카미 하루키');
   await page.bringToFront();
+  await openHistory(page);
+  await expect(historyList(page).getByRole('listitem')).toHaveText([
+    '무라카미 하루키',
+    '노르웨이 숲',
+  ]);
+
   await search(page, '없는 책');
 
   await openHistory(page);
