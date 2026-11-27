@@ -71,3 +71,8 @@ test('구매하기는 책 상세 페이지를 새 탭으로 연다', async ({ pa
   await expect(buy).toHaveAttribute('href', /search\.daum\.net.*bookId=7316273/);
   await expect(buy).toHaveAttribute('target', '_blank');
 });
+
+test('검색 기록이 없으면 입력창에 포커스해도 드롭다운이 열리지 않는다', async ({ page }) => {
+  await page.getByRole('textbox', { name: '검색어' }).click();
+  await expect(page.getByRole('list', { name: '검색 기록' })).toHaveCount(0);
+});

@@ -146,3 +146,75 @@ test('좁은 화면에서도 버튼 글자는 줄바꿈되지 않는다', async 
     ).toBe(true);
   }
 });
+
+test.describe('검색 기록 드롭다운', () => {
+  test('입력창에 포커스하면 열리고 Esc를 누르면 닫힌다', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: '검색어' });
+    const history = page.getByRole('list', { name: '검색 기록' });
+
+    await expect(history).toHaveCount(0);
+    await input.click();
+    await expect(history.getByRole('listitem')).toHaveText(['노르웨이 숲', '무라카미 하루키']);
+
+    await page.keyboard.press('Escape');
+    await expect(history).toHaveCount(0);
+    await expect(input).toBeFocused();
+
+    await input.click();
+    await expect(history).toBeVisible();
+  });
+
+  test('바깥을 누르거나 Tab으로 빠져나가면 닫힌다', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: '검색어' });
+    const history = page.getByRole('list', { name: '검색 기록' });
+
+    await input.click();
+    await page.getByRole('heading', { name: '도서 검색' }).click();
+    await expect(history).toHaveCount(0);
+
+    await input.click();
+    for (let i = 0; i < 4; i += 1) {
+      await page.keyboard.press('Tab');
+      await expect(history).toBeVisible();
+    }
+    await page.keyboard.press('Tab');
+    await expect(
+      page.getByRole('region', { name: 'SearchBox' }).getByRole('button', { name: '상세검색' }),
+    ).toBeFocused();
+    await expect(history).toHaveCount(0);
+  });
+
+  test('X를 누르면 그 기록만 지워지고 입력창에 포커스가 돌아온다', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: '검색어' });
+    const history = page.getByRole('list', { name: '검색 기록' });
+
+    await input.click();
+    await page.getByRole('button', { name: '노르웨이 숲 검색 기록 삭제' }).click();
+    await expect(history.getByRole('listitem')).toHaveText(['무라카미 하루키']);
+    await expect(input).toBeFocused();
+
+    await page.getByRole('button', { name: '무라카미 하루키 검색 기록 삭제' }).click();
+    await expect(history).toHaveCount(0);
+  });
+
+  test('기록을 누르면 그 검색어로 검색하고 닫힌다', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: '검색어' });
+
+    await input.click();
+    await page.getByRole('button', { name: '무라카미 하루키', exact: true }).click();
+
+    await expect(input).toHaveValue('무라카미 하루키');
+    await expect(page.getByTestId('search-log')).toContainText('검색 1회: 무라카미 하루키');
+    await expect(page.getByRole('list', { name: '검색 기록' })).toHaveCount(0);
+    await expect(input).toBeFocused();
+  });
+
+  test('Enter로 검색하면 닫힌다', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: '검색어' });
+
+    await input.fill('고양이');
+    await expect(page.getByRole('list', { name: '검색 기록' })).toBeVisible();
+    await input.press('Enter');
+    await expect(page.getByRole('list', { name: '검색 기록' })).toHaveCount(0);
+  });
+});

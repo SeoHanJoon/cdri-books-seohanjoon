@@ -7,9 +7,11 @@ import { SearchBox } from '@/components/SearchBox';
 import { SearchCountText } from '@/components/SearchCountText';
 import { getSearchFixture } from '@/mocks/searchFixture';
 
-// 찜하기는 Step 8에서 store와 연결한다.
+// 찜하기는 Step 8, 검색 기록은 Step 6에서 store와 연결한다.
 const isLiked = () => false;
 const ignoreToggleLike = () => {};
+const NO_HISTORY: string[] = [];
+const ignoreHistory = () => {};
 
 export function SearchPage() {
   const [query, setQuery] = useState('');
@@ -25,6 +27,9 @@ export function SearchPage() {
         onValueChange={setQuery}
         onSubmit={() => setSubmittedQuery(query)}
         onDetailSearchClick={() => {}}
+        history={NO_HISTORY}
+        onHistorySelect={ignoreHistory}
+        onHistoryRemove={ignoreHistory}
       />
       <div className="mt-6.25">
         <SearchCountText label="도서 검색 결과" count={response?.meta.total_count ?? 0} />

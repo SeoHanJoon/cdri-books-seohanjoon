@@ -68,6 +68,7 @@ export function DevElementsPage() {
   const [query, setQuery] = useState('');
   const [searches, setSearches] = useState<string[]>([]);
   const [detailSearchClicks, setDetailSearchClicks] = useState(0);
+  const [history, setHistory] = useState(['노르웨이 숲', '무라카미 하루키']);
   const [likedIsbns, setLikedIsbns] = useState(() => new Set(['sale']));
   const [expandedIsbns, setExpandedIsbns] = useState(() => new Set(['sale']));
 
@@ -82,6 +83,14 @@ export function DevElementsPage() {
           onValueChange={setQuery}
           onSubmit={() => setSearches((prev) => [...prev, query])}
           onDetailSearchClick={() => setDetailSearchClicks((count) => count + 1)}
+          history={history}
+          onHistorySelect={(keyword) => {
+            setQuery(keyword);
+            setSearches((prev) => [...prev, keyword]);
+          }}
+          onHistoryRemove={(keyword) =>
+            setHistory((prev) => prev.filter((item) => item !== keyword))
+          }
         />
         <p data-testid="search-log" className="text-body2 text-text-secondary">
           검색 {searches.length}회: {searches.join(', ')} / 상세검색 {detailSearchClicks}회
