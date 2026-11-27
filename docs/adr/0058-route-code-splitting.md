@@ -1,6 +1,6 @@
 # 0058. 라우트 분할은 찜·NotFound 페이지만 한다
 
-- 상태: 채택
+- 상태: 폐기 (→ [0061](0061-no-route-code-splitting.md))
 - 날짜: 2026-11-27
 - 관련 Step: Step 9
 

@@ -214,9 +214,10 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 55 | 찜 페이지 테스트 범위 | 보여줄 목록 규칙은 순수 함수로 Vitest, 10권씩 늘리기는 Playwright | 훅 테스트 도구 없음, 자르기는 한 줄, 의존성 추가 없음 | ☑ 추천안 ([0055](adr/0055-wishlist-page-test-scope.md)) |
 | 56 | BookListItem memo | 콜백을 `onToggleLike(book)`·`onToggleDetail(isbn)`으로 바꾸고 `memo` | 지금은 한 글자 입력에 모든 행이 다시 그려짐, 행마다 새 함수라 `memo`만으로는 효과 없음 | ☑ 추천안 ([0056](adr/0056-book-list-item-memo.md)) |
 | 57 | 검색 결과 캐시 | `staleTime` 5분 | 기본값은 탭 복귀·뒤로가기마다 불러온 페이지 수만큼 재요청, 책 정보는 자주 안 바뀜 | ☑ 추천안 ([0057](adr/0057-search-stale-time.md)) |
-| 58 | 라우트 분할 범위 | 찜·NotFound만 `lazy` | 첫 화면을 늦추지 않음, 페이지 코드가 작아 효과는 1KB 안팎 | ☑ 추천안 ([0058](adr/0058-route-code-splitting.md)) |
+| 58 | 라우트 분할 범위 | 찜·NotFound만 `lazy` | 첫 화면을 늦추지 않음, 페이지 코드가 작아 효과는 1KB 안팎 | ☑ 추천안 ([0058](adr/0058-route-code-splitting.md)) → 측정 후 나누지 않음 ([0061](adr/0061-no-route-code-splitting.md)) |
 | 59 | 아이콘 크기 어긋남 | Figma에서 크기별 SVG 다시 받기 | 시안과 1~4px 차이, Figma API 막힘 | ☑ 맞추지 않음, 0024 유지 ([0059](adr/0059-icon-size-mismatch-kept.md)) |
 | 60 | 개발용 `/dev/elements` 화면 | 실제 페이지로 테스트를 옮기고 지움 | 화면이 모두 연결되어 비교할 일 없음, 테스트 약 25개 중 일부는 이 화면에서만 확인 | ☑ 추천안 (사용자 제안, [0060](adr/0060-remove-dev-elements-page.md)) |
+| 61 | 라우트 분할 (측정 후) | 나누지 않음 | 나누면 preload helper 때문에 첫 화면 JS +0.6KB, NotFound는 도서 검색이 직접 import해서 안 나뉨 | ☑ 추천안 ([0061](adr/0061-no-route-code-splitting.md)) |
 
 ---
 
@@ -327,7 +328,7 @@ Figma `757:1435`(초기), `744:313`(목록)
 ### Step 9. 성능 최적화 · 마무리
 - [x] `BookListItem` `memo`, 이미지 `loading="lazy"` — 콜백이 책·isbn을 받게 바꿔 바뀐 행만 다시 그림 ([0056](adr/0056-book-list-item-memo.md))
 - [x] `staleTime` 등 캐시 전략 — 검색 결과 5분. 찜 페이지 왕복·탭 복귀 때 요청 5번 → 0번 ([0057](adr/0057-search-stale-time.md))
-- [ ] 라우트 단위 코드 분할
+- [x] 라우트 단위 코드 분할 — 측정 결과 나누면 첫 화면 JS가 0.6KB 커져서 하지 않음 ([0061](adr/0061-no-route-code-splitting.md))
 - [ ] 접근성 (`aria-expanded`, 키보드 조작)
   - 상세 검색어가 비어 '검색하기'가 막힐 때 화면 낭독기에 알릴 방법 ([0051](adr/0051-detail-search-execution.md))
 - [x] 개발용 `/dev/elements` 화면 제거, 그 테스트를 실제 페이지로 옮김 ([0060](adr/0060-remove-dev-elements-page.md))
