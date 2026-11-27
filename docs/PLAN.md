@@ -255,7 +255,7 @@ Figma `18:969`(초기), `18:805`(결과), `757:958`(검색 기록), `18:608`·`7
 Figma `757:1435`(초기), `744:313`(목록)
 - [x] 페이지 레이아웃: "내가 찜한 책" 제목, `SearchCountText`("찜한 책"), 목록 — 세로 간격은 도서 검색과 같게 ([0038](adr/0038-wishlist-page-spacing.md))
 - [x] 빈 상태 — `NoData`("찜한 책이 없습니다.") — 분기만 넣고, 화면 확인·테스트는 Step 8 ([0039](adr/0039-wishlist-fixture-list-only.md))
-- [x] 목록: Step 3과 같은 `BookList` 재사용 (fixture 10권, 하트는 모두 찜한 상태, [0035](adr/0035-book-list-component.md))
+- [x] 목록: Step 3과 같은 `BookList` 재사용 (fixture 10권, 하트는 Step 8 전까지 찜 안 함, [0035](adr/0035-book-list-component.md))
 - [x] NotFound 화면: Header 유지, `NoData` 재사용("존재하지 않는 페이지입니다.") + 도서 검색으로 돌아가는 버튼 — Figma에 없는 화면이라 기존 컴포넌트로 구성
   - 버튼은 새로고침 없이 이동한다. Button의 링크를 `Link`로 그린다 ([0040](adr/0040-button-href-router-link.md))
 

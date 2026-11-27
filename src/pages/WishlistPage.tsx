@@ -5,7 +5,7 @@ import { SearchCountText } from '@/components/SearchCountText';
 import { FIXTURE_QUERY, getSearchFixture } from '@/mocks/searchFixture';
 
 const books = getSearchFixture(FIXTURE_QUERY)?.documents.map(toBook) ?? [];
-const isLiked = () => true;
+const isLiked = () => false;
 const ignoreToggleLike = () => {};
 
 export function WishlistPage() {
