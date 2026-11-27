@@ -1,7 +1,6 @@
 import { type ReactNode, useState } from 'react';
 
 import { BookListItem } from '@/components/BookListItem';
-import { BookListItemDetail } from '@/components/BookListItemDetail';
 import { Button } from '@/components/Button';
 import { NoData } from '@/components/NoData';
 import { SearchBox } from '@/components/SearchBox';
@@ -108,20 +107,18 @@ export function DevElementsPage() {
         </div>
       </Section>
 
-      <Section title="BookListItem / BookListItemDetail">
+      <Section title="BookListItem">
         <div>
-          {BOOKS.map((book) => {
-            const Item = expandedIsbns.has(book.isbn) ? BookListItemDetail : BookListItem;
-            return (
-              <Item
-                key={book.isbn}
-                book={book}
-                liked={likedIsbns.has(book.isbn)}
-                onToggleLike={() => toggleLike(book.isbn)}
-                onToggleDetail={() => toggleDetail(book.isbn)}
-              />
-            );
-          })}
+          {BOOKS.map((book) => (
+            <BookListItem
+              key={book.isbn}
+              book={book}
+              liked={likedIsbns.has(book.isbn)}
+              expanded={expandedIsbns.has(book.isbn)}
+              onToggleLike={() => toggleLike(book.isbn)}
+              onToggleDetail={() => toggleDetail(book.isbn)}
+            />
+          ))}
         </div>
       </Section>
 

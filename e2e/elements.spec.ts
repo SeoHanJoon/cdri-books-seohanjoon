@@ -56,6 +56,29 @@ test('상세보기를 누르면 행이 펼쳐지고, 다시 누르면 접힌다'
   await expect(row.getByRole('heading', { name: '책 소개' })).toHaveCount(0);
 });
 
+test('키보드로 펼치고 접어도 포커스가 상세보기 버튼에 남는다', async ({ page }) => {
+  const row = await showBookRow(page, '노르웨이의 숲');
+  const toggle = row.getByRole('button', { name: '상세보기' });
+
+  await toggle.focus();
+  await page.keyboard.press('Enter');
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(toggle).toBeFocused();
+
+  await page.keyboard.press('Enter');
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(toggle).toBeFocused();
+});
+
+test('펼친 뒤 Tab을 누르면 펼친 내용의 찜하기로 이동한다', async ({ page }) => {
+  const row = await showBookRow(page, '노르웨이의 숲');
+
+  await row.getByRole('button', { name: '상세보기' }).focus();
+  await page.keyboard.press('Enter');
+  await page.keyboard.press('Tab');
+  await expect(row.getByRole('button', { name: '찜하기' })).toBeFocused();
+});
+
 test('접힌 행의 하트를 누르면 찜이 토글되고 행은 펼쳐지지 않는다', async ({ page }) => {
   const row = await showBookRow(page, '노르웨이의 숲');
   const heart = row.getByRole('button', { name: '찜하기' });
