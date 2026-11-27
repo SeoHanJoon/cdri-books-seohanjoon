@@ -1,4 +1,4 @@
-import type { BookSearch, SearchTarget } from '@/types/search';
+import type { BookSearch, DetailSearchCondition, SearchTarget } from '@/types/search';
 
 const SEARCH_TARGETS: Record<SearchTarget, true> = { title: true, person: true, publisher: true };
 
@@ -23,4 +23,11 @@ export function toSearchParams({ query, target }: BookSearch): URLSearchParams {
   const params = new URLSearchParams({ query: query.trim() });
   if (target) params.set('target', target);
   return params;
+}
+
+const EMPTY_DETAIL_SEARCH: DetailSearchCondition = { target: 'title', keyword: '' };
+
+export function toDetailSearchCondition(parsed: ParsedSearchParams): DetailSearchCondition {
+  if (parsed.status !== 'ready' || !parsed.search.target) return EMPTY_DETAIL_SEARCH;
+  return { target: parsed.search.target, keyword: parsed.search.query };
 }

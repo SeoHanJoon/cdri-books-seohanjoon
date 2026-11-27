@@ -14,12 +14,10 @@ import { useSearchInput } from '@/hooks/useSearchInput';
 import { toSearchParams } from '@/lib/searchParams';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { useSearchHistoryStore } from '@/stores/searchHistoryStore';
-import type { BookSearch, DetailSearchCondition } from '@/types/search';
+import type { BookSearch } from '@/types/search';
 
 const isLiked = () => false;
 const ignoreToggleLike = () => {};
-const EMPTY_DETAIL_SEARCH: DetailSearchCondition = { target: 'title', keyword: '' };
-const ignoreDetailSearch = () => {};
 
 interface SearchResultsProps {
   search: BookSearch | null;
@@ -93,7 +91,8 @@ function SearchResults({ search }: SearchResultsProps) {
 }
 
 export function SearchPage() {
-  const { parsed, query, setQuery, submit, searchKeyword } = useSearchInput();
+  const { parsed, query, setQuery, submit, searchKeyword, detailDefault, submitDetail } =
+    useSearchInput();
   const history = useSearchHistoryStore((state) => state.keywords);
   const removeHistory = useSearchHistoryStore((state) => state.remove);
 
@@ -105,9 +104,7 @@ export function SearchPage() {
         value={query}
         onValueChange={setQuery}
         onSubmit={submit}
-        detailSearch={
-          <DetailSearch defaultValue={EMPTY_DETAIL_SEARCH} onSubmit={ignoreDetailSearch} />
-        }
+        detailSearch={<DetailSearch defaultValue={detailDefault} onSubmit={submitDetail} />}
         history={history}
         onHistorySelect={searchKeyword}
         onHistoryRemove={removeHistory}

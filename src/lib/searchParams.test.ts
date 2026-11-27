@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { isSearchTarget, parseSearchParams, toSearchParams } from './searchParams';
+import {
+  isSearchTarget,
+  parseSearchParams,
+  toDetailSearchCondition,
+  toSearchParams,
+} from './searchParams';
 
 const parse = (search: string) => parseSearchParams(new URLSearchParams(search));
 
@@ -66,5 +71,28 @@ describe('toSearchParams', () => {
   it('parseSearchParams로 다시 읽으면 같은 검색이 된다', () => {
     const search = { query: '무라카미 하루키', target: 'title' } as const;
     expect(parseSearchParams(toSearchParams(search))).toEqual({ status: 'ready', search });
+  });
+});
+
+describe('toDetailSearchCondition', () => {
+  const EMPTY = { target: 'title', keyword: '' };
+
+  it('상세 검색 중이면 그 조건과 검색어를 준다', () => {
+    expect(toDetailSearchCondition(parse('query=하루키&target=person'))).toEqual({
+      target: 'person',
+      keyword: '하루키',
+    });
+  });
+
+  it('전체 검색 중이면 제목과 빈 검색어를 준다', () => {
+    expect(toDetailSearchCondition(parse('query=하루키'))).toEqual(EMPTY);
+  });
+
+  it('검색 전이면 제목과 빈 검색어를 준다', () => {
+    expect(toDetailSearchCondition(parse(''))).toEqual(EMPTY);
+  });
+
+  it('target만 있고 검색어가 없으면 제목과 빈 검색어를 준다', () => {
+    expect(toDetailSearchCondition(parse('target=publisher'))).toEqual(EMPTY);
   });
 });
