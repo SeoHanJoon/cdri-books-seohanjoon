@@ -14,7 +14,6 @@ function createMemoryStorage(): Storage {
   };
 }
 
-// 모듈을 새로 불러오면 store가 새로 만들어진다. 브라우저를 다시 연 것과 같다.
 async function loadStore() {
   vi.resetModules();
   const { useSearchHistoryStore } = await import('@/stores/searchHistoryStore');
