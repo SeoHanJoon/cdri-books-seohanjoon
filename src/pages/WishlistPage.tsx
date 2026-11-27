@@ -1,23 +1,44 @@
-import { toBook } from '@/api/kakaoBook';
+import { useState } from 'react';
+
 import { BookList } from '@/components/BookList';
+import { LoadMoreFooter } from '@/components/LoadMoreFooter';
 import { NoData } from '@/components/NoData';
 import { SearchCountText } from '@/components/SearchCountText';
-import { FIXTURE_QUERY, getSearchFixture } from '@/mocks/searchFixture';
+import { usePagedList } from '@/hooks/usePagedList';
+import { useWishlist } from '@/hooks/useWishlist';
+import { mergeShownBooks } from '@/lib/wishlist';
 
-const books = getSearchFixture(FIXTURE_QUERY)?.documents.map(toBook) ?? [];
-const isLiked = () => false;
-const ignoreToggleLike = () => {};
+const WISHLIST_PAGE_SIZE = 10;
 
 export function WishlistPage() {
+  const wishlist = useWishlist();
+
+  const [shownBooks, setShownBooks] = useState(wishlist.books);
+  const mergedBooks = mergeShownBooks(shownBooks, wishlist.books);
+  if (mergedBooks !== shownBooks) setShownBooks(mergedBooks);
+
+  const paged = usePagedList(mergedBooks, WISHLIST_PAGE_SIZE);
+
   return (
     <div className="pt-10 pb-40 md:pt-26">
       <h1 className="text-title2 text-text-primary">내가 찜한 책</h1>
       <div className="mt-5">
-        <SearchCountText label="찜한 책" count={books.length} />
+        <SearchCountText label="찜한 책" count={wishlist.books.length} />
       </div>
-      {books.length > 0 ? (
+      {mergedBooks.length > 0 ? (
         <div className="mt-8">
-          <BookList books={books} isLiked={isLiked} onToggleLike={ignoreToggleLike} />
+          <BookList
+            books={paged.visibleItems}
+            isLiked={wishlist.isLiked}
+            onToggleLike={wishlist.toggle}
+          />
+          <LoadMoreFooter
+            key={paged.visibleItems.length}
+            hasNextPage={paged.hasMore}
+            isLoading={false}
+            isError={false}
+            onLoadMore={paged.loadMore}
+          />
         </div>
       ) : (
         <div className="mt-30">

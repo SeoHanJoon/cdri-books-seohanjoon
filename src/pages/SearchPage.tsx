@@ -13,13 +13,11 @@ import { useBookSearch } from '@/hooks/useBookSearch';
 import { useDetailSearch } from '@/hooks/useDetailSearch';
 import { useMainSearch } from '@/hooks/useMainSearch';
 import { useSearchUrl } from '@/hooks/useSearchUrl';
+import { useWishlist } from '@/hooks/useWishlist';
 import { toSearchParams } from '@/lib/searchParams';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { useSearchHistoryStore } from '@/stores/searchHistoryStore';
 import type { BookSearch } from '@/types/search';
-
-const isLiked = () => false;
-const ignoreToggleLike = () => {};
 
 interface SearchResultsProps {
   search: BookSearch | null;
@@ -36,6 +34,7 @@ function SearchResults({ search }: SearchResultsProps) {
     fetchNextPage,
     refetch,
   } = useBookSearch(search);
+  const wishlist = useWishlist();
   const isLoadingFirstPage = !data && isFetching;
 
   const [shownCount, setShownCount] = useState(0);
@@ -69,8 +68,8 @@ function SearchResults({ search }: SearchResultsProps) {
         <BookList
           key={search ? toSearchParams(search).toString() : ''}
           books={data.books}
-          isLiked={isLiked}
-          onToggleLike={ignoreToggleLike}
+          isLiked={wishlist.isLiked}
+          onToggleLike={wishlist.toggle}
         />
         <LoadMoreFooter
           hasNextPage={hasNextPage}
