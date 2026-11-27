@@ -326,7 +326,7 @@ Figma `757:1435`(초기), `744:313`(목록)
 
 ### Step 9. 성능 최적화 · 마무리
 - [x] `BookListItem` `memo`, 이미지 `loading="lazy"` — 콜백이 책·isbn을 받게 바꿔 바뀐 행만 다시 그림 ([0056](adr/0056-book-list-item-memo.md))
-- [ ] `staleTime` 등 캐시 전략
+- [x] `staleTime` 등 캐시 전략 — 검색 결과 5분. 찜 페이지 왕복·탭 복귀 때 요청 5번 → 0번 ([0057](adr/0057-search-stale-time.md))
 - [ ] 라우트 단위 코드 분할
 - [ ] 접근성 (`aria-expanded`, 키보드 조작)
   - 상세 검색어가 비어 '검색하기'가 막힐 때 화면 낭독기에 알릴 방법 ([0051](adr/0051-detail-search-execution.md))

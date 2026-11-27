@@ -10,6 +10,7 @@ export const bookKeys = {
 };
 
 const FIRST_PAGE = 1;
+const STALE_TIME_MS = 5 * 60 * 1000;
 
 export function getNextPage(lastPage: KakaoBookSearchResponse, lastPageParam: number) {
   return lastPage.meta.is_end ? undefined : lastPageParam + 1;
@@ -37,6 +38,7 @@ export function useBookSearch(search: BookSearch | null) {
     queryKey: bookKeys.search(search),
     queryFn: search ? ({ pageParam, signal }) => searchBooks(search, pageParam, signal) : skipToken,
     initialPageParam: FIRST_PAGE,
+    staleTime: STALE_TIME_MS,
     getNextPageParam: (lastPage, _allPages, lastPageParam) => getNextPage(lastPage, lastPageParam),
     select: selectBookSearchResult,
   });

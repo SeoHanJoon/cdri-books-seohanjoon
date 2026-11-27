@@ -127,3 +127,22 @@ test('검색 직후 URL이 바뀌기 전에 입력한 글자를 덮어쓰지 않
   await expect(page).toHaveURL(`/?${new URLSearchParams({ query: '무라카미 하루키' })}`);
   await expect(searchInput(page)).toHaveValue('없는 책');
 });
+
+test('찜 페이지에 다녀오거나 브라우저 탭으로 돌아와도 같은 검색을 다시 요청하지 않는다', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await search(page, '무라카미 하루키');
+  await page.getByRole('article').last().scrollIntoViewIfNeeded();
+  await expect(page.getByRole('article')).toHaveCount(20);
+
+  const requests = countKakaoRequests(page);
+  await page.getByRole('link', { name: '내가 찜한 책' }).click();
+  await expect(page.getByRole('heading', { name: '내가 찜한 책' })).toBeVisible();
+  await page.goBack();
+  await expect(page.getByRole('article')).toHaveCount(20);
+
+  await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+  await page.waitForTimeout(500);
+  expect(requests).toEqual([]);
+});
