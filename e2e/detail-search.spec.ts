@@ -270,6 +270,22 @@ test.describe('상세 검색 실행', () => {
     await expectPopupDefault(page, '저자명', KEYWORD);
   });
 
+  test('전체 검색 뒤 상세 검색에서 뒤로가기하면 전체 검색어와 결과로 돌아간다', async ({
+    page,
+  }) => {
+    await mainSearch(page, KEYWORD);
+    await expect(page.getByText('총 866건')).toBeVisible();
+    await detailSearch(page, '저자명', KEYWORD);
+    await expect(page.getByText('총 780건')).toBeVisible();
+
+    await page.goBack();
+
+    await expect(page).toHaveURL(`/?${new URLSearchParams({ query: KEYWORD })}`);
+    await expect(mainInput(page)).toHaveValue(KEYWORD);
+    await expect(page.getByText('총 866건')).toBeVisible();
+    await expectPopupDefault(page, '제목', '');
+  });
+
   test('상세 검색은 검색 기록에 남지 않는다', async ({ page }) => {
     await mainSearch(page, '노르웨이 숲');
     await detailSearch(page, '저자명', KEYWORD);
