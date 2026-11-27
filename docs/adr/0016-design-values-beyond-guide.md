@@ -15,7 +15,8 @@ Figma 스타일 가이드(`753:96`)에는 색 9개, 글자 스타일 8개만 있
 
 ## 결정
 A안. UI 완성도가 첫 번째 평가 항목이고, 프로젝트 규칙도 "토큰에 없는 값은 Figma 실측 후 토큰으로 추가"다.
-- 색 3개는 `@theme`에 추가한다: `text-title`, `ui-gray`(Figma 스타일 이름을 따름), `divider`
+- 색 2개는 `@theme`에 추가한다: `ui-gray`(Figma 스타일 이름을 따름), `divider`
+- 페이지 제목 색 `#1A1E27`은 추가하지 않고 가이드의 `Text/Primary`(#353C49)를 쓴다. 클래스 이름 `text-text-title`이 글자 크기 토큰 `text-title2`와 헷갈리고, 두 색의 차이가 작아 가이드 안의 색으로 통일한다. (사용자 결정)
 - 굵기 350은 `--font-weight-demilight`로 추가한다 (Noto Sans KR의 DemiLight 굵기)
 - 행간과 굵기 400은 Tailwind 기본 클래스(`leading-4`, `leading-6`, `font-normal`)로 맞춘다. `text-[14px]` 같은 임의 값은 계속 쓰지 않는다.
 

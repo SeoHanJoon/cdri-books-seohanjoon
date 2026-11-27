@@ -18,7 +18,7 @@ export function SearchBox({ value, onValueChange, onSubmit, onDetailSearchClick 
 
   return (
     <div className="flex flex-col gap-7">
-      <h1 className="text-title2 text-text-title">도서 검색</h1>
+      <h1 className="text-title2 text-text-primary">도서 검색</h1>
       <div className="flex items-center gap-4">
         <form
           role="search"
