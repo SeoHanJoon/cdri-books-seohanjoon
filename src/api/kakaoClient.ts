@@ -8,15 +8,12 @@ export class KakaoApiError extends Error {
   }
 }
 
-// 카카오 에러 응답은 { errorType, message } 형식이다. 형식이 다르면 상태 코드만 남긴다.
+// 카카오 에러 응답은 { errorType, message } 형식이다.
 async function readErrorMessage(response: Response): Promise<string> {
-  try {
-    const body = (await response.json()) as { message?: unknown };
-    if (typeof body.message === 'string') return body.message;
-  } catch {
-    // 본문이 JSON이 아니면 아래 기본 문구를 쓴다.
-  }
-  return `카카오 API 요청 실패 (${response.status})`;
+  const body = (await response.json().catch(() => null)) as { message?: unknown } | null;
+  return typeof body?.message === 'string'
+    ? body.message
+    : `카카오 API 요청 실패 (${response.status})`;
 }
 
 export async function kakaoGet<T>(

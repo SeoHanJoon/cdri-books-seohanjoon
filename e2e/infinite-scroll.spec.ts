@@ -4,7 +4,6 @@ const KAKAO_SEARCH = 'dapi.kakao.com/v3/search/book';
 
 function requestedPages(page: Page) {
   const pages: string[] = [];
-  // 개발 모드 StrictMode가 컴포넌트를 다시 붙이는 사이 첫 요청이 취소되고 다시 나간다. 끝난 요청만 센다.
   page.on('requestfinished', (request) => {
     if (request.url().includes(KAKAO_SEARCH)) {
       pages.push(new URL(request.url()).searchParams.get('page') ?? '');
@@ -37,7 +36,6 @@ test('마지막 page(is_end)를 받은 뒤에는 더 요청하지 않는다', as
     await expect(page.getByRole('article')).toHaveCount(count);
     await scrollToBottom(page);
   }
-  // 요청이 더 나갈 시간을 준 뒤 확인한다.
   await page.waitForTimeout(1000);
 
   expect(pages).toEqual(['1', '2', '3']);

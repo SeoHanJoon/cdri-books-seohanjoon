@@ -74,7 +74,6 @@ test.describe('도서 검색 페이지', () => {
   });
 
   test('팝업 뒤에 포커스 받을 요소가 없어도 Tab으로 나가면 닫힌다', async ({ page }) => {
-    // 운영 빌드처럼 개발 도구 버튼이 없는 상태를 만든다. 초기 화면에서는 팝업이 마지막 포커스 요소다.
     await page.getByRole('button', { name: 'Open Tanstack query devtools' }).waitFor();
     await page.evaluate(() => document.querySelector('.tsqd-parent-container')?.remove());
     const dialog = await openPopup(page);

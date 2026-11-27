@@ -4,7 +4,6 @@ function Bar({ className }: { className: string }) {
   return <div className={clsx('bg-light-gray', className)} />;
 }
 
-// BookListItem의 접힌 행과 같은 배치라서, 결과가 들어와도 자리가 움직이지 않는다.
 function SkeletonRow() {
   return (
     <div className="grid grid-cols-2 gap-x-2 gap-y-3 border-b border-divider py-4 lg:flex lg:h-25 lg:items-center lg:gap-0 lg:py-0 lg:pr-4 lg:pl-12">

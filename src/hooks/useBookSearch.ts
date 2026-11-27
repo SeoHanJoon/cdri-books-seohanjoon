@@ -20,7 +20,7 @@ export interface BookSearchResult {
   totalCount: number;
 }
 
-// 카카오는 같은 isbn의 책을 두 번 줄 때가 있다("무라카미 하루키" 866건 중 7건). isbn이 목록 key라서 처음 것만 남긴다.
+// 카카오는 같은 isbn의 책을 두 번 줄 때가 있다("무라카미 하루키" 866건 중 7건).
 export function selectBookSearchResult(
   data: InfiniteData<KakaoBookSearchResponse>,
 ): BookSearchResult {

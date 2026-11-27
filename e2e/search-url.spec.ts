@@ -108,10 +108,8 @@ test('검색 직후 URL이 바뀌기 전에 입력한 글자를 덮어쓰지 않
   await page.goto('/');
   await searchInput(page).fill('무라카미 하루키');
 
-  // 제출과 다음 입력을 한 번에 실행해, URL 변경이 반영되기 전에 글자가 바뀌게 만든다.
   await searchInput(page).evaluate((input: HTMLInputElement) => {
     input.form!.requestSubmit();
-    // input.value에 바로 넣으면 React가 바뀐 줄 모른다. 원래 setter를 불러 입력한 것처럼 만든다.
     Reflect.set(HTMLInputElement.prototype, 'value', '없는 책', input);
     input.dispatchEvent(new Event('input', { bubbles: true }));
   });

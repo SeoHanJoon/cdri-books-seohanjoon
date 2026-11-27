@@ -11,7 +11,6 @@ async function search(page: Page, query: string) {
   await searchInput(page).press('Enter');
 }
 
-// 개발 모드 StrictMode가 첫 요청을 취소하고 다시 보내므로 끝난 요청만 센다.
 function finishedPages(page: Page) {
   const pages: string[] = [];
   page.on('requestfinished', (request) => {

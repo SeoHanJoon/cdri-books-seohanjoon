@@ -62,7 +62,6 @@ function DetailSearchPanel({ defaultValue, onSubmit, onClose, onTabOut }: Detail
         aria-label="상세 검색 닫기"
         onClick={onClose}
         onKeyDown={(event) => {
-          // 팝업 뒤에 포커스 받을 요소가 없으면 포커스가 브라우저로 빠져나가 blur로는 알 수 없다. 마지막 요소에서 직접 닫는다.
           if (event.key === 'Tab' && !event.shiftKey) onTabOut();
         }}
         className="absolute top-2 right-2"
