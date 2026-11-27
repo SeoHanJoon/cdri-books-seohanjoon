@@ -166,7 +166,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 7 | 빌드 도구 | Vite + React | SSR 이점 없는 CSR 서비스, 요구사항 "React.js"와 일치 | ☑ Vite + React ([0001](adr/0001-vite-react.md)) |
 | 8 | 스타일링 | Tailwind v4 + Figma 토큰 | `@theme`에 스타일 가이드 이식, 가이드 밖 색 사용 차단 | ☑ Tailwind v4 ([0002](adr/0002-tailwind-figma-tokens.md)) |
 | 9 | 작업 순서 · API 모킹 | 화면 구성 먼저, API 연결은 그 다음. 모킹은 MSW | 화면을 Figma와 먼저 맞춰 확정하고 데이터만 바꿔 끼움. 가짜 데이터를 한 곳에서 관리 | ☑ 화면 먼저 + MSW ([0009](adr/0009-screens-first-msw.md)) |
-| 10 | 잘못된 경로·검색 조건 | "존재하지 않는 페이지입니다." 화면 | 잘못된 조건으로 검색을 진행하지 않음. 없는 경로와 같은 화면으로 일관되게 처리 | ☑ NotFound 화면 ([0010](adr/0010-not-found.md)) |
+| 10 | 잘못된 경로·검색 조건 | "존재하지 않는 페이지입니다." 화면 | 잘못된 조건으로 검색을 진행하지 않음. 없는 경로와 같은 화면으로 일관되게 처리 | ☑ NotFound 화면 ([0010](adr/0010-not-found.md), 화면 구성은 → [0041](adr/0041-not-found-without-nodata.md)) |
 | 11 | 린트 · TypeScript 버전 | ESLint + TS 6.0 | typescript-eslint가 TS `<6.1.0`만 지원. 타입 기반 린트 규칙 유지 | ☑ ESLint + TS 6.0 ([0011](adr/0011-eslint-typescript-6.md)) |
 | 12 | 폴더 구조 | 기능별 | 기능 PR이 폴더 하나에서 끝남 | ☑ 역할별 ([0012](adr/0012-folder-structure-by-role.md)) |
 | 13 | 폰트 불러오기 | `@fontsource-variable` | 전체 파일 4.2MB vs 조각 방식 약 200KB, 외부 서버 불필요 | ☑ `@fontsource-variable` ([0013](adr/0013-font-fontsource-variable.md)) |
@@ -174,7 +174,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 15 | 갓 배포된 버전 설치 | pnpm 최소 배포 기간(24시간) 규칙 준수 | 악성 버전이 발견·삭제되기 전 설치를 피함. vite 8.4.0 대신 8.3.8 | ☑ 규칙 준수 ([0015](adr/0015-pnpm-minimum-release-age.md)) |
 | 16 | 가이드 밖 시안 값 | 토큰 추가 | 시안 1:1 구현, 규칙 "실측 후 토큰 추가"와 일치 | ☑ 토큰 추가 ([0016](adr/0016-design-values-beyond-guide.md)) |
 | 17 | 아이콘 확보·사용 | Figma 직접 내보내기 + React 컴포넌트 | API 한도 초과, 아이콘 7개뿐이라 플러그인 불필요 | ☑ 직접 내보내기 + 컴포넌트 ([0017](adr/0017-icons-react-components.md)) |
-| 18 | Button 링크 처리 | `variant` + 스타일 함수 | 구매하기는 링크(`<a>`)여야 함 | ☑ `href` 유무로 `<a>`/`<button>` 분기 ([0018](adr/0018-button-href.md)) |
+| 18 | Button 링크 처리 | `variant` + 스타일 함수 | 구매하기는 링크(`<a>`)여야 함 | ☑ `href` 유무로 `<a>`/`<button>` 분기 ([0018](adr/0018-button-href.md), `<a>`는 → `Link` [0040](adr/0040-button-href-router-link.md)) |
 | 19 | 책 컴포넌트 데이터 | 화면용 `Book` 타입 | 카카오 규칙(-1 등)을 변환 함수 한 곳에 가둠 | ☑ `Book` + 공통 props 확장 ([0019](adr/0019-book-view-type.md), props는 → [0032](adr/0032-book-list-item-single-component.md)) |
 | 20 | 공용 타입·이미지 위치 | `src/types/`, `src/assets/` | 여러 역할이 같이 쓰는 타입, import하는 이미지 | ☑ `src/types/`, `src/assets/` 추가 ([0020](adr/0020-folder-structure-types.md)) |
 | 21 | 가격·하트 동작 (미명시) | 할인가 우선, 할인가 없으면 원가만, 작은 하트는 표시만 | 실제 결제 가격, 취소선은 비교 시에만 의미 | ☑ 작은 하트도 찜 토글 ([0021](adr/0021-price-and-heart-behavior.md)) |
@@ -194,6 +194,10 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 35 | 책 목록·펼침 상태 위치 | `BookList` 컴포넌트 | 두 페이지 재사용, 검색어 바뀌면 초기화 | ☑ 추천안 ([0035](adr/0035-book-list-component.md)) |
 | 36 | 상세 검색 컴포넌트·두 입력창 관계 | 버튼+팝업 한 컴포넌트, 글자 안 옮김, 닫으면 버림 | 상호 초기화를 페이지 한 곳에서 | ☑ 추천안 ([0036](adr/0036-detail-search-component.md)) |
 | 37 | 본문 위치·좁은 화면 여백·잘린 책 소개 (미명시) | 가운데, 768px 미만 40px, 잘리면 "…" | 시안 프레임 불일치, 카카오가 250자에서 자름 | ☑ 추천안 ([0037](adr/0037-search-page-layout-and-contents.md)) |
+| 38 | 찜 페이지 세로 간격 | 도서 검색과 맞춤 | 탭을 오가도 제목·목록 위치 그대로 | ☑ 추천안 ([0038](adr/0038-wishlist-page-spacing.md)) |
+| 39 | 화면 단계 찜 페이지 상태 | 개발용 쿼리로 목록/빈 상태 전환 | 두 상태 모두 시연 | ☑ 목록만 고정, 빈 상태는 Step 8 ([0039](adr/0039-wishlist-fixture-list-only.md)) |
+| 40 | 앱 안으로 가는 Button 링크 | `to` prop 추가 | 새로고침 없이 이동 | ☑ `href` 분기를 `Link`로 (사용자 제안, [0040](adr/0040-button-href-router-link.md)) |
+| 41 | NotFound 화면 구성 | 제목 + 버튼만 (NoData 없이) | 책 아이콘은 "데이터 없음" 뜻이라 잘못된 주소와 안 맞음 | ☑ 추천안 ([0041](adr/0041-not-found-without-nodata.md)) |
 
 ---
 
@@ -248,12 +252,13 @@ Figma `18:969`(초기), `18:805`(결과), `757:958`(검색 기록), `18:608`·`7
 - [x] 검색 기록 드롭다운 UI (입력창 포커스 시 표시, X 버튼) — 저장 로직 없음, 페이지는 빈 기록 ([0033](adr/0033-search-history-dropdown.md))
 - [x] 상세 검색 팝업 UI: Popover + 조건 Select(제목/저자명/출판사), 외부 클릭·Esc로 닫기 — 검색 실행 없음 ([0034](adr/0034-detail-search-popover.md), [0036](adr/0036-detail-search-component.md))
 
-### Step 4. 화면 구성: 내가 찜한 책 · NotFound 페이지
+### Step 4. 화면 구성: 내가 찜한 책 · NotFound 페이지 ✅
 Figma `757:1435`(초기), `744:313`(목록)
-- [ ] 페이지 레이아웃: "내가 찜한 책" 제목, `SearchCountText`("찜한 책"), 목록
-- [ ] 빈 상태 — `NoData`("찜한 책이 없습니다.")
-- [ ] 목록: Step 3과 같은 `BookList` 재사용 (fixture 데이터, [0035](adr/0035-book-list-component.md))
-- [ ] NotFound 화면: Header 유지, `NoData` 재사용("존재하지 않는 페이지입니다.") + 도서 검색으로 돌아가는 버튼 — Figma에 없는 화면이라 기존 컴포넌트로 구성
+- [x] 페이지 레이아웃: "내가 찜한 책" 제목, `SearchCountText`("찜한 책"), 목록 — 세로 간격은 도서 검색과 같게 ([0038](adr/0038-wishlist-page-spacing.md))
+- [x] 빈 상태 — `NoData`("찜한 책이 없습니다.") — 분기만 넣고, 화면 확인·테스트는 Step 8 ([0039](adr/0039-wishlist-fixture-list-only.md))
+- [x] 목록: Step 3과 같은 `BookList` 재사용 (fixture 10권, 하트는 Step 8 전까지 찜 안 함, [0035](adr/0035-book-list-component.md))
+- [x] NotFound 화면: Header 유지, "존재하지 않는 페이지입니다." 제목 + 도서 검색으로 돌아가는 버튼 — Figma에 없는 화면. 책 아이콘이 어울리지 않아 `NoData`는 쓰지 않음 ([0041](adr/0041-not-found-without-nodata.md))
+  - 버튼은 새로고침 없이 이동한다. Button의 링크를 `Link`로 그린다 ([0040](adr/0040-button-href-router-link.md))
 
 ### Step 5. API 연결
 - [ ] MSW 설정: 카카오 검색 handler (Step 3 fixture 사용, `page`/`size`/`is_end` 처리, 지연·에러·0건 시나리오)
@@ -282,7 +287,7 @@ Figma `757:1435`(초기), `744:313`(목록)
 ### Step 8. 찜하기 기능
 - [ ] 찜 store (Zustand + persist): 찜한 시점 데이터 스냅샷 저장
 - [ ] 하트 토글
-- [ ] 찜 페이지의 fixture를 store 데이터로 교체 (10개 단위 무한 스크롤), 빈 상태
+- [ ] 찜 페이지의 fixture를 store 데이터로 교체 (10개 단위 무한 스크롤), 빈 상태 화면 확인·브라우저 테스트 ([0039](adr/0039-wishlist-fixture-list-only.md))
 
 ### Step 9. 성능 최적화 · 마무리
 - [ ] `BookListItem` `memo`, 이미지 `loading="lazy"`

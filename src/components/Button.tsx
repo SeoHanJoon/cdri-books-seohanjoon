@@ -1,5 +1,6 @@
 import { clsx } from 'clsx';
 import type { ComponentPropsWithRef, ReactNode } from 'react';
+import { Link } from 'react-router';
 
 type ButtonVariant = 'primary' | 'primary-small' | 'secondary' | 'outline';
 
@@ -29,8 +30,11 @@ const VARIANT_CLASS: Record<ButtonVariant, string> = {
 
 export function Button(props: ButtonProps) {
   if (props.href !== undefined) {
-    const { variant, className, ...rest } = props;
-    return <a className={clsx(BASE_CLASS, VARIANT_CLASS[variant], className)} {...rest} />;
+    const { variant, className, href, ...rest } = props;
+    // Link는 다른 출처의 주소(구매하기)는 클릭을 가로채지 않아 일반 <a>처럼 동작한다.
+    return (
+      <Link to={href} className={clsx(BASE_CLASS, VARIANT_CLASS[variant], className)} {...rest} />
+    );
   }
 
   const { variant, className, type = 'button', ...rest } = props;
