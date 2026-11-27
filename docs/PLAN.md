@@ -191,6 +191,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 32 | 접힌 행·펼친 행 구조 | 두 컴포넌트 유지 + 포커스 이동 | 기존 props 유지 | ☑ 하나로 합침, 상세보기 버튼 맨 앞 ([0032](adr/0032-book-list-item-single-component.md)) |
 | 33 | 검색 기록 드롭다운 위치 | `SearchBox` 안 | 시안상 입력창과 한 상자 | ☑ 추천안 ([0033](adr/0033-search-history-dropdown.md)) |
 | 34 | 상세 검색 팝업·Select | 직접 구현 | Headless UI는 앱 JS +37% | ☑ 직접 구현 ([0034](adr/0034-detail-search-popover.md)) |
+| 35 | 책 목록·펼침 상태 위치 | `BookList` 컴포넌트 | 두 페이지 재사용, 검색어 바뀌면 초기화 | ☑ 추천안 ([0035](adr/0035-book-list-component.md)) |
 
 ---
 
