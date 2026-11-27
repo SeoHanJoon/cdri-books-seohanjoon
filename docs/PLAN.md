@@ -202,6 +202,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 43 | MSW 다음 페이지·시나리오 | 실제 page 2~3 저장, 지연·에러는 검색어로 | 실제 데이터, 손으로 재현·PR 영상에 보임 | ☑ 추천안 ([0043](adr/0043-msw-fixtures-and-scenarios.md)) |
 | 44 | 로딩·에러 화면 (미명시) | 스켈레톤 + 다시 시도 | 레이아웃 흔들림 적음, 다음 페이지 실패에도 목록 유지 | ☑ 추천안 ([0044](adr/0044-loading-error-ui.md)) |
 | 45 | API·훅 구조, 테스트 범위 | 순수 함수·fetch는 Vitest, 화면은 Playwright, 감지 훅 직접 작성 | 의존성은 MSW 하나만 추가 | ☑ 추천안 ([0045](adr/0045-api-layer-and-tests.md)) |
+| 46 | isbn이 같은 검색 결과 | 처음 것만 보여줌 | 실제 응답 866건 중 7건 겹침, isbn이 목록 key·찜 기준 | ☑ 추천안 ([0046](adr/0046-dedupe-books-by-isbn.md)) |
 
 ---
 
