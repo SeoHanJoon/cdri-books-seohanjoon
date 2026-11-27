@@ -223,6 +223,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 64 | components 폴더 구조 | `ui/`·`book/`·`search/`·`feedback/`, Header는 `app/` | 폴더 이름으로 역할이 보임, 0012의 역할별 원칙 유지 | ☑ 추천안 ([0064](adr/0064-components-subfolders.md)) |
 | 65 | 겹치는 컴포넌트 | 스켈레톤·책 행 배치 클래스 공유, 제목은 페이지가 | 행 배치가 어긋날 수 없음, 두 페이지가 같은 방식 | ☑ 추천안, 아이콘 버튼·안내 컴포넌트는 유지 ([0065](adr/0065-component-duplication.md)) |
 | 66 | 겹치는 함수 | `useDismiss` 훅, 검색어 공백은 들어오는 곳에서만 | 닫기 규칙 한 곳, 공백 규칙 분명 | ☑ 추천안, 드롭다운도 안쪽 여백에서 닫히지 않게, isbn 함수는 유지 ([0066](adr/0066-function-duplication.md)) |
+| 67 | import 순서 강제 | ESLint `simple-import-sort` | 기본 묶음이 지금 규칙과 같음, `pnpm lint`가 잡음, 폰트·CSS import 순서 유지 | ☑ 추천안 ([0067](adr/0067-import-sort-lint.md)) |
 
 ---
 
@@ -357,4 +358,5 @@ Figma `757:1435`(초기), `744:313`(목록)
 - [x] 겹치는 컴포넌트: 스켈레톤과 책 행이 배치 클래스 공유, 도서 검색 제목을 SearchPage로. 아이콘 버튼과 NoData·ErrorMessage는 검토 후 유지 ([0065](adr/0065-component-duplication.md))
 - [x] 겹치는 함수: 팝업 닫기 `useDismiss` 훅(검색 기록 드롭다운도 안쪽 빈 여백에서는 닫히지 않게), 검색어 공백은 URL 읽기·사용자 입력에서만 정리 ([0066](adr/0066-function-duplication.md))
 - [x] API 호출·Zustand store: 검토 결과 바꾸지 않음 (queryKey, 4xx 재시도 제외, 요청 취소, `useShallow`, 두 store의 persist 설정 모두 그대로)
+- [x] import 순서: ESLint `simple-import-sort`로 강제, 흐트러진 2개 파일 정리 ([0067](adr/0067-import-sort-lint.md))
 - [x] 화면이 그대로인지 확인: README 스크린샷 5장, 스켈레톤·결과 없음·에러 화면(데스크톱·모바일)을 main과 바이트 단위로 비교. 브라우저 테스트 103 → 105개 (드롭다운 빈 곳, 상세 검색어 공백)

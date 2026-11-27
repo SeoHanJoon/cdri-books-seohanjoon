@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 import { BookList } from '@/components/book/BookList';
 import { LoadMoreFooter } from '@/components/book/LoadMoreFooter';
-import { NoData } from '@/components/feedback/NoData';
 import { CountText } from '@/components/feedback/CountText';
+import { NoData } from '@/components/feedback/NoData';
 import { usePagedList } from '@/hooks/usePagedList';
 import { useWishlist } from '@/hooks/useWishlist';
 import { mergeShownBooks } from '@/lib/wishlist';
