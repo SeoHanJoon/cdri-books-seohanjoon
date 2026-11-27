@@ -10,7 +10,9 @@ import { NoData } from '@/components/NoData';
 import { SearchBox } from '@/components/SearchBox';
 import { SearchCountText } from '@/components/SearchCountText';
 import { useBookSearch } from '@/hooks/useBookSearch';
-import { useSearchInput } from '@/hooks/useSearchInput';
+import { useDetailSearch } from '@/hooks/useDetailSearch';
+import { useMainSearch } from '@/hooks/useMainSearch';
+import { useSearchUrl } from '@/hooks/useSearchUrl';
 import { toSearchParams } from '@/lib/searchParams';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { useSearchHistoryStore } from '@/stores/searchHistoryStore';
@@ -91,25 +93,35 @@ function SearchResults({ search }: SearchResultsProps) {
 }
 
 export function SearchPage() {
-  const { parsed, query, setQuery, submit, searchKeyword, detailDefault, submitDetail } =
-    useSearchInput();
+  const url = useSearchUrl();
+  const main = useMainSearch(url);
+  const detail = useDetailSearch(url);
   const history = useSearchHistoryStore((state) => state.keywords);
   const removeHistory = useSearchHistoryStore((state) => state.remove);
 
-  if (parsed.status === 'invalid') return <NotFoundPage />;
+  if (url.parsed.status === 'invalid') return <NotFoundPage />;
 
   return (
     <div className="pt-10 pb-40 md:pt-26">
       <SearchBox
-        value={query}
-        onValueChange={setQuery}
-        onSubmit={submit}
-        detailSearch={<DetailSearch defaultValue={detailDefault} onSubmit={submitDetail} />}
+        value={main.query}
+        onValueChange={main.setQuery}
+        onSubmit={main.submit}
+        detailSearch={
+          <DetailSearch
+            defaultValue={detail.defaultValue}
+            onSubmit={(condition) => {
+              // 같은 조건으로 다시 검색하면 URL이 그대로라 입력창 동기화가 일어나지 않는다.
+              main.clear();
+              detail.submit(condition);
+            }}
+          />
+        }
         history={history}
-        onHistorySelect={searchKeyword}
+        onHistorySelect={main.searchKeyword}
         onHistoryRemove={removeHistory}
       />
-      <SearchResults search={parsed.status === 'ready' ? parsed.search : null} />
+      <SearchResults search={url.parsed.status === 'ready' ? url.parsed.search : null} />
     </div>
   );
 }

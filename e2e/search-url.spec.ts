@@ -26,6 +26,16 @@ test('검색하면 검색어가 URL에 담긴다', async ({ page }) => {
   await expect(page).toHaveURL(`/?${new URLSearchParams({ query: '무라카미 하루키' })}`);
 });
 
+test('검색하면 입력창도 앞뒤 공백을 지운 검색어로 바뀐다', async ({ page }) => {
+  await page.goto('/');
+  await search(page, '  무라카미 하루키 ');
+  await expect(searchInput(page)).toHaveValue('무라카미 하루키');
+
+  await search(page, ' 무라카미 하루키');
+
+  await expect(searchInput(page)).toHaveValue('무라카미 하루키');
+});
+
 test('URL의 검색어로 바로 들어오면 입력창과 결과를 채운다', async ({ page }) => {
   await page.goto('/?query=무라카미 하루키');
 
