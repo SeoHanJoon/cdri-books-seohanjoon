@@ -1,7 +1,13 @@
 import { clsx } from 'clsx';
-import { type FocusEvent, type KeyboardEvent, type SubmitEvent, useRef, useState } from 'react';
+import {
+  type FocusEvent,
+  type KeyboardEvent,
+  type ReactNode,
+  type SubmitEvent,
+  useRef,
+  useState,
+} from 'react';
 
-import { Button } from '@/components/Button';
 import { CloseIcon } from '@/components/icons/CloseIcon';
 import { SearchIcon } from '@/components/icons/SearchIcon';
 
@@ -9,7 +15,8 @@ interface SearchBoxProps {
   value: string;
   onValueChange: (value: string) => void;
   onSubmit: () => void;
-  onDetailSearchClick: () => void;
+  /** 입력창 오른쪽, 상세검색 버튼 자리 */
+  detailSearch: ReactNode;
   history: string[];
   onHistorySelect: (keyword: string) => void;
   onHistoryRemove: (keyword: string) => void;
@@ -19,7 +26,7 @@ export function SearchBox({
   value,
   onValueChange,
   onSubmit,
-  onDetailSearchClick,
+  detailSearch,
   history,
   onHistorySelect,
   onHistoryRemove,
@@ -113,9 +120,7 @@ export function SearchBox({
             )}
           </form>
         </div>
-        <Button variant="outline" onClick={onDetailSearchClick} className="w-18">
-          상세검색
-        </Button>
+        {detailSearch}
       </div>
     </div>
   );

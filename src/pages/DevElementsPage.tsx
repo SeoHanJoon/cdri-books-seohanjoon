@@ -2,10 +2,12 @@ import { type ReactNode, useState } from 'react';
 
 import { BookListItem } from '@/components/BookListItem';
 import { Button } from '@/components/Button';
+import { DetailSearch } from '@/components/DetailSearch';
 import { NoData } from '@/components/NoData';
 import { SearchBox } from '@/components/SearchBox';
 import { SearchCountText } from '@/components/SearchCountText';
 import type { Book } from '@/types/book';
+import type { DetailSearchCondition } from '@/types/search';
 
 function coverImage(top: string, bottom: string) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="174"><rect width="120" height="174" fill="${top}"/><rect y="87" width="120" height="87" fill="${bottom}"/></svg>`;
@@ -67,7 +69,7 @@ function toggleInSet(set: Set<string>, value: string) {
 export function DevElementsPage() {
   const [query, setQuery] = useState('');
   const [searches, setSearches] = useState<string[]>([]);
-  const [detailSearchClicks, setDetailSearchClicks] = useState(0);
+  const [detailSearches, setDetailSearches] = useState<DetailSearchCondition[]>([]);
   const [history, setHistory] = useState(['노르웨이 숲', '무라카미 하루키']);
   const [likedIsbns, setLikedIsbns] = useState(() => new Set(['sale']));
   const [expandedIsbns, setExpandedIsbns] = useState(() => new Set(['sale']));
@@ -82,7 +84,12 @@ export function DevElementsPage() {
           value={query}
           onValueChange={setQuery}
           onSubmit={() => setSearches((prev) => [...prev, query])}
-          onDetailSearchClick={() => setDetailSearchClicks((count) => count + 1)}
+          detailSearch={
+            <DetailSearch
+              defaultValue={detailSearches.at(-1) ?? { target: 'title', keyword: '' }}
+              onSubmit={(condition) => setDetailSearches((prev) => [...prev, condition])}
+            />
+          }
           history={history}
           onHistorySelect={(keyword) => {
             setQuery(keyword);
@@ -93,7 +100,8 @@ export function DevElementsPage() {
           }
         />
         <p data-testid="search-log" className="text-body2 text-text-secondary">
-          검색 {searches.length}회: {searches.join(', ')} / 상세검색 {detailSearchClicks}회
+          검색 {searches.length}회: {searches.join(', ')} / 상세검색 {detailSearches.length}회:{' '}
+          {detailSearches.map(({ target, keyword }) => `${target}=${keyword}`).join(', ')}
         </p>
       </Section>
 
@@ -112,6 +120,9 @@ export function DevElementsPage() {
           </Button>
           <Button variant="outline" className="w-18">
             상세검색
+          </Button>
+          <Button variant="primary-small" className="w-78">
+            검색하기
           </Button>
         </div>
       </Section>

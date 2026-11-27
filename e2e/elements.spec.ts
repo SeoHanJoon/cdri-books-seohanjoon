@@ -125,14 +125,6 @@ test('한글 조합 중에 Enter를 누르면 조합 중인 글자까지 한 번
   await expect(page.getByTestId('search-log')).toContainText('검색 1회: 무라카미 하루키');
 });
 
-test('상세검색 버튼을 누르면 상세검색 이벤트가 전달된다', async ({ page }) => {
-  await page
-    .getByRole('region', { name: 'SearchBox' })
-    .getByRole('button', { name: '상세검색' })
-    .click();
-  await expect(page.getByTestId('search-log')).toContainText('상세검색 1회');
-});
-
 test('좁은 화면에서도 버튼 글자는 줄바꿈되지 않는다', async ({ page }) => {
   for (const width of [375, 1920]) {
     await page.setViewportSize({ width, height: 900 });

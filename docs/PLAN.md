@@ -183,7 +183,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 24 | 아이콘 props | 색은 `className`으로 | 시안의 크기·색 조합 고정 | ☑ `size`만 받고 색은 내부, 작은 테두리 하트는 회색 ([0024](adr/0024-icon-component-props.md)) |
 | 25 | 클래스 이름 합치기 | clsx | 조건부 클래스가 여러 컴포넌트에 필요, 0.2KB | ☑ clsx ([0025](adr/0025-clsx.md)) |
 | 26 | Header 반응형 배치 | 넓은 화면은 시안 그대로 3단계 | 1024px쯤에서 로고와 탭이 겹침 | ☑ 3단계 + 탭 항상 가운데 ([0026](adr/0026-header-responsive.md)) |
-| 27 | SearchBox 검색어·배치 | 페이지가 관리, 좁은 화면은 입력창만 줄임 | URL 동기화·상세 검색 초기화를 페이지에서 처리 | ☑ 추천안 ([0027](adr/0027-searchbox-controlled.md)) |
+| 27 | SearchBox 검색어·배치 | 페이지가 관리, 좁은 화면은 입력창만 줄임 | URL 동기화·상세 검색 초기화를 페이지에서 처리 | ☑ 추천안 ([0027](adr/0027-searchbox-controlled.md), 상세검색 버튼은 → [0036](adr/0036-detail-search-component.md)) |
 | 28 | Button 여백 | 변형별 좌우 여백 | 덮어쓰기 없이 상세보기 아이콘을 넣기 위해 | ☑ 여백 없이 가운데, 너비는 쓰는 쪽 ([0028](adr/0028-button-no-padding.md)) |
 | 29 | 책 행 모바일 배치 | 세로로 쌓기 | 시안의 모든 요소 유지 | ☑ 세로로 쌓기 ([0029](adr/0029-book-row-responsive.md)) |
 | 30 | fixture 마련·화면 단계 상태 전환 | 실제 응답 저장, 검색어로 선택 | 실제 예외 값 포함, 세 상태 모두 시연 | ☑ 추천안 ([0030](adr/0030-fixture-real-response.md)) |
@@ -192,6 +192,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 33 | 검색 기록 드롭다운 위치 | `SearchBox` 안 | 시안상 입력창과 한 상자 | ☑ 추천안 ([0033](adr/0033-search-history-dropdown.md)) |
 | 34 | 상세 검색 팝업·Select | 직접 구현 | Headless UI는 앱 JS +37% | ☑ 직접 구현 ([0034](adr/0034-detail-search-popover.md)) |
 | 35 | 책 목록·펼침 상태 위치 | `BookList` 컴포넌트 | 두 페이지 재사용, 검색어 바뀌면 초기화 | ☑ 추천안 ([0035](adr/0035-book-list-component.md)) |
+| 36 | 상세 검색 컴포넌트·두 입력창 관계 | 버튼+팝업 한 컴포넌트, 글자 안 옮김, 닫으면 버림 | 상호 초기화를 페이지 한 곳에서 | ☑ 추천안 ([0036](adr/0036-detail-search-component.md)) |
 
 ---
 
