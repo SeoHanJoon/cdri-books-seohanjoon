@@ -12,6 +12,16 @@ export const router = createBrowserRouter([
     children: [
       { index: true, Component: SearchPage },
       { path: 'wishlist', Component: WishlistPage },
+      ...(import.meta.env.DEV
+        ? [
+            {
+              path: 'dev/elements',
+              lazy: async () => ({
+                Component: (await import('@/pages/DevElementsPage')).DevElementsPage,
+              }),
+            },
+          ]
+        : []),
       { path: '*', Component: NotFoundPage },
     ],
   },

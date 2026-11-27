@@ -225,8 +225,8 @@ Elements의 컴포넌트를 1:1로 화면 전용 컴포넌트로 만든다. 데�
 - [x] `BookListItemDetail` (펼친 행: 큰 표지 + 하트, 책 소개, 원가/할인가, 구매하기)
   - props는 API 응답 타입이 아니라 화면에 필요한 값으로 설계 → 검색 결과(API)와 찜 목록(저장 데이터)에서 같은 컴포넌트 재사용
   - 할인가 없으면 할인가 미노출, 원가는 취소선 없이 구매하기 위로 ([0021](adr/0021-price-and-heart-behavior.md))
-- [ ] 좁은 화면 배치 — 컴포넌트별로 추천안 확인 후 구현 ([0023](adr/0023-responsive-mobile.md))
-- [ ] 개발용 `/dev/elements` 확인 화면 + Playwright 테스트 ([0022](adr/0022-dev-elements-page.md))
+- [x] 좁은 화면 배치 — 컴포넌트별로 추천안 확인 후 구현 ([0023](adr/0023-responsive-mobile.md))
+- [x] 개발용 `/dev/elements` 확인 화면 + Playwright 테스트 ([0022](adr/0022-dev-elements-page.md))
 
 ### Step 3. 화면 구성: 도서 검색 페이지
 Figma `18:969`(초기), `18:805`(결과), `757:958`(검색 기록), `18:608`·`744:156`(상세 검색 팝업)
