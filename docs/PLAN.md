@@ -175,7 +175,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 16 | 가이드 밖 시안 값 | 토큰 추가 | 시안 1:1 구현, 규칙 "실측 후 토큰 추가"와 일치 | ☑ 토큰 추가 ([0016](adr/0016-design-values-beyond-guide.md)) |
 | 17 | 아이콘 확보·사용 | Figma 직접 내보내기 + React 컴포넌트 | API 한도 초과, 아이콘 7개뿐이라 플러그인 불필요 | ☑ 직접 내보내기 + 컴포넌트 ([0017](adr/0017-icons-react-components.md)) |
 | 18 | Button 링크 처리 | `variant` + 스타일 함수 | 구매하기는 링크(`<a>`)여야 함 | ☑ `href` 유무로 `<a>`/`<button>` 분기 ([0018](adr/0018-button-href.md)) |
-| 19 | 책 컴포넌트 데이터 | 화면용 `Book` 타입 | 카카오 규칙(-1 등)을 변환 함수 한 곳에 가둠 | ☑ `Book` + 공통 props 확장 ([0019](adr/0019-book-view-type.md)) |
+| 19 | 책 컴포넌트 데이터 | 화면용 `Book` 타입 | 카카오 규칙(-1 등)을 변환 함수 한 곳에 가둠 | ☑ `Book` + 공통 props 확장 ([0019](adr/0019-book-view-type.md), props는 → [0032](adr/0032-book-list-item-single-component.md)) |
 | 20 | 공용 타입·이미지 위치 | `src/types/`, `src/assets/` | 여러 역할이 같이 쓰는 타입, import하는 이미지 | ☑ `src/types/`, `src/assets/` 추가 ([0020](adr/0020-folder-structure-types.md)) |
 | 21 | 가격·하트 동작 (미명시) | 할인가 우선, 할인가 없으면 원가만, 작은 하트는 표시만 | 실제 결제 가격, 취소선은 비교 시에만 의미 | ☑ 작은 하트도 찜 토글 ([0021](adr/0021-price-and-heart-behavior.md)) |
 | 22 | 공통 컴포넌트 확인 화면 | 개발용 `/dev/elements` | Elements와 비교, PR 영상, 운영 빌드 제외 | ☑ `/dev/elements` ([0022](adr/0022-dev-elements-page.md)) |
@@ -186,6 +186,11 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 27 | SearchBox 검색어·배치 | 페이지가 관리, 좁은 화면은 입력창만 줄임 | URL 동기화·상세 검색 초기화를 페이지에서 처리 | ☑ 추천안 ([0027](adr/0027-searchbox-controlled.md)) |
 | 28 | Button 여백 | 변형별 좌우 여백 | 덮어쓰기 없이 상세보기 아이콘을 넣기 위해 | ☑ 여백 없이 가운데, 너비는 쓰는 쪽 ([0028](adr/0028-button-no-padding.md)) |
 | 29 | 책 행 모바일 배치 | 세로로 쌓기 | 시안의 모든 요소 유지 | ☑ 세로로 쌓기 ([0029](adr/0029-book-row-responsive.md)) |
+| 30 | fixture 마련·화면 단계 상태 전환 | 실제 응답 저장, 검색어로 선택 | 실제 예외 값 포함, 세 상태 모두 시연 | ☑ 추천안 ([0030](adr/0030-fixture-real-response.md)) |
+| 31 | `Book.isbn` 값 | 13자리 → 10자리 → `url` | 책을 구별하는 값 하나, 비지 않음 | ☑ 추천안 ([0031](adr/0031-book-isbn-identifier.md)) |
+| 32 | 접힌 행·펼친 행 구조 | 두 컴포넌트 유지 + 포커스 이동 | 기존 props 유지 | ☑ 하나로 합침, 상세보기 버튼 맨 앞 ([0032](adr/0032-book-list-item-single-component.md)) |
+| 33 | 검색 기록 드롭다운 위치 | `SearchBox` 안 | 시안상 입력창과 한 상자 | ☑ 추천안 ([0033](adr/0033-search-history-dropdown.md)) |
+| 34 | 상세 검색 팝업·Select | 직접 구현 | Headless UI는 앱 JS +37% | ☑ 직접 구현 ([0034](adr/0034-detail-search-popover.md)) |
 
 ---
 
