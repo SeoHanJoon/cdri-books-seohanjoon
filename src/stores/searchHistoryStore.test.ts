@@ -1,18 +1,6 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
-function createMemoryStorage(): Storage {
-  const items = new Map<string, string>();
-  return {
-    get length() {
-      return items.size;
-    },
-    clear: () => items.clear(),
-    getItem: (key) => items.get(key) ?? null,
-    key: (index) => [...items.keys()][index] ?? null,
-    removeItem: (key) => items.delete(key),
-    setItem: (key, value) => items.set(key, String(value)),
-  };
-}
+import { dispatchStorageEvent, setupMemoryStorage } from '@/stores/testStorage';
 
 async function loadStore() {
   vi.resetModules();
@@ -20,14 +8,7 @@ async function loadStore() {
   return useSearchHistoryStore;
 }
 
-beforeEach(() => {
-  vi.stubGlobal('localStorage', createMemoryStorage());
-  vi.stubGlobal('window', new EventTarget());
-});
-
-afterEach(() => {
-  vi.unstubAllGlobals();
-});
+setupMemoryStorage();
 
 describe('검색 기록 store', () => {
   it('최근 검색어를 맨 앞에 넣는다', async () => {
@@ -102,9 +83,7 @@ describe('검색 기록 store', () => {
     const tabB = await loadStore();
 
     tabA.getState().add('a');
-    window.dispatchEvent(
-      Object.assign(new Event('storage'), { key: tabA.persist.getOptions().name }),
-    );
+    dispatchStorageEvent(tabA.persist.getOptions().name);
     tabB.getState().add('b');
 
     expect(tabB.getState().keywords).toEqual(['b', 'a']);
