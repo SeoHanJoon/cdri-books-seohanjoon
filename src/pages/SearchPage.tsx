@@ -10,16 +10,16 @@ import { NoData } from '@/components/NoData';
 import { SearchBox } from '@/components/SearchBox';
 import { SearchCountText } from '@/components/SearchCountText';
 import { useBookSearch } from '@/hooks/useBookSearch';
-import { useSearchInput } from '@/hooks/useSearchInput';
+import { useDetailSearch } from '@/hooks/useDetailSearch';
+import { useMainSearch } from '@/hooks/useMainSearch';
+import { useSearchUrl } from '@/hooks/useSearchUrl';
 import { toSearchParams } from '@/lib/searchParams';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { useSearchHistoryStore } from '@/stores/searchHistoryStore';
-import type { BookSearch, DetailSearchCondition } from '@/types/search';
+import type { BookSearch } from '@/types/search';
 
 const isLiked = () => false;
 const ignoreToggleLike = () => {};
-const EMPTY_DETAIL_SEARCH: DetailSearchCondition = { target: 'title', keyword: '' };
-const ignoreDetailSearch = () => {};
 
 interface SearchResultsProps {
   search: BookSearch | null;
@@ -93,26 +93,34 @@ function SearchResults({ search }: SearchResultsProps) {
 }
 
 export function SearchPage() {
-  const { parsed, query, setQuery, submit, searchKeyword } = useSearchInput();
+  const url = useSearchUrl();
+  const main = useMainSearch(url);
+  const detail = useDetailSearch(url);
   const history = useSearchHistoryStore((state) => state.keywords);
   const removeHistory = useSearchHistoryStore((state) => state.remove);
 
-  if (parsed.status === 'invalid') return <NotFoundPage />;
+  if (url.parsed.status === 'invalid') return <NotFoundPage />;
 
   return (
     <div className="pt-10 pb-40 md:pt-26">
       <SearchBox
-        value={query}
-        onValueChange={setQuery}
-        onSubmit={submit}
+        value={main.query}
+        onValueChange={main.setQuery}
+        onSubmit={main.submit}
         detailSearch={
-          <DetailSearch defaultValue={EMPTY_DETAIL_SEARCH} onSubmit={ignoreDetailSearch} />
+          <DetailSearch
+            defaultValue={detail.defaultValue}
+            onSubmit={(condition) => {
+              main.clear();
+              detail.submit(condition);
+            }}
+          />
         }
         history={history}
-        onHistorySelect={searchKeyword}
+        onHistorySelect={main.searchKeyword}
         onHistoryRemove={removeHistory}
       />
-      <SearchResults search={parsed.status === 'ready' ? parsed.search : null} />
+      <SearchResults search={url.parsed.status === 'ready' ? url.parsed.search : null} />
     </div>
   );
 }

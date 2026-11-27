@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { FIXTURE_QUERY, getSearchFixture } from './searchFixture';
+import { FIXTURE_QUERY, FIXTURE_TARGET, getSearchFixture } from './searchFixture';
 
 describe('getSearchFixture', () => {
   it('fixture에 있는 검색어는 page마다 10권씩 준다', () => {
@@ -34,5 +34,22 @@ describe('getSearchFixture', () => {
       getSearchFixture(FIXTURE_QUERY, page).documents.map((document) => document.isbn),
     );
     expect(new Set(isbns).size).toBe(30);
+  });
+
+  it('검색어가 같아도 target에 따라 다른 fixture를 준다', () => {
+    const all = getSearchFixture(FIXTURE_QUERY);
+    const byTarget = getSearchFixture(FIXTURE_QUERY, 1, FIXTURE_TARGET);
+
+    expect(byTarget.documents).toHaveLength(10);
+    expect(byTarget.meta.total_count).not.toBe(all.meta.total_count);
+  });
+
+  it('target fixture는 1페이지만 있어 is_end가 true다', () => {
+    expect(getSearchFixture(FIXTURE_QUERY, 1, FIXTURE_TARGET).meta.is_end).toBe(true);
+    expect(getSearchFixture(FIXTURE_QUERY, 2, FIXTURE_TARGET).documents).toEqual([]);
+  });
+
+  it('저장하지 않은 target과 검색어 조합은 0건 응답을 준다', () => {
+    expect(getSearchFixture(FIXTURE_QUERY, 1, 'title').meta.total_count).toBe(0);
   });
 });

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { KAKAO_BOOK_SEARCH_URL, type KakaoBookSearchResponse } from '@/api/kakaoBook';
 
 import { ERROR_QUERY, NEXT_PAGE_ERROR_QUERY, SLOW_QUERY } from './handlers';
-import { FIXTURE_QUERY } from './searchFixture';
+import { FIXTURE_QUERY, FIXTURE_TARGET } from './searchFixture';
 
 async function request(params: Record<string, string>) {
   const response = await fetch(`${KAKAO_BOOK_SEARCH_URL}?${new URLSearchParams(params)}`);
@@ -19,6 +19,12 @@ describe('카카오 책 검색 handler', () => {
     expect(second.body.documents[0]?.isbn).not.toBe(first.body.documents[0]?.isbn);
   });
 
+  it('target이 있으면 그 target의 fixture를 준다', async () => {
+    const { body } = await request({ query: FIXTURE_QUERY, target: FIXTURE_TARGET });
+
+    expect(body.meta.total_count).toBe(780);
+  });
+
   it('허용되지 않은 target은 카카오처럼 무시하고 전체 검색 결과를 준다', async () => {
     const { status, body } = await request({ query: FIXTURE_QUERY, target: 'foo' });
 
@@ -27,10 +33,9 @@ describe('카카오 책 검색 handler', () => {
   });
 
   it('target은 카카오처럼 대소문자를 가리지 않는다', async () => {
-    const lower = await request({ query: FIXTURE_QUERY, target: 'title' });
-    const upper = await request({ query: FIXTURE_QUERY, target: 'TITLE' });
+    const { body } = await request({ query: FIXTURE_QUERY, target: FIXTURE_TARGET.toUpperCase() });
 
-    expect(upper.body).toEqual(lower.body);
+    expect(body.meta.total_count).toBe(780);
   });
 
   it(`"${ERROR_QUERY}" 검색어는 500 에러를 준다`, async () => {

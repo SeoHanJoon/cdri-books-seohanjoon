@@ -205,8 +205,10 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 46 | isbn이 같은 검색 결과 | 처음 것만 보여줌 | 실제 응답 866건 중 7건 겹침, isbn이 목록 key·찜 기준 | ☑ 추천안 ([0046](adr/0046-dedupe-books-by-isbn.md)) |
 | 47 | 로딩 중 건수 표시 (미명시) | 숫자 자리만 스켈레톤 | 틀린 숫자를 보이지 않음 | ☑ 직전 건수 유지 ([0047](adr/0047-count-while-loading.md)) |
 | 48 | MSW worker 파일 제공 | `msw/vite` 플러그인 | 저장소·운영 빌드에 파일 없음, 실행은 안정 API | ☑ 추천안 ([0048](adr/0048-msw-vite-plugin.md)) |
-| 49 | 도서 검색 페이지 구조 | 훅 1 + 컴포넌트 2 | 한 컴포넌트의 네 가지 일 분리, 목록 끝 처리는 Step 8 재사용 | ☑ 추천안 ([0049](adr/0049-search-page-split.md)) |
+| 49 | 도서 검색 페이지 구조 | 훅 1 + 컴포넌트 2 | 한 컴포넌트의 네 가지 일 분리, 목록 끝 처리는 Step 8 재사용 | ☑ 추천안 ([0049](adr/0049-search-page-split.md), 입력 훅은 → [0052](adr/0052-search-hooks-split.md)) |
 | 50 | 검색 기록 저장 시점·중복·탭 동기화 (미명시) | 실행마다 맨 앞, 완전 일치, `storage` 이벤트 | 사용자가 실행한 검색만 남김, 탭끼리 덮어쓰지 않음 | ☑ 추천안 ([0050](adr/0050-search-history-store.md)) |
+| 51 | 상세 검색 빈 검색어·개발 데이터·로직 위치 | 초기 화면으로, 실제 저자명 응답, `useSearchInput` | 전체 검색과 같은 규칙, 조건별 결과 시연, 상호 초기화 한 곳 | ☑ 빈 검색어는 팝업 유지, 나머지 추천안 ([0051](adr/0051-detail-search-execution.md), 로직 위치는 → [0052](adr/0052-search-hooks-split.md)) |
+| 52 | 검색 입력 훅 나누기·검색 후 입력창 글자 | 훅 3개(URL·전체·상세), 조합은 페이지 / URL 값으로 맞춤 | 훅마다 일 하나, 상호 초기화가 페이지에 보임 | ☑ 추천안 ([0052](adr/0052-search-hooks-split.md)) |
 
 ---
 
@@ -294,11 +296,16 @@ Figma `757:1435`(초기), `744:313`(목록)
   - 다른 탭의 변경은 `storage` 이벤트로 다시 읽어 덮어쓰지 않음 ([0050](adr/0050-search-history-store.md))
 - [x] 드롭다운에 연결: 항목 삭제, 클릭 시 재검색
   - 사용자가 실행한 검색만 넣음(0건·에러 포함). 뒤로가기·새로고침·주소로 들어온 검색은 넣지 않음
-- [x] 전체 검색만 저장 ([0004](adr/0004-search-history-scope.md)) — 기록은 `useSearchInput`의 전체 검색에서만 넣음. 상세 검색이 기록에 안 남는지는 Step 7에서 브라우저 테스트로 확인
+- [x] 전체 검색만 저장 ([0004](adr/0004-search-history-scope.md)) — 기록은 전체 검색(`useMainSearch`)에서만 넣음. 상세 검색이 기록에 안 남는지는 Step 7에서 브라우저 테스트로 확인
 
-### Step 7. 상세 검색 기능
-- [ ] 팝업 '검색하기' → 조건(`target`)으로 검색 실행, 팝업 닫기
-- [ ] 전체 검색 ↔ 상세 검색 상호 초기화
+### Step 7. 상세 검색 기능 ✅
+- [x] 팝업 '검색하기' → 조건(`target`)으로 검색 실행, 팝업 닫기
+  - 검색어가 비어 있으면 팝업을 닫지 않고 검색어 입력창으로 포커스 ([0051](adr/0051-detail-search-execution.md))
+  - MSW: 실제 저자명 검색(`person`, "무라카미 하루키" 780건) 1페이지 저장, `target`·검색어 조합으로 fixture 선택
+- [x] 전체 검색 ↔ 상세 검색 상호 초기화 — URL 한 번 바꾸기로 끝남 ([0042](adr/0042-search-state-url.md)). 같은 조건 재검색 때도 메인 입력창을 비움
+  - 입력창 동기화 기준을 URL 전체로: 상세 검색끼리 뒤로가기해도 쓰다 만 글자가 남지 않음
+  - 상세 검색은 검색 기록에 남지 않음 — 브라우저 테스트로 확인 ([0004](adr/0004-search-history-scope.md))
+- [x] 검색 입력 훅을 `useSearchUrl` · `useMainSearch` · `useDetailSearch`로 나누고 페이지에서 조합, 검색하면 입력창도 공백을 지운 값으로 ([0052](adr/0052-search-hooks-split.md))
 
 ### Step 8. 찜하기 기능
 - [ ] 찜 store (Zustand + persist): 찜한 시점 데이터 스냅샷 저장
@@ -310,6 +317,7 @@ Figma `757:1435`(초기), `744:313`(목록)
 - [ ] `staleTime` 등 캐시 전략
 - [ ] 라우트 단위 코드 분할
 - [ ] 접근성 (`aria-expanded`, 키보드 조작)
+  - 상세 검색어가 비어 '검색하기'가 막힐 때 화면 낭독기에 알릴 방법 ([0051](adr/0051-detail-search-execution.md))
 - [ ] 빌드 / 린트 최종 점검
 - [ ] 아이콘 SVG 통일 ([0024](adr/0024-icon-component-props.md)): Figma API 한도로 받은 SVG마다 상자와 여백이 제각각이다 (Chevron은 20 상자 안 10.5×6, Close는 20 상자 안 11.67, Heart는 24 상자). 그래서 크기를 바꿔 쓸 때 시안과 1~4px씩 어긋난다 (상세보기 화살표 12.6×7.2, 버튼 안 내용 4px 왼쪽, 검색 기록 X 14px). 쓰는 크기별 원본 SVG를 다시 받아 상자 규칙을 맞춘다.
 

@@ -142,11 +142,26 @@ test.describe('도서 검색 페이지', () => {
     await expect(dialog).toHaveCount(0);
   });
 
-  test('검색하기를 누르면 팝업이 닫힌다', async ({ page }) => {
+  test('검색어를 넣고 검색하기를 누르면 팝업이 닫히고 포커스가 상세검색 버튼으로 돌아온다', async ({
+    page,
+  }) => {
     const dialog = await openPopup(page);
+    await dialog.getByRole('textbox', { name: '상세 검색어' }).fill('하루키');
     await dialog.getByRole('button', { name: '검색하기' }).click();
     await expect(dialog).toHaveCount(0);
     await expect(trigger(page)).toBeFocused();
+  });
+
+  test('검색어가 비어 있으면 검색하기를 눌러도 팝업이 열린 채 검색어 입력창으로 포커스가 간다', async ({
+    page,
+  }) => {
+    const dialog = await openPopup(page);
+    await dialog.getByRole('textbox', { name: '상세 검색어' }).fill('   ');
+    await dialog.getByRole('button', { name: '검색하기' }).click();
+
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('textbox', { name: '상세 검색어' })).toBeFocused();
+    await expect(page).toHaveURL('/');
   });
 
   test('좁은 화면에서는 팝업이 화면 안에 들어오도록 버튼 오른쪽 끝에 맞춘다', async ({ page }) => {
@@ -157,6 +172,128 @@ test.describe('도서 검색 페이지', () => {
     const popup = (await dialog.boundingBox())!;
     expect(popup.x).toBeGreaterThanOrEqual(16);
     expect(popup.x + popup.width).toBe(button.x + button.width);
+  });
+});
+
+test.describe('상세 검색 실행', () => {
+  const KEYWORD = '무라카미 하루키';
+  const PERSON_URL = `/?${new URLSearchParams({ query: KEYWORD, target: 'person' })}`;
+
+  function mainInput(page: Page) {
+    return page.getByRole('textbox', { name: '검색어', exact: true });
+  }
+
+  async function mainSearch(page: Page, query: string) {
+    await mainInput(page).fill(query);
+    await mainInput(page).press('Enter');
+  }
+
+  async function detailSearch(page: Page, targetLabel: string, keyword: string) {
+    const dialog = await openPopup(page);
+    const select = dialog.getByRole('combobox', { name: '검색 조건' });
+    if ((await select.textContent()) !== targetLabel) {
+      await select.click();
+      await dialog.getByRole('option', { name: targetLabel }).click();
+    }
+    await dialog.getByRole('textbox', { name: '상세 검색어' }).fill(keyword);
+    await dialog.getByRole('button', { name: '검색하기' }).click();
+    await expect(dialog).toHaveCount(0);
+  }
+
+  async function expectPopupDefault(page: Page, targetLabel: string, keyword: string) {
+    const dialog = await openPopup(page);
+    await expect(dialog.getByRole('combobox', { name: '검색 조건' })).toHaveText(targetLabel);
+    await expect(dialog.getByRole('textbox', { name: '상세 검색어' })).toHaveValue(keyword);
+    await page.keyboard.press('Escape');
+  }
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+  });
+
+  test('상세 검색하면 조건이 URL과 요청에 담기고, 전체 검색어를 비우고 결과를 보여준다', async ({
+    page,
+  }) => {
+    await mainSearch(page, KEYWORD);
+    await expect(page.getByText('총 866건')).toBeVisible();
+
+    const request = page.waitForRequest((req) => req.url().includes('dapi.kakao.com'));
+    await detailSearch(page, '저자명', KEYWORD);
+
+    expect(new URL((await request).url()).searchParams.get('target')).toBe('person');
+    await expect(page).toHaveURL(PERSON_URL);
+    await expect(mainInput(page)).toHaveValue('');
+    await expect(page.getByText('총 780건')).toBeVisible();
+    await expect(page.getByRole('article')).toHaveCount(10);
+  });
+
+  test('팝업을 다시 열면 실행 중인 상세 조건으로 시작한다', async ({ page }) => {
+    await detailSearch(page, '저자명', `  ${KEYWORD} `);
+
+    await expectPopupDefault(page, '저자명', KEYWORD);
+  });
+
+  test('상세 검색 뒤 전체 검색하면 상세 조건이 초기화된다', async ({ page }) => {
+    await detailSearch(page, '저자명', KEYWORD);
+    await expect(page.getByText('총 780건')).toBeVisible();
+
+    await mainSearch(page, KEYWORD);
+
+    await expect(page).toHaveURL(`/?${new URLSearchParams({ query: KEYWORD })}`);
+    await expect(page.getByText('총 866건')).toBeVisible();
+    await expectPopupDefault(page, '제목', '');
+  });
+
+  test('같은 조건으로 다시 상세 검색해도 쓰다 만 전체 검색어를 비운다', async ({ page }) => {
+    await detailSearch(page, '저자명', KEYWORD);
+    await mainInput(page).fill('노르웨이 숲');
+
+    await detailSearch(page, '저자명', KEYWORD);
+
+    await expect(mainInput(page)).toHaveValue('');
+  });
+
+  test('상세 검색끼리 뒤로가기하면 이전 조건과 결과로 돌아가고, 쓰다 만 전체 검색어를 비운다', async ({
+    page,
+  }) => {
+    await detailSearch(page, '저자명', KEYWORD);
+    await expect(page.getByText('총 780건')).toBeVisible();
+    await detailSearch(page, '출판사', '민음사');
+    await expect(page.getByText('검색된 결과가 없습니다.')).toBeVisible();
+    await mainInput(page).fill('노르웨이 숲');
+
+    await page.goBack();
+
+    await expect(page).toHaveURL(PERSON_URL);
+    await expect(page.getByText('총 780건')).toBeVisible();
+    await expect(mainInput(page)).toHaveValue('');
+    await expectPopupDefault(page, '저자명', KEYWORD);
+  });
+
+  test('전체 검색 뒤 상세 검색에서 뒤로가기하면 전체 검색어와 결과로 돌아간다', async ({
+    page,
+  }) => {
+    await mainSearch(page, KEYWORD);
+    await expect(page.getByText('총 866건')).toBeVisible();
+    await detailSearch(page, '저자명', KEYWORD);
+    await expect(page.getByText('총 780건')).toBeVisible();
+
+    await page.goBack();
+
+    await expect(page).toHaveURL(`/?${new URLSearchParams({ query: KEYWORD })}`);
+    await expect(mainInput(page)).toHaveValue(KEYWORD);
+    await expect(page.getByText('총 866건')).toBeVisible();
+    await expectPopupDefault(page, '제목', '');
+  });
+
+  test('상세 검색은 검색 기록에 남지 않는다', async ({ page }) => {
+    await mainSearch(page, '노르웨이 숲');
+    await detailSearch(page, '저자명', KEYWORD);
+
+    await mainInput(page).click();
+    await expect(page.getByRole('list', { name: '검색 기록' }).getByRole('listitem')).toHaveText([
+      '노르웨이 숲',
+    ]);
   });
 });
 

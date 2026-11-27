@@ -21,9 +21,14 @@ interface DetailSearchPanelProps {
 function DetailSearchPanel({ defaultValue, onSubmit, onClose, onTabOut }: DetailSearchPanelProps) {
   const [target, setTarget] = useState(defaultValue.target);
   const [keyword, setKeyword] = useState(defaultValue.keyword);
+  const keywordRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (keyword.trim() === '') {
+      keywordRef.current?.focus();
+      return;
+    }
     onClose();
     onSubmit({ target, keyword });
   };
@@ -44,6 +49,7 @@ function DetailSearchPanel({ defaultValue, onSubmit, onClose, onTabOut }: Detail
             autoFocus
           />
           <input
+            ref={keywordRef}
             type="text"
             value={keyword}
             onChange={(event) => setKeyword(event.target.value)}
