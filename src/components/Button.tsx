@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
-import type { ComponentPropsWithoutRef, ReactNode } from 'react';
+import type { ComponentPropsWithRef, ReactNode } from 'react';
 
-type ButtonVariant = 'primary' | 'secondary' | 'outline';
+type ButtonVariant = 'primary' | 'primary-small' | 'secondary' | 'outline';
 
 interface BaseProps {
   variant: ButtonVariant;
@@ -10,10 +10,10 @@ interface BaseProps {
 }
 
 type ButtonAsButton = BaseProps &
-  Omit<ComponentPropsWithoutRef<'button'>, keyof BaseProps> & { href?: never };
+  Omit<ComponentPropsWithRef<'button'>, keyof BaseProps> & { href?: never };
 
 type ButtonAsLink = BaseProps &
-  Omit<ComponentPropsWithoutRef<'a'>, keyof BaseProps> & { href: string };
+  Omit<ComponentPropsWithRef<'a'>, keyof BaseProps> & { href: string };
 
 export type ButtonProps = ButtonAsButton | ButtonAsLink;
 
@@ -22,6 +22,7 @@ const BASE_CLASS =
 
 const VARIANT_CLASS: Record<ButtonVariant, string> = {
   primary: 'h-12 text-caption bg-primary text-white',
+  'primary-small': 'h-9 text-body2 bg-primary text-white',
   secondary: 'h-12 text-caption bg-light-gray text-text-secondary',
   outline: 'h-9 text-body2 border border-text-subtitle text-text-subtitle',
 };

@@ -56,6 +56,29 @@ test('상세보기를 누르면 행이 펼쳐지고, 다시 누르면 접힌다'
   await expect(row.getByRole('heading', { name: '책 소개' })).toHaveCount(0);
 });
 
+test('키보드로 펼치고 접어도 포커스가 상세보기 버튼에 남는다', async ({ page }) => {
+  const row = await showBookRow(page, '노르웨이의 숲');
+  const toggle = row.getByRole('button', { name: '상세보기' });
+
+  await toggle.focus();
+  await page.keyboard.press('Enter');
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(toggle).toBeFocused();
+
+  await page.keyboard.press('Enter');
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(toggle).toBeFocused();
+});
+
+test('펼친 뒤 Tab을 누르면 펼친 내용의 찜하기로 이동한다', async ({ page }) => {
+  const row = await showBookRow(page, '노르웨이의 숲');
+
+  await row.getByRole('button', { name: '상세보기' }).focus();
+  await page.keyboard.press('Enter');
+  await page.keyboard.press('Tab');
+  await expect(row.getByRole('button', { name: '찜하기' })).toBeFocused();
+});
+
 test('접힌 행의 하트를 누르면 찜이 토글되고 행은 펼쳐지지 않는다', async ({ page }) => {
   const row = await showBookRow(page, '노르웨이의 숲');
   const heart = row.getByRole('button', { name: '찜하기' });
@@ -102,14 +125,6 @@ test('한글 조합 중에 Enter를 누르면 조합 중인 글자까지 한 번
   await expect(page.getByTestId('search-log')).toContainText('검색 1회: 무라카미 하루키');
 });
 
-test('상세검색 버튼을 누르면 상세검색 이벤트가 전달된다', async ({ page }) => {
-  await page
-    .getByRole('region', { name: 'SearchBox' })
-    .getByRole('button', { name: '상세검색' })
-    .click();
-  await expect(page.getByTestId('search-log')).toContainText('상세검색 1회');
-});
-
 test('좁은 화면에서도 버튼 글자는 줄바꿈되지 않는다', async ({ page }) => {
   for (const width of [375, 1920]) {
     await page.setViewportSize({ width, height: 900 });
@@ -122,4 +137,111 @@ test('좁은 화면에서도 버튼 글자는 줄바꿈되지 않는다', async 
       `${width}px`,
     ).toBe(true);
   }
+});
+
+test.describe('검색 기록 드롭다운', () => {
+  test('입력창에 포커스하면 열리고 Esc를 누르면 닫힌다', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: '검색어' });
+    const history = page.getByRole('list', { name: '검색 기록' });
+
+    await expect(history).toHaveCount(0);
+    await input.click();
+    await expect(history.getByRole('listitem')).toHaveText(['노르웨이 숲', '무라카미 하루키']);
+
+    await page.keyboard.press('Escape');
+    await expect(history).toHaveCount(0);
+    await expect(input).toBeFocused();
+
+    await input.click();
+    await expect(history).toBeVisible();
+  });
+
+  test('바깥을 누르거나 Tab으로 빠져나가면 닫힌다', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: '검색어' });
+    const history = page.getByRole('list', { name: '검색 기록' });
+
+    await input.click();
+    await page.getByRole('heading', { name: '도서 검색' }).click();
+    await expect(history).toHaveCount(0);
+
+    await input.click();
+    for (let i = 0; i < 4; i += 1) {
+      await page.keyboard.press('Tab');
+      await expect(history).toBeVisible();
+    }
+    await page.keyboard.press('Tab');
+    await expect(
+      page.getByRole('region', { name: 'SearchBox' }).getByRole('button', { name: '상세검색' }),
+    ).toBeFocused();
+    await expect(history).toHaveCount(0);
+  });
+
+  test('X를 누르면 그 기록만 지워지고 입력창에 포커스가 돌아온다', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: '검색어' });
+    const history = page.getByRole('list', { name: '검색 기록' });
+
+    await input.click();
+    await page.getByRole('button', { name: '노르웨이 숲 검색 기록 삭제' }).click();
+    await expect(history.getByRole('listitem')).toHaveText(['무라카미 하루키']);
+    await expect(input).toBeFocused();
+
+    await page.getByRole('button', { name: '무라카미 하루키 검색 기록 삭제' }).click();
+    await expect(history).toHaveCount(0);
+  });
+
+  test('X는 아이콘 크기만 누를 수 있고, 줄의 나머지는 어디를 눌러도 검색어를 고른다', async ({
+    page,
+  }) => {
+    await page.getByRole('textbox', { name: '검색어' }).click();
+    const history = page.getByRole('list', { name: '검색 기록' });
+    const row = history.getByRole('listitem').first();
+    const remove = page.getByRole('button', { name: '노르웨이 숲 검색 기록 삭제' });
+
+    const removeBox = (await remove.boundingBox())!;
+    expect([removeBox.width, removeBox.height]).toEqual([24, 24]);
+
+    // 줄 오른쪽 끝에서 2px 안쪽 — X 아이콘 바깥이다.
+    const rowBox = (await row.boundingBox())!;
+    await page.mouse.click(rowBox.x + rowBox.width - 2, rowBox.y + rowBox.height / 2);
+    await expect(page.getByTestId('search-log')).toContainText('검색 1회: 노르웨이 숲');
+  });
+
+  test('기록을 누르면 그 검색어로 검색하고 닫힌다', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: '검색어' });
+
+    await input.click();
+    await page.getByRole('button', { name: '무라카미 하루키', exact: true }).click();
+
+    await expect(input).toHaveValue('무라카미 하루키');
+    await expect(page.getByTestId('search-log')).toContainText('검색 1회: 무라카미 하루키');
+    await expect(page.getByRole('list', { name: '검색 기록' })).toHaveCount(0);
+    await expect(input).toBeFocused();
+  });
+
+  test('기록 줄에 마우스를 올리거나 키보드로 포커스하면 배경이 진해진다', async ({ page }) => {
+    await page.getByRole('textbox', { name: '검색어' }).click();
+    const rows = page.getByRole('list', { name: '검색 기록' }).getByRole('listitem');
+    const TRANSPARENT = 'rgba(0, 0, 0, 0)';
+    const GRAY = 'rgb(218, 218, 218)';
+
+    await expect(rows.nth(0)).toHaveCSS('background-color', TRANSPARENT);
+    await rows.nth(0).hover();
+    await expect(rows.nth(0)).toHaveCSS('background-color', GRAY);
+    await expect(rows.nth(1)).toHaveCSS('background-color', TRANSPARENT);
+
+    await page.mouse.move(0, 0);
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Tab');
+    await expect(rows.nth(1)).toHaveCSS('background-color', GRAY);
+  });
+
+  test('Enter로 검색하면 닫힌다', async ({ page }) => {
+    const input = page.getByRole('textbox', { name: '검색어' });
+
+    await input.fill('고양이');
+    await expect(page.getByRole('list', { name: '검색 기록' })).toBeVisible();
+    await input.press('Enter');
+    await expect(page.getByRole('list', { name: '검색 기록' })).toHaveCount(0);
+  });
 });

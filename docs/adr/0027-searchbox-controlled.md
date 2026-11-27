@@ -1,6 +1,6 @@
 # 0027. SearchBox의 검색어는 페이지가 관리하고, 좁은 화면에서는 입력창만 줄인다
 
-- 상태: 채택
+- 상태: 일부 폐기 (onDetailSearchClick → 0036)
 - 날짜: 2026-11-27
 - 관련 Step: Step 2, Step 5, Step 7
 

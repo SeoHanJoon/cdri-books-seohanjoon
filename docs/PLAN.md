@@ -175,7 +175,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 16 | 가이드 밖 시안 값 | 토큰 추가 | 시안 1:1 구현, 규칙 "실측 후 토큰 추가"와 일치 | ☑ 토큰 추가 ([0016](adr/0016-design-values-beyond-guide.md)) |
 | 17 | 아이콘 확보·사용 | Figma 직접 내보내기 + React 컴포넌트 | API 한도 초과, 아이콘 7개뿐이라 플러그인 불필요 | ☑ 직접 내보내기 + 컴포넌트 ([0017](adr/0017-icons-react-components.md)) |
 | 18 | Button 링크 처리 | `variant` + 스타일 함수 | 구매하기는 링크(`<a>`)여야 함 | ☑ `href` 유무로 `<a>`/`<button>` 분기 ([0018](adr/0018-button-href.md)) |
-| 19 | 책 컴포넌트 데이터 | 화면용 `Book` 타입 | 카카오 규칙(-1 등)을 변환 함수 한 곳에 가둠 | ☑ `Book` + 공통 props 확장 ([0019](adr/0019-book-view-type.md)) |
+| 19 | 책 컴포넌트 데이터 | 화면용 `Book` 타입 | 카카오 규칙(-1 등)을 변환 함수 한 곳에 가둠 | ☑ `Book` + 공통 props 확장 ([0019](adr/0019-book-view-type.md), props는 → [0032](adr/0032-book-list-item-single-component.md)) |
 | 20 | 공용 타입·이미지 위치 | `src/types/`, `src/assets/` | 여러 역할이 같이 쓰는 타입, import하는 이미지 | ☑ `src/types/`, `src/assets/` 추가 ([0020](adr/0020-folder-structure-types.md)) |
 | 21 | 가격·하트 동작 (미명시) | 할인가 우선, 할인가 없으면 원가만, 작은 하트는 표시만 | 실제 결제 가격, 취소선은 비교 시에만 의미 | ☑ 작은 하트도 찜 토글 ([0021](adr/0021-price-and-heart-behavior.md)) |
 | 22 | 공통 컴포넌트 확인 화면 | 개발용 `/dev/elements` | Elements와 비교, PR 영상, 운영 빌드 제외 | ☑ `/dev/elements` ([0022](adr/0022-dev-elements-page.md)) |
@@ -183,9 +183,17 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 24 | 아이콘 props | 색은 `className`으로 | 시안의 크기·색 조합 고정 | ☑ `size`만 받고 색은 내부, 작은 테두리 하트는 회색 ([0024](adr/0024-icon-component-props.md)) |
 | 25 | 클래스 이름 합치기 | clsx | 조건부 클래스가 여러 컴포넌트에 필요, 0.2KB | ☑ clsx ([0025](adr/0025-clsx.md)) |
 | 26 | Header 반응형 배치 | 넓은 화면은 시안 그대로 3단계 | 1024px쯤에서 로고와 탭이 겹침 | ☑ 3단계 + 탭 항상 가운데 ([0026](adr/0026-header-responsive.md)) |
-| 27 | SearchBox 검색어·배치 | 페이지가 관리, 좁은 화면은 입력창만 줄임 | URL 동기화·상세 검색 초기화를 페이지에서 처리 | ☑ 추천안 ([0027](adr/0027-searchbox-controlled.md)) |
+| 27 | SearchBox 검색어·배치 | 페이지가 관리, 좁은 화면은 입력창만 줄임 | URL 동기화·상세 검색 초기화를 페이지에서 처리 | ☑ 추천안 ([0027](adr/0027-searchbox-controlled.md), 상세검색 버튼은 → [0036](adr/0036-detail-search-component.md)) |
 | 28 | Button 여백 | 변형별 좌우 여백 | 덮어쓰기 없이 상세보기 아이콘을 넣기 위해 | ☑ 여백 없이 가운데, 너비는 쓰는 쪽 ([0028](adr/0028-button-no-padding.md)) |
 | 29 | 책 행 모바일 배치 | 세로로 쌓기 | 시안의 모든 요소 유지 | ☑ 세로로 쌓기 ([0029](adr/0029-book-row-responsive.md)) |
+| 30 | fixture 마련·화면 단계 상태 전환 | 실제 응답 저장, 검색어로 선택 | 실제 예외 값 포함, 세 상태 모두 시연 | ☑ 추천안 ([0030](adr/0030-fixture-real-response.md)) |
+| 31 | `Book.isbn` 값 | 13자리 → 10자리 → `url` | 책을 구별하는 값 하나, 비지 않음 | ☑ 추천안 ([0031](adr/0031-book-isbn-identifier.md)) |
+| 32 | 접힌 행·펼친 행 구조 | 두 컴포넌트 유지 + 포커스 이동 | 기존 props 유지 | ☑ 하나로 합침, 상세보기 버튼 맨 앞 ([0032](adr/0032-book-list-item-single-component.md)) |
+| 33 | 검색 기록 드롭다운 위치 | `SearchBox` 안 | 시안상 입력창과 한 상자 | ☑ 추천안 ([0033](adr/0033-search-history-dropdown.md)) |
+| 34 | 상세 검색 팝업·Select | 직접 구현 | Headless UI는 앱 JS +37% | ☑ 직접 구현 ([0034](adr/0034-detail-search-popover.md)) |
+| 35 | 책 목록·펼침 상태 위치 | `BookList` 컴포넌트 | 두 페이지 재사용, 검색어 바뀌면 초기화 | ☑ 추천안 ([0035](adr/0035-book-list-component.md)) |
+| 36 | 상세 검색 컴포넌트·두 입력창 관계 | 버튼+팝업 한 컴포넌트, 글자 안 옮김, 닫으면 버림 | 상호 초기화를 페이지 한 곳에서 | ☑ 추천안 ([0036](adr/0036-detail-search-component.md)) |
+| 37 | 본문 위치·좁은 화면 여백·잘린 책 소개 (미명시) | 가운데, 768px 미만 40px, 잘리면 "…" | 시안 프레임 불일치, 카카오가 250자에서 자름 | ☑ 추천안 ([0037](adr/0037-search-page-layout-and-contents.md)) |
 
 ---
 
@@ -228,23 +236,23 @@ Elements의 컴포넌트를 1:1로 화면 전용 컴포넌트로 만든다. 데�
 - [x] 좁은 화면 배치 — 컴포넌트별로 추천안 확인 후 구현 ([0023](adr/0023-responsive-mobile.md))
 - [x] 개발용 `/dev/elements` 확인 화면 + Playwright 테스트 ([0022](adr/0022-dev-elements-page.md))
 
-### Step 3. 화면 구성: 도서 검색 페이지
+### Step 3. 화면 구성: 도서 검색 페이지 ✅
 Figma `18:969`(초기), `18:805`(결과), `757:958`(검색 기록), `18:608`·`744:156`(상세 검색 팝업)
-- [ ] fixture: 카카오 응답 형식 JSON (`src/mocks/fixtures/`) — 결과 있음, 결과 없음
-- [ ] 카카오 응답 → `BookListItem` props 변환 함수 (Step 5에서 그대로 재사용)
-- [ ] 페이지 레이아웃: "도서 검색" 제목, `SearchBox`, `SearchCountText`, 결과 목록
-- [ ] 초기 / 결과 없음 상태 — `NoData`
-- [ ] 결과 목록: 행별 펼침(accordion), 구매하기 새 탭
-  - 여러 권을 동시에 펼칠 수 있다. 한 권만 펼치면 위쪽 행이 접히면서 누른 행이 위로 밀려 스크롤된 것처럼 보인다 (Step 2 `/dev/elements`에서 확인)
-  - 펼치고 접을 때 키보드 포커스를 상세보기 버튼에 유지한다. 지금은 `BookListItem`과 `BookListItemDetail`이 서로 바뀌면서 누른 버튼이 사라져 포커스가 `<body>`로 간다
-- [ ] 검색 기록 드롭다운 UI (입력창 포커스 시 표시, X 버튼) — 저장 로직 없음
-- [ ] 상세 검색 팝업 UI: Popover + 조건 Select(제목/저자명/출판사), 외부 클릭·Esc로 닫기 — 검색 실행 없음
+- [x] fixture: 카카오 응답 형식 JSON (`src/mocks/fixtures/`) — 결과 있음, 결과 없음 ([0030](adr/0030-fixture-real-response.md))
+- [x] 카카오 응답 → `BookListItem` props 변환 함수 (Step 5에서 그대로 재사용) ([0031](adr/0031-book-isbn-identifier.md))
+- [x] 페이지 레이아웃: "도서 검색" 제목, `SearchBox`, `SearchCountText`, 결과 목록
+- [x] 초기 / 결과 없음 상태 — `NoData`
+- [x] 결과 목록: 행별 펼침(accordion), 구매하기 새 탭 ([0035](adr/0035-book-list-component.md))
+  - 여러 권을 동시에 펼칠 수 있다. 새로 검색하면 펼침이 초기화된다
+  - 펼치고 접을 때 키보드 포커스를 상세보기 버튼에 유지한다. 접힌 행·펼친 행을 하나의 `BookListItem`으로 합쳐 버튼이 같은 요소로 남게 했다 ([0032](adr/0032-book-list-item-single-component.md))
+- [x] 검색 기록 드롭다운 UI (입력창 포커스 시 표시, X 버튼) — 저장 로직 없음, 페이지는 빈 기록 ([0033](adr/0033-search-history-dropdown.md))
+- [x] 상세 검색 팝업 UI: Popover + 조건 Select(제목/저자명/출판사), 외부 클릭·Esc로 닫기 — 검색 실행 없음 ([0034](adr/0034-detail-search-popover.md), [0036](adr/0036-detail-search-component.md))
 
 ### Step 4. 화면 구성: 내가 찜한 책 · NotFound 페이지
 Figma `757:1435`(초기), `744:313`(목록)
 - [ ] 페이지 레이아웃: "내가 찜한 책" 제목, `SearchCountText`("찜한 책"), 목록
 - [ ] 빈 상태 — `NoData`("찜한 책이 없습니다.")
-- [ ] 목록: Step 3과 같은 `BookListItem` 재사용 (fixture 데이터)
+- [ ] 목록: Step 3과 같은 `BookList` 재사용 (fixture 데이터, [0035](adr/0035-book-list-component.md))
 - [ ] NotFound 화면: Header 유지, `NoData` 재사용("존재하지 않는 페이지입니다.") + 도서 검색으로 돌아가는 버튼 — Figma에 없는 화면이라 기존 컴포넌트로 구성
 
 ### Step 5. API 연결
