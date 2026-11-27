@@ -207,7 +207,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 48 | MSW worker 파일 제공 | `msw/vite` 플러그인 | 저장소·운영 빌드에 파일 없음, 실행은 안정 API | ☑ 추천안 ([0048](adr/0048-msw-vite-plugin.md)) |
 | 49 | 도서 검색 페이지 구조 | 훅 1 + 컴포넌트 2 | 한 컴포넌트의 네 가지 일 분리, 목록 끝 처리는 Step 8 재사용 | ☑ 추천안 ([0049](adr/0049-search-page-split.md), 입력 훅은 → [0052](adr/0052-search-hooks-split.md)) |
 | 50 | 검색 기록 저장 시점·중복·탭 동기화 (미명시) | 실행마다 맨 앞, 완전 일치, `storage` 이벤트 | 사용자가 실행한 검색만 남김, 탭끼리 덮어쓰지 않음 | ☑ 추천안 ([0050](adr/0050-search-history-store.md)) |
-| 51 | 상세 검색 빈 검색어·개발 데이터·로직 위치 | 초기 화면으로, 실제 저자명 응답, `useSearchInput` | 전체 검색과 같은 규칙, 조건별 결과 시연, 상호 초기화 한 곳 | ☑ 빈 검색어는 팝업 유지, 나머지 추천안 ([0051](adr/0051-detail-search-execution.md)) |
+| 51 | 상세 검색 빈 검색어·개발 데이터·로직 위치 | 초기 화면으로, 실제 저자명 응답, `useSearchInput` | 전체 검색과 같은 규칙, 조건별 결과 시연, 상호 초기화 한 곳 | ☑ 빈 검색어는 팝업 유지, 나머지 추천안 ([0051](adr/0051-detail-search-execution.md), 로직 위치는 → [0052](adr/0052-search-hooks-split.md)) |
 | 52 | 검색 입력 훅 나누기·검색 후 입력창 글자 | 훅 3개(URL·전체·상세), 조합은 페이지 / URL 값으로 맞춤 | 훅마다 일 하나, 상호 초기화가 페이지에 보임 | ☑ 추천안 ([0052](adr/0052-search-hooks-split.md)) |
 
 ---
@@ -317,6 +317,7 @@ Figma `757:1435`(초기), `744:313`(목록)
 - [ ] `staleTime` 등 캐시 전략
 - [ ] 라우트 단위 코드 분할
 - [ ] 접근성 (`aria-expanded`, 키보드 조작)
+  - 상세 검색어가 비어 '검색하기'가 막힐 때 화면 낭독기에 알릴 방법 ([0051](adr/0051-detail-search-execution.md))
 - [ ] 빌드 / 린트 최종 점검
 - [ ] 아이콘 SVG 통일 ([0024](adr/0024-icon-component-props.md)): Figma API 한도로 받은 SVG마다 상자와 여백이 제각각이다 (Chevron은 20 상자 안 10.5×6, Close는 20 상자 안 11.67, Heart는 24 상자). 그래서 크기를 바꿔 쓸 때 시안과 1~4px씩 어긋난다 (상세보기 화살표 12.6×7.2, 버튼 안 내용 4px 왼쪽, 검색 기록 X 14px). 쓰는 크기별 원본 SVG를 다시 받아 상자 규칙을 맞춘다.
 
