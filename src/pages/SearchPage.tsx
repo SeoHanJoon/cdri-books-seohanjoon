@@ -1,19 +1,19 @@
 import { useState } from 'react';
-import { useSearchParams } from 'react-router';
 
 import { BOOK_PAGE_SIZE } from '@/api/kakaoBook';
 import { BookList } from '@/components/BookList';
 import { BookListSkeleton } from '@/components/BookListSkeleton';
 import { DetailSearch } from '@/components/DetailSearch';
 import { ErrorMessage } from '@/components/ErrorMessage';
+import { LoadMoreFooter } from '@/components/LoadMoreFooter';
 import { NoData } from '@/components/NoData';
 import { SearchBox } from '@/components/SearchBox';
 import { SearchCountText } from '@/components/SearchCountText';
 import { useBookSearch } from '@/hooks/useBookSearch';
-import { useInView } from '@/hooks/useInView';
-import { parseSearchParams, toSearchParams } from '@/lib/searchParams';
+import { useSearchInput } from '@/hooks/useSearchInput';
+import { toSearchParams } from '@/lib/searchParams';
 import { NotFoundPage } from '@/pages/NotFoundPage';
-import type { DetailSearchCondition } from '@/types/search';
+import type { BookSearch, DetailSearchCondition } from '@/types/search';
 
 const isLiked = () => false;
 const ignoreToggleLike = () => {};
@@ -22,53 +22,81 @@ const ignoreHistory = () => {};
 const EMPTY_DETAIL_SEARCH: DetailSearchCondition = { target: 'title', keyword: '' };
 const ignoreDetailSearch = () => {};
 
-export function SearchPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const parsed = parseSearchParams(searchParams);
-  const search = parsed.status === 'ready' ? parsed.search : null;
-  const urlQuery = search && !search.target ? search.query : '';
+interface SearchResultsProps {
+  search: BookSearch | null;
+}
 
-  const [query, setQuery] = useState(urlQuery);
-  const [syncedQuery, setSyncedQuery] = useState(urlQuery);
-  const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
-  if (syncedQuery !== urlQuery) {
-    setSyncedQuery(urlQuery);
-    if (urlQuery === submittedQuery) setSubmittedQuery(null);
-    else setQuery(urlQuery);
-  }
-
+function SearchResults({ search }: SearchResultsProps) {
   const {
     data,
-    status,
     isFetching,
+    isError,
     hasNextPage,
     isFetchingNextPage,
     isFetchNextPageError,
     fetchNextPage,
     refetch,
   } = useBookSearch(search);
-  const isLoadingFirstPage =
-    search !== null && (status === 'pending' || (status === 'error' && !data && isFetching));
-  const isFirstPageError = status === 'error' && !data && !isFetching;
+  const isLoadingFirstPage = !data && isFetching;
 
   const [shownCount, setShownCount] = useState(0);
   const currentCount = isLoadingFirstPage ? null : (data?.totalCount ?? 0);
   if (currentCount !== null && currentCount !== shownCount) setShownCount(currentCount);
 
-  const loadMoreRef = useInView(() => void fetchNextPage());
-  const canLoadMore = hasNextPage && !isFetchingNextPage && !isFetchNextPageError;
-
-  if (parsed.status === 'invalid') return <NotFoundPage />;
-
-  const submit = () => {
-    const trimmed = query.trim();
-    const next = trimmed === '' ? new URLSearchParams() : toSearchParams({ query: trimmed });
-    if (next.toString() === searchParams.toString()) return;
-    setSubmittedQuery(trimmed);
-    setSearchParams(next);
+  const renderList = () => {
+    if (isLoadingFirstPage) {
+      return (
+        <div className="mt-8">
+          <BookListSkeleton count={BOOK_PAGE_SIZE} />
+        </div>
+      );
+    }
+    if (!data && isError) {
+      return (
+        <div className="mt-30">
+          <ErrorMessage message="검색 결과를 불러오지 못했습니다." onRetry={() => void refetch()} />
+        </div>
+      );
+    }
+    if (!data || data.books.length === 0) {
+      return (
+        <div className="mt-30">
+          <NoData message="검색된 결과가 없습니다." />
+        </div>
+      );
+    }
+    return (
+      <div className="mt-8">
+        <BookList
+          key={search ? toSearchParams(search).toString() : ''}
+          books={data.books}
+          isLiked={isLiked}
+          onToggleLike={ignoreToggleLike}
+        />
+        <LoadMoreFooter
+          hasNextPage={hasNextPage}
+          isLoading={isFetchingNextPage}
+          isError={isFetchNextPageError}
+          onLoadMore={() => void fetchNextPage()}
+        />
+      </div>
+    );
   };
 
-  const books = data?.books ?? [];
+  return (
+    <>
+      <div className="mt-6.25">
+        <SearchCountText label="도서 검색 결과" count={currentCount ?? shownCount} />
+      </div>
+      {renderList()}
+    </>
+  );
+}
+
+export function SearchPage() {
+  const { parsed, query, setQuery, submit } = useSearchInput();
+
+  if (parsed.status === 'invalid') return <NotFoundPage />;
 
   return (
     <div className="pt-10 pb-40 md:pt-26">
@@ -83,41 +111,7 @@ export function SearchPage() {
         onHistorySelect={ignoreHistory}
         onHistoryRemove={ignoreHistory}
       />
-      <div className="mt-6.25">
-        <SearchCountText label="도서 검색 결과" count={currentCount ?? shownCount} />
-      </div>
-      {isLoadingFirstPage ? (
-        <div className="mt-8">
-          <BookListSkeleton count={BOOK_PAGE_SIZE} />
-        </div>
-      ) : isFirstPageError ? (
-        <div className="mt-30">
-          <ErrorMessage message="검색 결과를 불러오지 못했습니다." onRetry={() => void refetch()} />
-        </div>
-      ) : books.length > 0 ? (
-        <div className="mt-8">
-          <BookList
-            key={search ? toSearchParams(search).toString() : ''}
-            books={books}
-            isLiked={isLiked}
-            onToggleLike={ignoreToggleLike}
-          />
-          {isFetchingNextPage && <BookListSkeleton count={1} />}
-          {isFetchNextPageError && !isFetchingNextPage && (
-            <div className="mt-8">
-              <ErrorMessage
-                message="다음 목록을 불러오지 못했습니다."
-                onRetry={() => void fetchNextPage()}
-              />
-            </div>
-          )}
-          {canLoadMore && <div ref={loadMoreRef} />}
-        </div>
-      ) : (
-        <div className="mt-30">
-          <NoData message="검색된 결과가 없습니다." />
-        </div>
-      )}
+      <SearchResults search={parsed.status === 'ready' ? parsed.search : null} />
     </div>
   );
 }
