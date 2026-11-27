@@ -330,7 +330,7 @@ Figma `757:1435`(초기), `744:313`(목록)
 - [ ] 라우트 단위 코드 분할
 - [ ] 접근성 (`aria-expanded`, 키보드 조작)
   - 상세 검색어가 비어 '검색하기'가 막힐 때 화면 낭독기에 알릴 방법 ([0051](adr/0051-detail-search-execution.md))
-- [ ] 개발용 `/dev/elements` 화면 제거, 그 테스트를 실제 페이지로 옮김 ([0060](adr/0060-remove-dev-elements-page.md))
+- [x] 개발용 `/dev/elements` 화면 제거, 그 테스트를 실제 페이지로 옮김 ([0060](adr/0060-remove-dev-elements-page.md))
 - [ ] 빌드 / 린트 최종 점검
 - [ ] 아이콘 SVG 통일 ([0024](adr/0024-icon-component-props.md)): Figma API 한도로 받은 SVG마다 상자와 여백이 제각각이다 (Chevron은 20 상자 안 10.5×6, Close는 20 상자 안 11.67, Heart는 24 상자). 그래서 크기를 바꿔 쓸 때 시안과 1~4px씩 어긋난다 (상세보기 화살표 12.6×7.2, 버튼 안 내용 4px 왼쪽, 검색 기록 X 14px). 쓰는 크기별 원본 SVG를 다시 받아 상자 규칙을 맞춘다.
 

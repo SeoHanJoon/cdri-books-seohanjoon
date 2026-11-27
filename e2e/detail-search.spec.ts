@@ -286,6 +286,28 @@ test.describe('상세 검색 실행', () => {
     await expectPopupDefault(page, '제목', '');
   });
 
+  test('상세 검색어 입력창에서 Enter를 누르면 검색한다', async ({ page }) => {
+    const dialog = await openPopup(page);
+    const input = dialog.getByRole('textbox', { name: '상세 검색어' });
+    await input.fill('민음사');
+    await input.press('Enter');
+
+    await expect(dialog).toHaveCount(0);
+    await expect(page).toHaveURL(`/?${new URLSearchParams({ query: '민음사', target: 'title' })}`);
+  });
+
+  test('검색하지 않고 닫으면 쓰던 내용은 버리고, 다시 열면 실행 중인 조건으로 시작한다', async ({
+    page,
+  }) => {
+    await detailSearch(page, '출판사', '민음사');
+
+    const dialog = await openPopup(page);
+    await dialog.getByRole('textbox', { name: '상세 검색어' }).fill('문학동네');
+    await page.keyboard.press('Escape');
+
+    await expectPopupDefault(page, '출판사', '민음사');
+  });
+
   test('상세 검색은 검색 기록에 남지 않는다', async ({ page }) => {
     await mainSearch(page, '노르웨이 숲');
     await detailSearch(page, '저자명', KEYWORD);
@@ -294,59 +316,5 @@ test.describe('상세 검색 실행', () => {
     await expect(page.getByRole('list', { name: '검색 기록' }).getByRole('listitem')).toHaveText([
       '노르웨이 숲',
     ]);
-  });
-});
-
-test.describe('검색 조건 전달 (/dev/elements)', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/dev/elements');
-  });
-
-  function devTrigger(page: Page) {
-    return page
-      .getByRole('region', { name: 'SearchBox' })
-      .getByRole('button', { name: '상세검색' });
-  }
-
-  test('검색하기를 누르면 고른 조건과 검색어를 전달한다', async ({ page }) => {
-    await devTrigger(page).click();
-    const dialog = page.getByRole('dialog', { name: '상세 검색' });
-    await dialog.getByRole('combobox', { name: '검색 조건' }).click();
-    await dialog.getByRole('option', { name: '저자명' }).click();
-    await dialog.getByRole('textbox', { name: '상세 검색어' }).fill('하루키');
-    await dialog.getByRole('button', { name: '검색하기' }).click();
-
-    await expect(page.getByTestId('search-log')).toContainText('상세검색 1회: person=하루키');
-  });
-
-  test('상세 검색어 입력창에서 Enter를 누르면 검색한다', async ({ page }) => {
-    await devTrigger(page).click();
-    const input = page.getByRole('dialog').getByRole('textbox', { name: '상세 검색어' });
-    await input.fill('민음사');
-    await input.press('Enter');
-
-    await expect(page.getByRole('dialog')).toHaveCount(0);
-    await expect(page.getByTestId('search-log')).toContainText('상세검색 1회: title=민음사');
-  });
-
-  test('다시 열면 넘겨받은 조건으로 시작하고, 검색하지 않고 닫으면 쓰던 내용은 버린다', async ({
-    page,
-  }) => {
-    const dialog = page.getByRole('dialog');
-
-    await devTrigger(page).click();
-    await dialog.getByRole('combobox', { name: '검색 조건' }).click();
-    await dialog.getByRole('option', { name: '출판사' }).click();
-    await dialog.getByRole('textbox', { name: '상세 검색어' }).fill('민음사');
-    await dialog.getByRole('button', { name: '검색하기' }).click();
-
-    await devTrigger(page).click();
-    await expect(dialog.getByRole('combobox', { name: '검색 조건' })).toHaveText('출판사');
-    await expect(dialog.getByRole('textbox', { name: '상세 검색어' })).toHaveValue('민음사');
-
-    await dialog.getByRole('textbox', { name: '상세 검색어' }).fill('문학동네');
-    await page.keyboard.press('Escape');
-    await devTrigger(page).click();
-    await expect(dialog.getByRole('textbox', { name: '상세 검색어' })).toHaveValue('민음사');
   });
 });

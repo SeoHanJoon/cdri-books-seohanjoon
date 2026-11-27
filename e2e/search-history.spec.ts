@@ -87,6 +87,10 @@ test('X를 누르면 그 검색어만 지운다', async ({ page }) => {
   await page.getByRole('button', { name: '노르웨이 숲 검색 기록 삭제' }).click();
 
   await expect(historyList(page).getByRole('listitem')).toHaveText(['무라카미 하루키']);
+  await expect(searchInput(page)).toBeFocused();
+
+  await page.getByRole('button', { name: '무라카미 하루키 검색 기록 삭제' }).click();
+  await expect(historyList(page)).toHaveCount(0);
 });
 
 test('기록을 누르면 그 검색어로 다시 검색하고 맨 앞으로 옮긴다', async ({ page }) => {
@@ -99,6 +103,7 @@ test('기록을 누르면 그 검색어로 다시 검색하고 맨 앞으로 옮
 
   await expect(historyList(page)).toHaveCount(0);
   await expect(searchInput(page)).toHaveValue('무라카미 하루키');
+  await expect(searchInput(page)).toBeFocused();
   await expect(page).toHaveURL(/query=%EB%AC%B4%EB%9D%BC%EC%B9%B4%EB%AF%B8/);
   await expect(page.getByText('총 866건')).toBeVisible();
 
@@ -148,4 +153,85 @@ test('다른 탭에서 검색한 기록도 이어서 쌓인다', async ({ page, 
     '무라카미 하루키',
     '노르웨이 숲',
   ]);
+});
+
+test.describe('드롭다운', () => {
+  test.beforeEach(async ({ page }) => {
+    await search(page, '무라카미 하루키');
+    await search(page, '노르웨이 숲');
+  });
+
+  test('입력창을 누르면 열리고 Esc를 누르면 닫힌다', async ({ page }) => {
+    await expect(historyList(page)).toHaveCount(0);
+    await searchInput(page).click();
+    await expect(historyList(page).getByRole('listitem')).toHaveText([
+      '노르웨이 숲',
+      '무라카미 하루키',
+    ]);
+
+    await page.keyboard.press('Escape');
+    await expect(historyList(page)).toHaveCount(0);
+    await expect(searchInput(page)).toBeFocused();
+
+    await searchInput(page).click();
+    await expect(historyList(page)).toBeVisible();
+  });
+
+  test('바깥을 누르거나 Tab으로 빠져나가면 닫힌다', async ({ page }) => {
+    await openHistory(page);
+    await page.getByRole('heading', { name: '도서 검색' }).click();
+    await expect(historyList(page)).toHaveCount(0);
+
+    await openHistory(page);
+    for (let i = 0; i < 4; i += 1) {
+      await page.keyboard.press('Tab');
+      await expect(historyList(page)).toBeVisible();
+    }
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('button', { name: '상세검색' })).toBeFocused();
+    await expect(historyList(page)).toHaveCount(0);
+  });
+
+  test('Enter로 검색하면 닫힌다', async ({ page }) => {
+    await openHistory(page);
+    await searchInput(page).fill('고양이');
+    await expect(historyList(page)).toBeVisible();
+    await searchInput(page).press('Enter');
+    await expect(historyList(page)).toHaveCount(0);
+  });
+
+  test('X는 아이콘 크기만 누를 수 있고, 줄의 나머지는 어디를 눌러도 검색어를 고른다', async ({
+    page,
+  }) => {
+    await openHistory(page);
+    const row = historyList(page).getByRole('listitem').last();
+    const remove = page.getByRole('button', { name: '무라카미 하루키 검색 기록 삭제' });
+
+    const removeBox = (await remove.boundingBox())!;
+    expect([removeBox.width, removeBox.height]).toEqual([24, 24]);
+
+    // 줄 오른쪽 끝에서 2px 안쪽 — X 아이콘 바깥이다.
+    const rowBox = (await row.boundingBox())!;
+    await page.mouse.click(rowBox.x + rowBox.width - 2, rowBox.y + rowBox.height / 2);
+    await expect(searchInput(page)).toHaveValue('무라카미 하루키');
+    await expect(page.getByText('총 866건')).toBeVisible();
+  });
+
+  test('기록 줄에 마우스를 올리거나 키보드로 포커스하면 배경이 진해진다', async ({ page }) => {
+    await openHistory(page);
+    const rows = historyList(page).getByRole('listitem');
+    const TRANSPARENT = 'rgba(0, 0, 0, 0)';
+    const GRAY = 'rgb(218, 218, 218)';
+
+    await expect(rows.nth(0)).toHaveCSS('background-color', TRANSPARENT);
+    await rows.nth(0).hover();
+    await expect(rows.nth(0)).toHaveCSS('background-color', GRAY);
+    await expect(rows.nth(1)).toHaveCSS('background-color', TRANSPARENT);
+
+    await page.mouse.move(0, 0);
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Tab');
+    await expect(rows.nth(1)).toHaveCSS('background-color', GRAY);
+  });
 });
