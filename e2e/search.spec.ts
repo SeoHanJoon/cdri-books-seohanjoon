@@ -76,3 +76,40 @@ test('검색 기록이 없으면 입력창에 포커스해도 드롭다운이 �
   await page.getByRole('textbox', { name: '검색어' }).click();
   await expect(page.getByRole('list', { name: '검색 기록' })).toHaveCount(0);
 });
+
+test('잘린 책 소개는 끝에 말줄임표를 붙인다', async ({ page }) => {
+  await search(page, '무라카미 하루키');
+  const row = bookRow(page, '1Q84 1');
+  await row.getByRole('button', { name: '상세보기' }).click();
+
+  await expect(row.getByText(/다른 세계…$/)).toBeVisible();
+});
+
+test('제목 위 여백은 넓은 화면 104px, 좁은 화면 40px이다', async ({ page }) => {
+  for (const [width, gap] of [
+    [1920, 104],
+    [375, 40],
+  ]) {
+    await page.setViewportSize({ width, height: 800 });
+    const header = (await page.getByRole('banner').boundingBox())!;
+    const title = (await page.getByRole('heading', { name: '도서 검색' }).boundingBox())!;
+    expect(title.y - (header.y + header.height), `${width}px`).toBe(gap);
+  }
+});
+
+test('누를 수 있는 버튼은 손가락 모양 커서를 보여준다', async ({ page }) => {
+  await search(page, '무라카미 하루키');
+  await page.getByRole('button', { name: '상세검색' }).click();
+
+  const targets = [
+    page.getByRole('button', { name: '상세보기' }).first(),
+    page.getByRole('button', { name: '찜하기' }).first(),
+    page.getByRole('link', { name: '구매하기' }).first(),
+    page.getByRole('combobox', { name: '검색 조건' }),
+    page.getByRole('button', { name: '검색하기' }),
+    page.getByRole('button', { name: '상세 검색 닫기' }),
+  ];
+  for (const target of targets) {
+    await expect(target).toHaveCSS('cursor', 'pointer');
+  }
+});

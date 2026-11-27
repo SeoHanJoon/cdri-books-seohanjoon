@@ -25,7 +25,7 @@ export function SearchPage() {
   const books = response?.documents.map(toBook) ?? [];
 
   return (
-    <div className="pt-26 pb-40">
+    <div className="pt-10 pb-40 md:pt-26">
       <SearchBox
         value={query}
         onValueChange={setQuery}

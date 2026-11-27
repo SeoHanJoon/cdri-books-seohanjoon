@@ -30,6 +30,15 @@ function pickIsbn(isbn: string): string | undefined {
   return parts.find((part) => part.length === 13) ?? parts.find((part) => part.length === 10);
 }
 
+// 카카오는 책 소개를 250자 안팎에서 문장 중간에 자른다. 문장 끝 부호로 끝나지 않으면 잘린 것으로 보고 말줄임표를 붙인다.
+const SENTENCE_END = /[.!?。…"'”’」』)]$/;
+
+function formatContents(contents: string): string {
+  const trimmed = contents.trimEnd();
+  if (trimmed === '' || SENTENCE_END.test(trimmed)) return trimmed;
+  return `${trimmed}…`;
+}
+
 export function toBook(document: KakaoBookDocument): Book {
   return {
     isbn: pickIsbn(document.isbn) ?? document.url,
@@ -40,6 +49,6 @@ export function toBook(document: KakaoBookDocument): Book {
     // 카카오는 할인가가 없으면 -1을 준다.
     salePrice: document.sale_price < 0 ? null : document.sale_price,
     url: document.url,
-    contents: document.contents,
+    contents: formatContents(document.contents),
   };
 }
