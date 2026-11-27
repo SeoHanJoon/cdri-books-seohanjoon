@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { BookListItem } from '@/components/BookListItem';
+import { BookListItem } from '@/components/book/BookListItem';
 import type { Book } from '@/types/book';
 
 interface BookListProps {

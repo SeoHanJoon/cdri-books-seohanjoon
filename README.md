@@ -97,10 +97,13 @@ MSW가 실제 카카오 응답을 저장해 둔 데이터를 돌려줍니다. �
 
 ```
 src/
-├── app/          # 앱 조립: 라우터, QueryClient, 공통 레이아웃(Header + 본문)
+├── app/          # 앱 조립: 라우터, QueryClient, 공통 레이아웃(RootLayout·Header)
 ├── pages/        # 라우트 화면: SearchPage, WishlistPage, NotFoundPage
-├── components/   # 재사용 UI: BookList·BookListItem, SearchBox, DetailSearch, Select, Button …
-│   └── icons/    # Figma에서 내보낸 아이콘 React 컴포넌트
+├── components/   # 재사용 UI
+│   ├── ui/       # 디자인 기본 요소: Button, Select, icons/(Figma에서 내보낸 아이콘)
+│   ├── book/     # 책 목록: BookList·BookListItem, 스켈레톤, 목록 끝(LoadMoreFooter)
+│   ├── search/   # 검색 입력: SearchBox, DetailSearch
+│   └── feedback/ # 결과 상태 안내: NoData, ErrorMessage, CountText(총 N건)
 ├── hooks/        # 화면 로직: 검색 URL·입력, 도서 검색 쿼리, 찜, 무한 스크롤 감지
 ├── api/          # 카카오 API 호출과 응답 → 화면용 타입 변환
 ├── stores/       # Zustand store: 찜 목록, 검색 기록 (localStorage 저장)
@@ -147,11 +150,11 @@ flowchart LR
 
 | 컴포넌트                                                          | 재사용 방식                                                                                                                |
 | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| [`BookList`](src/components/BookList.tsx) · [`BookListItem`](src/components/BookListItem.tsx) | 도서 검색과 찜 페이지가 같이 씁니다. 책 목록·찜 여부·찜 토글만 받고, 어떤 행이 펼쳐졌는지는 `BookList`가 스스로 관리합니다 |
-| [`LoadMoreFooter`](src/components/LoadMoreFooter.tsx) + [`useInView`](src/hooks/useInView.ts) | 목록 끝이 보이면 `onLoadMore`를 부릅니다. 검색은 다음 API 페이지를, 찜은 [`usePagedList`](src/hooks/usePagedList.ts)로 다음 10권을 넘겨 같은 컴포넌트로 무한 스크롤합니다 |
-| [`SearchBox`](src/components/SearchBox.tsx)                       | 입력 글자와 검색 기록을 props로 받는 제어 컴포넌트입니다. 상세 검색 버튼은 `detailSearch` 자리로 받아 서로 모르게 했습니다    |
-| [`Select`](src/components/Select.tsx)                             | 값 타입을 제네릭으로 받아 `SearchTarget` 밖의 값을 고를 수 없습니다                                                         |
-| [`Button`](src/components/Button.tsx)                             | `variant` 세 가지. `href`가 있으면 링크로 그려 구매하기(새 탭)와 앱 안 이동을 한 컴포넌트로 처리합니다                       |
+| [`BookList`](src/components/book/BookList.tsx) · [`BookListItem`](src/components/book/BookListItem.tsx) | 도서 검색과 찜 페이지가 같이 씁니다. 책 목록·찜 여부·찜 토글만 받고, 어떤 행이 펼쳐졌는지는 `BookList`가 스스로 관리합니다 |
+| [`LoadMoreFooter`](src/components/book/LoadMoreFooter.tsx) + [`useInView`](src/hooks/useInView.ts) | 목록 끝이 보이면 `onLoadMore`를 부릅니다. 검색은 다음 API 페이지를, 찜은 [`usePagedList`](src/hooks/usePagedList.ts)로 다음 10권을 넘겨 같은 컴포넌트로 무한 스크롤합니다 |
+| [`SearchBox`](src/components/search/SearchBox.tsx)                       | 입력 글자와 검색 기록을 props로 받는 제어 컴포넌트입니다. 상세 검색 버튼은 `detailSearch` 자리로 받아 서로 모르게 했습니다    |
+| [`Select`](src/components/ui/Select.tsx)                             | 값 타입을 제네릭으로 받아 `SearchTarget` 밖의 값을 고를 수 없습니다                                                         |
+| [`Button`](src/components/ui/Button.tsx)                             | `variant` 네 가지. `href`가 있으면 링크로 그려 구매하기(새 탭)와 앱 안 이동을 한 컴포넌트로 처리합니다                       |
 
 ### 찜과 검색 기록
 

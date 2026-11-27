@@ -1,9 +1,9 @@
 import { clsx } from 'clsx';
 import { memo, type ReactNode, useId } from 'react';
 
-import { Button } from '@/components/Button';
-import { ChevronIcon } from '@/components/icons/ChevronIcon';
-import { HeartIcon } from '@/components/icons/HeartIcon';
+import { Button } from '@/components/ui/Button';
+import { ChevronIcon } from '@/components/ui/icons/ChevronIcon';
+import { HeartIcon } from '@/components/ui/icons/HeartIcon';
 import { formatPrice, getFinalPrice } from '@/lib/price';
 import type { Book } from '@/types/book';
 

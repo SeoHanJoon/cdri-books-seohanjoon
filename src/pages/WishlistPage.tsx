@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import { BookList } from '@/components/BookList';
-import { LoadMoreFooter } from '@/components/LoadMoreFooter';
-import { NoData } from '@/components/NoData';
-import { SearchCountText } from '@/components/SearchCountText';
+import { BookList } from '@/components/book/BookList';
+import { LoadMoreFooter } from '@/components/book/LoadMoreFooter';
+import { NoData } from '@/components/feedback/NoData';
+import { CountText } from '@/components/feedback/CountText';
 import { usePagedList } from '@/hooks/usePagedList';
 import { useWishlist } from '@/hooks/useWishlist';
 import { mergeShownBooks } from '@/lib/wishlist';
@@ -23,7 +23,7 @@ export function WishlistPage() {
     <div className="pt-10 pb-40 md:pt-26">
       <h1 className="text-title2 text-text-primary">내가 찜한 책</h1>
       <div className="mt-5">
-        <SearchCountText label="찜한 책" count={wishlist.books.length} />
+        <CountText label="찜한 책" count={wishlist.books.length} />
       </div>
       {mergedBooks.length > 0 ? (
         <div className="mt-8">

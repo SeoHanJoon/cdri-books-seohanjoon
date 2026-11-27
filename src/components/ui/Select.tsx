@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 import { type KeyboardEvent, useId, useRef, useState } from 'react';
 
-import { ChevronIcon } from '@/components/icons/ChevronIcon';
+import { ChevronIcon } from '@/components/ui/icons/ChevronIcon';
 
 export interface SelectOption<T extends string> {
   value: T;

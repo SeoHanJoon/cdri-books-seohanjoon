@@ -1,8 +1,8 @@
 import { type SubmitEvent, useEffect, useId, useRef, useState } from 'react';
 
-import { Button } from '@/components/Button';
-import { CloseIcon } from '@/components/icons/CloseIcon';
-import { Select, type SelectOption } from '@/components/Select';
+import { Button } from '@/components/ui/Button';
+import { CloseIcon } from '@/components/ui/icons/CloseIcon';
+import { Select, type SelectOption } from '@/components/ui/Select';
 import type { DetailSearchCondition, SearchTarget } from '@/types/search';
 
 const TARGET_OPTIONS: readonly SelectOption<SearchTarget>[] = [

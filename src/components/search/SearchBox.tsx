@@ -8,8 +8,8 @@ import {
   useState,
 } from 'react';
 
-import { CloseIcon } from '@/components/icons/CloseIcon';
-import { SearchIcon } from '@/components/icons/SearchIcon';
+import { CloseIcon } from '@/components/ui/icons/CloseIcon';
+import { SearchIcon } from '@/components/ui/icons/SearchIcon';
 
 interface SearchBoxProps {
   value: string;
