@@ -8,7 +8,6 @@ export class KakaoApiError extends Error {
   }
 }
 
-// 카카오 에러 응답은 { errorType, message } 형식이다.
 async function readErrorMessage(response: Response): Promise<string> {
   const body = (await response.json().catch(() => null)) as { message?: unknown } | null;
   return typeof body?.message === 'string'

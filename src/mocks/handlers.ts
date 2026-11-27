@@ -9,7 +9,6 @@ export const SLOW_QUERY = '느린 검색';
 export const NEXT_PAGE_ERROR_QUERY = '다음 페이지 에러';
 const SLOW_DELAY_MS = 3000;
 
-// 카카오는 target의 대소문자를 가리지 않고, 허용되지 않은 값은 에러 없이 무시하고 전체 검색을 한다.
 const KAKAO_TARGETS = new Set(['title', 'person', 'publisher']);
 
 export const handlers = [

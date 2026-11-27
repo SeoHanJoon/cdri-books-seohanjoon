@@ -17,7 +17,6 @@ export function getSearchFixture(query: string, page = 1): KakaoBookSearchRespon
   const pages = FIXTURE_PAGES.get(query.trim());
   const response = pages?.[page - 1];
   if (!pages || !response) return EMPTY_RESPONSE;
-  // 실제 응답은 3페이지도 is_end가 false다.
   if (page === pages.length) return { ...response, meta: { ...response.meta, is_end: true } };
   return response;
 }
