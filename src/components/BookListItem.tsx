@@ -103,7 +103,7 @@ interface PriceRowProps {
 function PriceRow({ label, className, children }: PriceRowProps) {
   return (
     <div className="flex h-6.5 items-center gap-2">
-      <dt className="text-small text-text-subtitle">{label}</dt>
+      <dt className="pt-1 text-small text-text-subtitle">{label}</dt>
       <dd className={clsx('text-title3 text-text-primary', className)}>{children}</dd>
     </div>
   );

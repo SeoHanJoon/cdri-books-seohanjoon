@@ -125,6 +125,23 @@ test('펼친 행은 원가에 취소선을 긋고 할인가를 함께 보여준�
   await expect(row.getByRole('definition').filter({ hasText: '16,650원' })).toBeVisible();
 });
 
+test('펼친 행의 원가·할인가 라벨은 줄 가운데보다 2px 아래에 있다', async ({ page }) => {
+  await search(page, '무라카미 하루키');
+  const row = bookRow(page, '가호');
+  await row.getByRole('button', { name: '상세보기' }).click();
+
+  const offsets = await row.locator('dl > div').evaluateAll((priceRows) =>
+    priceRows.map((priceRow) => {
+      const label = priceRow.querySelector('dt')!;
+      const labelBox = label.getBoundingClientRect();
+      const labelTop = labelBox.top + parseFloat(getComputedStyle(label).paddingTop);
+      const rowBox = priceRow.getBoundingClientRect();
+      return (labelTop + labelBox.bottom) / 2 - (rowBox.top + rowBox.bottom) / 2;
+    }),
+  );
+  expect(offsets).toEqual([2, 2]);
+});
+
 test('접힌 행은 할인가만 보여준다', async ({ page }) => {
   await search(page, '무라카미 하루키');
   const row = bookRow(page, '가호');
