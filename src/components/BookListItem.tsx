@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import type { ReactNode } from 'react';
+import { memo, type ReactNode } from 'react';
 
 import { Button } from '@/components/Button';
 import { ChevronIcon } from '@/components/icons/ChevronIcon';
@@ -11,15 +11,19 @@ export interface BookListItemProps {
   book: Book;
   liked: boolean;
   expanded: boolean;
-  onToggleLike: () => void;
-  onToggleDetail: () => void;
+  onToggleLike: (book: Book) => void;
+  onToggleDetail: (isbn: string) => void;
 }
 
-type ContentProps = Omit<BookListItemProps, 'expanded' | 'onToggleDetail'>;
+interface ContentProps {
+  book: Book;
+  liked: boolean;
+  onToggleLike: () => void;
+}
 
 function Cover({ thumbnail }: { thumbnail: string }) {
   return thumbnail ? (
-    <img src={thumbnail} alt="" className="size-full object-cover" />
+    <img src={thumbnail} alt="" loading="lazy" className="size-full object-cover" />
   ) : (
     <div className="size-full bg-ui-gray" />
   );
@@ -133,7 +137,7 @@ function ExpandedContent({ book, liked, onToggleLike }: ContentProps) {
   );
 }
 
-export function BookListItem({
+export const BookListItem = memo(function BookListItem({
   book,
   liked,
   expanded,
@@ -153,7 +157,7 @@ export function BookListItem({
     >
       <Button
         variant="secondary"
-        onClick={onToggleDetail}
+        onClick={() => onToggleDetail(book.isbn)}
         aria-expanded={expanded}
         className={clsx(
           expanded
@@ -164,7 +168,7 @@ export function BookListItem({
         상세보기
         <ChevronIcon size={24} direction={expanded ? 'up' : 'down'} />
       </Button>
-      <Content book={book} liked={liked} onToggleLike={onToggleLike} />
+      <Content book={book} liked={liked} onToggleLike={() => onToggleLike(book)} />
     </article>
   );
-}
+});

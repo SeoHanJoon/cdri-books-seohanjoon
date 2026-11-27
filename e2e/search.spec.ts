@@ -220,3 +220,13 @@ test.describe('한글 입력', () => {
     expect(queries).toEqual(['무라카미 하루키']);
   });
 });
+
+test('표지는 화면에 가까워질 때 불러온다', async ({ page }) => {
+  await search(page, '무라카미 하루키');
+  const covers = page.getByRole('article').locator('img');
+
+  await expect(covers).toHaveCount(10);
+  for (const cover of await covers.all()) {
+    await expect(cover).toHaveAttribute('loading', 'lazy');
+  }
+});

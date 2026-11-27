@@ -325,7 +325,7 @@ Figma `757:1435`(초기), `744:313`(목록)
   - 보여줄 목록 규칙은 `mergeShownBooks`로 단위 테스트, 10권씩 늘리기는 `usePagedList` + `LoadMoreFooter`를 브라우저 테스트로 ([0055](adr/0055-wishlist-page-test-scope.md))
 
 ### Step 9. 성능 최적화 · 마무리
-- [ ] `BookListItem` `memo`, 이미지 `loading="lazy"`
+- [x] `BookListItem` `memo`, 이미지 `loading="lazy"` — 콜백이 책·isbn을 받게 바꿔 바뀐 행만 다시 그림 ([0056](adr/0056-book-list-item-memo.md))
 - [ ] `staleTime` 등 캐시 전략
 - [ ] 라우트 단위 코드 분할
 - [ ] 접근성 (`aria-expanded`, 키보드 조작)

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { BookListItem } from '@/components/BookListItem';
 import type { Book } from '@/types/book';
@@ -12,12 +12,15 @@ interface BookListProps {
 export function BookList({ books, isLiked, onToggleLike }: BookListProps) {
   const [expandedIsbns, setExpandedIsbns] = useState<ReadonlySet<string>>(() => new Set());
 
-  const toggleDetail = (isbn: string) =>
-    setExpandedIsbns((prev) => {
-      const next = new Set(prev);
-      if (!next.delete(isbn)) next.add(isbn);
-      return next;
-    });
+  const toggleDetail = useCallback(
+    (isbn: string) =>
+      setExpandedIsbns((prev) => {
+        const next = new Set(prev);
+        if (!next.delete(isbn)) next.add(isbn);
+        return next;
+      }),
+    [],
+  );
 
   return (
     <ul>
@@ -27,8 +30,8 @@ export function BookList({ books, isLiked, onToggleLike }: BookListProps) {
             book={book}
             liked={isLiked(book.isbn)}
             expanded={expandedIsbns.has(book.isbn)}
-            onToggleLike={() => onToggleLike(book)}
-            onToggleDetail={() => toggleDetail(book.isbn)}
+            onToggleLike={onToggleLike}
+            onToggleDetail={toggleDetail}
           />
         </li>
       ))}
