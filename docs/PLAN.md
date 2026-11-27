@@ -326,7 +326,7 @@ Figma `757:1435`(초기), `744:313`(목록)
   - 해제한 책은 페이지에 있는 동안 빈 하트로 제자리에 남고, 건수는 실제 찜 수. 다른 탭에서 새로 찜한 책은 맨 위에 ([0053](adr/0053-wishlist-store-and-page.md))
   - 보여줄 목록 규칙은 `mergeShownBooks`로 단위 테스트, 10권씩 늘리기는 `usePagedList` + `LoadMoreFooter`를 브라우저 테스트로 ([0055](adr/0055-wishlist-page-test-scope.md))
 
-### Step 9. 성능 최적화 · 마무리
+### Step 9. 성능 최적화 · 마무리 ✅
 - [x] `BookListItem` `memo`, 이미지 `loading="lazy"` — 콜백이 책·isbn을 받게 바꿔 바뀐 행만 다시 그림 ([0056](adr/0056-book-list-item-memo.md))
 - [x] `staleTime` 등 캐시 전략 — 검색 결과 5분. 찜 페이지 왕복·탭 복귀 때 요청 5번 → 0번 ([0057](adr/0057-search-stale-time.md))
 - [x] 라우트 단위 코드 분할 — 측정 결과 나누면 첫 화면 JS가 0.6KB 커져서 하지 않음 ([0061](adr/0061-no-route-code-splitting.md))
@@ -335,7 +335,8 @@ Figma `757:1435`(초기), `744:313`(목록)
   - 행의 상세보기·찜하기·구매하기에 책 제목을 설명으로 연결, 검색 건수를 `aria-live`로 알림
   - 검색 입력창 포커스 테두리는 넣지 않음 — `:focus-visible`이 입력창에서는 마우스로도 켜져, 스크립트 없이는 Tab일 때만 보일 수 없음
 - [x] 개발용 `/dev/elements` 화면 제거, 그 테스트를 실제 페이지로 옮김 ([0060](adr/0060-remove-dev-elements-page.md))
-- [x] 빌드 / 린트 최종 점검 — 경고 없음, 운영 빌드 JS gzip 119.53KB, MSW 코드·worker 파일 없음
+- [x] 빌드 / 린트 최종 점검 — 경고 없음, 운영 빌드 JS gzip 119.51KB, MSW 코드·worker 파일 없음
+- [x] 펼친 행의 원가·할인가 라벨이 위로 떠 보여 줄 가운데보다 2px 아래로 내림 (라벨 위 여백 4px, Figma API가 막혀 화면을 보고 맞춤)
 - [x] ~~아이콘 SVG 통일~~ — 시안에 맞추지 않고 0024 유지 ([0059](adr/0059-icon-size-mismatch-kept.md)). 원래 계획 ([0024](adr/0024-icon-component-props.md)): Figma API 한도로 받은 SVG마다 상자와 여백이 제각각이다 (Chevron은 20 상자 안 10.5×6, Close는 20 상자 안 11.67, Heart는 24 상자). 그래서 크기를 바꿔 쓸 때 시안과 1~4px씩 어긋난다 (상세보기 화살표 12.6×7.2, 버튼 안 내용 4px 왼쪽, 검색 기록 X 14px). 쓰는 크기별 원본 SVG를 다시 받아 상자 규칙을 맞춘다.
 
 ### Step 10. README · 제출
