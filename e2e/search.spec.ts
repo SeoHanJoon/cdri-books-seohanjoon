@@ -230,3 +230,38 @@ test('표지는 화면에 가까워질 때 불러온다', async ({ page }) => {
     await expect(cover).toHaveAttribute('loading', 'lazy');
   }
 });
+
+test('행의 상세보기·찜하기·구매하기는 그 책 제목을 설명으로 알린다', async ({ page }) => {
+  await search(page, '무라카미 하루키');
+  const row = bookRow(page, '가호');
+  const controls = () => [
+    row.getByRole('button', { name: '상세보기' }),
+    row.getByRole('button', { name: '찜하기' }),
+    row.getByRole('link', { name: '구매하기' }),
+  ];
+
+  for (const control of controls()) await expect(control).toHaveAccessibleDescription('가호');
+  await row.getByRole('button', { name: '상세보기' }).click();
+  for (const control of controls()) await expect(control).toHaveAccessibleDescription('가호');
+});
+
+test('검색 건수는 바뀌면 화면 낭독기가 읽도록 알림 영역에 있다', async ({ page }) => {
+  const count = page.getByText('도서 검색 결과').locator('..');
+  await expect(count).toHaveAttribute('aria-live', 'polite');
+  await expect(count).toHaveAttribute('aria-atomic', 'true');
+
+  await search(page, '무라카미 하루키');
+  await expect(count).toHaveText(/도서 검색 결과\s*총 866건/);
+});
+
+test('검색 입력창에 포커스가 있으면 검색창에 테두리를 보여준다', async ({ page }) => {
+  const box = page.getByRole('search');
+  await expect(box).toHaveCSS('outline-style', 'none');
+
+  await page.getByRole('textbox', { name: '검색어' }).click();
+  await expect(box).toHaveCSS('outline-style', 'solid');
+  await expect(box).toHaveCSS('outline-color', 'rgb(72, 128, 238)');
+
+  await page.getByRole('heading', { name: '도서 검색' }).click();
+  await expect(box).toHaveCSS('outline-style', 'none');
+});

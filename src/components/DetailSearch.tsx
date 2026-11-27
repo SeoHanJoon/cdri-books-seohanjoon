@@ -1,4 +1,4 @@
-import { type SubmitEvent, useEffect, useRef, useState } from 'react';
+import { type SubmitEvent, useEffect, useId, useRef, useState } from 'react';
 
 import { Button } from '@/components/Button';
 import { CloseIcon } from '@/components/icons/CloseIcon';
@@ -21,11 +21,14 @@ interface DetailSearchPanelProps {
 function DetailSearchPanel({ defaultValue, onSubmit, onClose, onTabOut }: DetailSearchPanelProps) {
   const [target, setTarget] = useState(defaultValue.target);
   const [keyword, setKeyword] = useState(defaultValue.keyword);
+  const [keywordMissing, setKeywordMissing] = useState(false);
   const keywordRef = useRef<HTMLInputElement>(null);
+  const keywordHintId = useId();
 
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (keyword.trim() === '') {
+      setKeywordMissing(true);
       keywordRef.current?.focus();
       return;
     }
@@ -52,12 +55,20 @@ function DetailSearchPanel({ defaultValue, onSubmit, onClose, onTabOut }: Detail
             ref={keywordRef}
             type="text"
             value={keyword}
-            onChange={(event) => setKeyword(event.target.value)}
+            onChange={(event) => {
+              setKeyword(event.target.value);
+              setKeywordMissing(false);
+            }}
             placeholder="검색어 입력"
             aria-label="상세 검색어"
+            aria-invalid={keywordMissing}
+            aria-describedby={keywordMissing ? keywordHintId : undefined}
             enterKeyHint="search"
             className="h-9 min-w-0 flex-1 border-b border-primary pl-2.25 text-body2 text-black outline-none placeholder:text-text-subtitle"
           />
+          <span id={keywordHintId} className="sr-only">
+            검색어를 입력해 주세요.
+          </span>
         </div>
         <Button variant="primary-small" type="submit" className="w-full">
           검색하기

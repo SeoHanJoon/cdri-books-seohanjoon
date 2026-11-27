@@ -70,7 +70,7 @@ export function SearchBox({
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             className={clsx(
-              'absolute inset-x-0 top-0 bg-light-gray',
+              'absolute inset-x-0 top-0 bg-light-gray has-[input:focus]:outline-2 has-[input:focus]:outline-offset-2 has-[input:focus]:outline-primary',
               showHistory ? 'z-10 rounded-3xl' : 'rounded-full',
             )}
           >

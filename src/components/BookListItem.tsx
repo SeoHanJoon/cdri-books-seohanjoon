@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import { memo, type ReactNode } from 'react';
+import { memo, type ReactNode, useId } from 'react';
 
 import { Button } from '@/components/Button';
 import { ChevronIcon } from '@/components/icons/ChevronIcon';
@@ -19,6 +19,7 @@ interface ContentProps {
   book: Book;
   liked: boolean;
   onToggleLike: () => void;
+  titleId: string;
 }
 
 function Cover({ thumbnail }: { thumbnail: string }) {
@@ -32,15 +33,17 @@ function Cover({ thumbnail }: { thumbnail: string }) {
 interface LikeButtonProps {
   liked: boolean;
   onToggleLike: () => void;
+  titleId: string;
   size: 16 | 24;
   className: string;
 }
 
-function LikeButton({ liked, onToggleLike, size, className }: LikeButtonProps) {
+function LikeButton({ liked, onToggleLike, titleId, size, className }: LikeButtonProps) {
   return (
     <button
       type="button"
       aria-label="찜하기"
+      aria-describedby={titleId}
       aria-pressed={liked}
       onClick={onToggleLike}
       className={clsx('absolute p-2', className)}
@@ -50,7 +53,7 @@ function LikeButton({ liked, onToggleLike, size, className }: LikeButtonProps) {
   );
 }
 
-function CollapsedContent({ book, liked, onToggleLike }: ContentProps) {
+function CollapsedContent({ book, liked, onToggleLike, titleId }: ContentProps) {
   return (
     <>
       <div className="col-span-2 flex min-w-0 gap-x-4 lg:flex-1 lg:items-center lg:gap-0">
@@ -59,6 +62,7 @@ function CollapsedContent({ book, liked, onToggleLike }: ContentProps) {
           <LikeButton
             liked={liked}
             onToggleLike={onToggleLike}
+            titleId={titleId}
             size={16}
             className="-top-2 -right-2"
           />
@@ -66,7 +70,9 @@ function CollapsedContent({ book, liked, onToggleLike }: ContentProps) {
 
         <div className="flex min-w-0 flex-1 flex-col gap-2 lg:flex-row lg:items-center lg:gap-0">
           <div className="flex min-w-0 flex-col gap-1 lg:flex-1 lg:flex-row lg:items-center lg:gap-4">
-            <h2 className="truncate text-title3 text-text-primary">{book.title}</h2>
+            <h2 id={titleId} className="truncate text-title3 text-text-primary">
+              {book.title}
+            </h2>
             <p className="truncate text-body2 text-text-secondary">{book.authors.join(', ')}</p>
           </div>
           <p className="shrink-0 text-title3 text-text-primary lg:ml-5.5 lg:w-33">
@@ -75,7 +81,13 @@ function CollapsedContent({ book, liked, onToggleLike }: ContentProps) {
         </div>
       </div>
 
-      <Button variant="primary" href={book.url} target="_blank" className="lg:w-28.75">
+      <Button
+        variant="primary"
+        href={book.url}
+        target="_blank"
+        aria-describedby={titleId}
+        className="lg:w-28.75"
+      >
         구매하기
       </Button>
     </>
@@ -97,19 +109,27 @@ function PriceRow({ label, className, children }: PriceRowProps) {
   );
 }
 
-function ExpandedContent({ book, liked, onToggleLike }: ContentProps) {
+function ExpandedContent({ book, liked, onToggleLike, titleId }: ContentProps) {
   const hasSale = book.salePrice !== null;
 
   return (
     <>
       <div className="relative h-70 w-52.5 shrink-0 self-center lg:self-start">
         <Cover thumbnail={book.thumbnail} />
-        <LikeButton liked={liked} onToggleLike={onToggleLike} size={24} className="top-0 right-0" />
+        <LikeButton
+          liked={liked}
+          onToggleLike={onToggleLike}
+          titleId={titleId}
+          size={24}
+          className="top-0 right-0"
+        />
       </div>
 
       <div className="flex flex-col lg:mt-5 lg:w-90">
         <div className="flex flex-wrap items-center gap-x-4">
-          <h2 className="text-title3 leading-6.5 text-text-primary">{book.title}</h2>
+          <h2 id={titleId} className="text-title3 leading-6.5 text-text-primary">
+            {book.title}
+          </h2>
           <p className="text-body2 leading-5.5 text-text-subtitle">{book.authors.join(', ')}</p>
         </div>
         <h3 className="mt-4 text-body2-bold leading-6.5 text-text-primary">책 소개</h3>
@@ -129,7 +149,13 @@ function ExpandedContent({ book, liked, onToggleLike }: ContentProps) {
             {formatPrice(getFinalPrice(book))}
           </PriceRow>
         </dl>
-        <Button variant="primary" href={book.url} target="_blank" className="w-full lg:w-60">
+        <Button
+          variant="primary"
+          href={book.url}
+          target="_blank"
+          aria-describedby={titleId}
+          className="w-full lg:w-60"
+        >
           구매하기
         </Button>
       </div>
@@ -144,6 +170,7 @@ export const BookListItem = memo(function BookListItem({
   onToggleLike,
   onToggleDetail,
 }: BookListItemProps) {
+  const titleId = useId();
   const Content = expanded ? ExpandedContent : CollapsedContent;
 
   return (
@@ -159,6 +186,7 @@ export const BookListItem = memo(function BookListItem({
         variant="secondary"
         onClick={() => onToggleDetail(book.isbn)}
         aria-expanded={expanded}
+        aria-describedby={titleId}
         className={clsx(
           expanded
             ? 'w-28.75 self-end lg:absolute lg:top-6.5 lg:right-4'
@@ -168,7 +196,12 @@ export const BookListItem = memo(function BookListItem({
         상세보기
         <ChevronIcon size={24} direction={expanded ? 'up' : 'down'} />
       </Button>
-      <Content book={book} liked={liked} onToggleLike={() => onToggleLike(book)} />
+      <Content
+        book={book}
+        liked={liked}
+        onToggleLike={() => onToggleLike(book)}
+        titleId={titleId}
+      />
     </article>
   );
 });

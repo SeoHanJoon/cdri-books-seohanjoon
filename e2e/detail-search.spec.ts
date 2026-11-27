@@ -164,6 +164,22 @@ test.describe('도서 검색 페이지', () => {
     await expect(page).toHaveURL('/');
   });
 
+  test('검색어가 비어 막히면 입력창이 잘못됨과 안내를 알리고, 글자를 치면 푼다', async ({
+    page,
+  }) => {
+    const dialog = await openPopup(page);
+    const input = dialog.getByRole('textbox', { name: '상세 검색어' });
+    await expect(input).toHaveAttribute('aria-invalid', 'false');
+
+    await dialog.getByRole('button', { name: '검색하기' }).click();
+    await expect(input).toHaveAttribute('aria-invalid', 'true');
+    await expect(input).toHaveAccessibleDescription('검색어를 입력해 주세요.');
+
+    await input.pressSequentially('하');
+    await expect(input).toHaveAttribute('aria-invalid', 'false');
+    await expect(input).toHaveAccessibleDescription('');
+  });
+
   test('좁은 화면에서는 팝업이 화면 안에 들어오도록 버튼 오른쪽 끝에 맞춘다', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 800 });
     const dialog = await openPopup(page);
