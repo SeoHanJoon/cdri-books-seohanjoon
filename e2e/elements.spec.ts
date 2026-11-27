@@ -1,7 +1,9 @@
 import { expect, type Page, test } from '@playwright/test';
 
-function bookRow(page: Page, title: string) {
-  return page.getByRole('article').filter({ has: page.getByRole('heading', { name: title }) });
+async function showBookRow(page: Page, title: string) {
+  const row = page.getByRole('article').filter({ has: page.getByRole('heading', { name: title }) });
+  await row.evaluate((element) => element.scrollIntoView({ block: 'center' }));
+  return row;
 }
 
 test.beforeEach(async ({ page }) => {
@@ -9,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('할인가가 있으면 원가에 취소선을 긋고 할인가를 함께 보여준다', async ({ page }) => {
-  const row = bookRow(page, '고양이를 버리다');
+  const row = await showBookRow(page, '고양이를 버리다');
 
   const original = row.getByRole('definition').filter({ hasText: '16,000원' });
   await expect(original).toBeVisible();
@@ -19,7 +21,7 @@ test('할인가가 있으면 원가에 취소선을 긋고 할인가를 함께 �
 });
 
 test('할인가가 없으면 원가만 취소선 없이 보여준다', async ({ page }) => {
-  const row = bookRow(page, '노르웨이의 숲');
+  const row = await showBookRow(page, '노르웨이의 숲');
   await row.getByRole('button', { name: '상세보기' }).click();
 
   await expect(row.getByRole('term')).toHaveText(['원가']);
@@ -29,19 +31,19 @@ test('할인가가 없으면 원가만 취소선 없이 보여준다', async ({ 
 });
 
 test('접힌 행은 할인가가 있으면 할인가를 보여준다', async ({ page }) => {
-  const row = bookRow(page, '표지가 없는 책');
+  const row = await showBookRow(page, '표지가 없는 책');
   await expect(row.getByText('8,100원')).toBeVisible();
   await expect(row.getByText('9,000원')).toHaveCount(0);
 });
 
 test('구매하기는 책 상세 페이지를 새 탭으로 연다', async ({ page }) => {
-  const buy = bookRow(page, '노르웨이의 숲').getByRole('link', { name: '구매하기' });
+  const buy = (await showBookRow(page, '노르웨이의 숲')).getByRole('link', { name: '구매하기' });
   await expect(buy).toHaveAttribute('href', 'https://example.com/no-sale');
   await expect(buy).toHaveAttribute('target', '_blank');
 });
 
 test('상세보기를 누르면 행이 펼쳐지고, 다시 누르면 접힌다', async ({ page }) => {
-  const row = bookRow(page, '노르웨이의 숲');
+  const row = await showBookRow(page, '노르웨이의 숲');
   const toggle = row.getByRole('button', { name: '상세보기' });
 
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
@@ -55,7 +57,7 @@ test('상세보기를 누르면 행이 펼쳐지고, 다시 누르면 접힌다'
 });
 
 test('접힌 행의 하트를 누르면 찜이 토글되고 행은 펼쳐지지 않는다', async ({ page }) => {
-  const row = bookRow(page, '노르웨이의 숲');
+  const row = await showBookRow(page, '노르웨이의 숲');
   const heart = row.getByRole('button', { name: '찜하기' });
 
   await expect(heart).toHaveAttribute('aria-pressed', 'false');
@@ -71,7 +73,9 @@ test('접힌 행의 하트를 누르면 찜이 토글되고 행은 펼쳐지지 
 });
 
 test('펼친 행의 하트를 누르면 찜이 토글된다', async ({ page }) => {
-  const heart = bookRow(page, '고양이를 버리다').getByRole('button', { name: '찜하기' });
+  const heart = (await showBookRow(page, '고양이를 버리다')).getByRole('button', {
+    name: '찜하기',
+  });
 
   await expect(heart).toHaveAttribute('aria-pressed', 'true');
   await heart.click();
@@ -109,6 +113,7 @@ test('상세검색 버튼을 누르면 상세검색 이벤트가 전달된다', 
 test('좁은 화면에서도 버튼 글자는 줄바꿈되지 않는다', async ({ page }) => {
   for (const width of [375, 1920]) {
     await page.setViewportSize({ width, height: 900 });
+    await showBookRow(page, '노르웨이의 숲');
     const heights = await page
       .getByRole('button', { name: '상세보기' })
       .evaluateAll((buttons) => buttons.map((button) => button.getBoundingClientRect().height));
