@@ -111,7 +111,6 @@ export function SearchPage() {
           <DetailSearch
             defaultValue={detail.defaultValue}
             onSubmit={(condition) => {
-              // 같은 조건으로 다시 검색하면 URL이 그대로라 입력창 동기화가 일어나지 않는다.
               main.clear();
               detail.submit(condition);
             }}
