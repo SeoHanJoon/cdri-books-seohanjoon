@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { KAKAO_BOOK_SEARCH_URL, type KakaoBookSearchResponse } from '@/api/kakaoBook';
 
-import { ERROR_QUERY, SLOW_QUERY } from './handlers';
+import { ERROR_QUERY, NEXT_PAGE_ERROR_QUERY, SLOW_QUERY } from './handlers';
 import { FIXTURE_QUERY } from './searchFixture';
 
 async function request(params: Record<string, string>) {
@@ -44,4 +44,12 @@ describe('카카오 책 검색 handler', () => {
 
     expect(body.documents).toHaveLength(10);
   }, 5000);
+
+  it(`"${NEXT_PAGE_ERROR_QUERY}" 검색어는 1페이지만 주고 그 뒤로는 500 에러를 준다`, async () => {
+    const first = await request({ query: NEXT_PAGE_ERROR_QUERY, page: '1' });
+    const second = await request({ query: NEXT_PAGE_ERROR_QUERY, page: '2' });
+
+    expect(first.body.documents).toHaveLength(10);
+    expect(second.status).toBe(500);
+  });
 });
