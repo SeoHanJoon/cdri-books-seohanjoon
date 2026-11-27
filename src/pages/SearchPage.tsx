@@ -102,23 +102,26 @@ export function SearchPage() {
 
   return (
     <div className="pt-10 pb-40 md:pt-26">
-      <SearchBox
-        value={main.query}
-        onValueChange={main.setQuery}
-        onSubmit={main.submit}
-        detailSearch={
-          <DetailSearch
-            defaultValue={detail.defaultValue}
-            onSubmit={(condition) => {
-              main.clear();
-              detail.submit(condition);
-            }}
-          />
-        }
-        history={history}
-        onHistorySelect={main.searchKeyword}
-        onHistoryRemove={removeHistory}
-      />
+      <h1 className="text-title2 text-text-primary">도서 검색</h1>
+      <div className="mt-7">
+        <SearchBox
+          value={main.query}
+          onValueChange={main.setQuery}
+          onSubmit={main.submit}
+          detailSearch={
+            <DetailSearch
+              defaultValue={detail.defaultValue}
+              onSubmit={(condition) => {
+                main.clear();
+                detail.submit(condition);
+              }}
+            />
+          }
+          history={history}
+          onHistorySelect={main.searchKeyword}
+          onHistoryRemove={removeHistory}
+        />
+      </div>
       <SearchResults search={url.parsed.status === 'ready' ? url.parsed.search : null} />
     </div>
   );

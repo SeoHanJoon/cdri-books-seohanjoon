@@ -1,6 +1,7 @@
 import { clsx } from 'clsx';
 import { memo, type ReactNode, useId } from 'react';
 
+import { COLLAPSED_ROW } from '@/components/book/collapsedRowLayout';
 import { Button } from '@/components/ui/Button';
 import { ChevronIcon } from '@/components/ui/icons/ChevronIcon';
 import { HeartIcon } from '@/components/ui/icons/HeartIcon';
@@ -56,8 +57,8 @@ function LikeButton({ liked, onToggleLike, titleId, size, className }: LikeButto
 function CollapsedContent({ book, liked, onToggleLike, titleId }: ContentProps) {
   return (
     <>
-      <div className="col-span-2 flex min-w-0 gap-x-4 lg:flex-1 lg:items-center lg:gap-0">
-        <div className="relative h-17 w-12 shrink-0 lg:mr-12">
+      <div className={COLLAPSED_ROW.main}>
+        <div className={clsx('relative', COLLAPSED_ROW.cover)}>
           <Cover thumbnail={book.thumbnail} />
           <LikeButton
             liked={liked}
@@ -68,14 +69,14 @@ function CollapsedContent({ book, liked, onToggleLike, titleId }: ContentProps) 
           />
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col gap-2 lg:flex-row lg:items-center lg:gap-0">
-          <div className="flex min-w-0 flex-col gap-1 lg:flex-1 lg:flex-row lg:items-center lg:gap-4">
+        <div className={COLLAPSED_ROW.info}>
+          <div className={COLLAPSED_ROW.titleAuthor}>
             <h2 id={titleId} className="truncate text-title3 text-text-primary">
               {book.title}
             </h2>
             <p className="truncate text-body2 text-text-secondary">{book.authors.join(', ')}</p>
           </div>
-          <p className="shrink-0 text-title3 text-text-primary lg:ml-5.5 lg:w-33">
+          <p className={clsx('text-title3 text-text-primary', COLLAPSED_ROW.price)}>
             {formatPrice(getFinalPrice(book))}
           </p>
         </div>
@@ -86,7 +87,7 @@ function CollapsedContent({ book, liked, onToggleLike, titleId }: ContentProps) 
         href={book.url}
         target="_blank"
         aria-describedby={titleId}
-        className="lg:w-28.75"
+        className={COLLAPSED_ROW.buyButton}
       >
         구매하기
       </Button>
@@ -176,10 +177,10 @@ export const BookListItem = memo(function BookListItem({
   return (
     <article
       className={clsx(
-        'relative border-b border-divider py-4',
+        'relative',
         expanded
-          ? 'flex flex-col gap-6 lg:flex-row lg:gap-8 lg:pt-6 lg:pr-4 lg:pb-9.75 lg:pl-13.5'
-          : 'grid grid-cols-2 gap-x-2 gap-y-3 lg:flex lg:h-25 lg:items-center lg:gap-0 lg:py-0 lg:pr-4 lg:pl-12',
+          ? 'flex flex-col gap-6 border-b border-divider py-4 lg:flex-row lg:gap-8 lg:pt-6 lg:pr-4 lg:pb-9.75 lg:pl-13.5'
+          : COLLAPSED_ROW.row,
       )}
     >
       <Button
@@ -190,7 +191,7 @@ export const BookListItem = memo(function BookListItem({
         className={clsx(
           expanded
             ? 'w-28.75 self-end lg:absolute lg:top-6.5 lg:right-4'
-            : 'order-last lg:ml-2 lg:w-28.75',
+            : COLLAPSED_ROW.detailButton,
         )}
       >
         상세보기
