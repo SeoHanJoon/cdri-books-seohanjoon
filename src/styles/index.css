@@ -18,6 +18,11 @@
   --color-text-secondary: #6d7582;
   --color-text-subtitle: #8d94a0;
 
+  /* 가이드 밖 시안 값 */
+  --color-ui-gray: #b1b8c0;
+  --color-divider: #d2d6da;
+  --font-weight-demilight: 350;
+
   /* Typography */
   --text-*: initial;
   --text-title1: 24px;

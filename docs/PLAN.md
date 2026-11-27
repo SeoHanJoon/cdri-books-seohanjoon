@@ -16,8 +16,9 @@
 | 라우팅 | React Router 8 (데이터 모드) | `/` 도서 검색, `/wishlist` 내가 찜한 책 ([0014](adr/0014-react-router-data-mode.md)) |
 | 스타일 | Tailwind CSS v4 | Figma 스타일 가이드를 `@theme` 토큰으로 이식 |
 | 폰트 | `@fontsource-variable/noto-sans-kr` | 글자 범위별 조각 자체 호스팅 ([0013](adr/0013-font-fontsource-variable.md)) |
+| 클래스 이름 | clsx | 조건부 클래스 합치기 ([0025](adr/0025-clsx.md)) |
 | 클라이언트 상태 | Zustand + persist | 찜 목록, 검색 기록 (localStorage 유지) |
-| 코드 품질 | ESLint + Prettier | 폴더 구조는 역할별 ([0012](adr/0012-folder-structure-by-role.md)) |
+| 코드 품질 | ESLint + Prettier | 폴더 구조는 역할별 + `types/`, `assets/` ([0020](adr/0020-folder-structure-types.md)) |
 | 런타임 | Node.js 26.13.1 (LTS) | `.nvmrc`로 고정 |
 | 패키지 매니저 | pnpm 12 | `package.json`의 `packageManager`로 고정 |
 | 단위 테스트 | Vitest | 화면과 분리된 로직 (검색 기록, 가격 표시, 찜 store 등) |
@@ -171,6 +172,20 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 13 | 폰트 불러오기 | `@fontsource-variable` | 전체 파일 4.2MB vs 조각 방식 약 200KB, 외부 서버 불필요 | ☑ `@fontsource-variable` ([0013](adr/0013-font-fontsource-variable.md)) |
 | 14 | 라우터 사용 방식 | 데이터 모드 | route `lazy`로 코드 분할, `errorElement` | ☑ 데이터 모드 ([0014](adr/0014-react-router-data-mode.md)) |
 | 15 | 갓 배포된 버전 설치 | pnpm 최소 배포 기간(24시간) 규칙 준수 | 악성 버전이 발견·삭제되기 전 설치를 피함. vite 8.4.0 대신 8.3.8 | ☑ 규칙 준수 ([0015](adr/0015-pnpm-minimum-release-age.md)) |
+| 16 | 가이드 밖 시안 값 | 토큰 추가 | 시안 1:1 구현, 규칙 "실측 후 토큰 추가"와 일치 | ☑ 토큰 추가 ([0016](adr/0016-design-values-beyond-guide.md)) |
+| 17 | 아이콘 확보·사용 | Figma 직접 내보내기 + React 컴포넌트 | API 한도 초과, 아이콘 7개뿐이라 플러그인 불필요 | ☑ 직접 내보내기 + 컴포넌트 ([0017](adr/0017-icons-react-components.md)) |
+| 18 | Button 링크 처리 | `variant` + 스타일 함수 | 구매하기는 링크(`<a>`)여야 함 | ☑ `href` 유무로 `<a>`/`<button>` 분기 ([0018](adr/0018-button-href.md)) |
+| 19 | 책 컴포넌트 데이터 | 화면용 `Book` 타입 | 카카오 규칙(-1 등)을 변환 함수 한 곳에 가둠 | ☑ `Book` + 공통 props 확장 ([0019](adr/0019-book-view-type.md)) |
+| 20 | 공용 타입·이미지 위치 | `src/types/`, `src/assets/` | 여러 역할이 같이 쓰는 타입, import하는 이미지 | ☑ `src/types/`, `src/assets/` 추가 ([0020](adr/0020-folder-structure-types.md)) |
+| 21 | 가격·하트 동작 (미명시) | 할인가 우선, 할인가 없으면 원가만, 작은 하트는 표시만 | 실제 결제 가격, 취소선은 비교 시에만 의미 | ☑ 작은 하트도 찜 토글 ([0021](adr/0021-price-and-heart-behavior.md)) |
+| 22 | 공통 컴포넌트 확인 화면 | 개발용 `/dev/elements` | Elements와 비교, PR 영상, 운영 빌드 제외 | ☑ `/dev/elements` ([0022](adr/0022-dev-elements-page.md)) |
+| 23 | 화면 너비 대응 | 데스크톱 기준 | 시안이 1920px 하나뿐 | ☑ 모바일까지 ([0023](adr/0023-responsive-mobile.md)) |
+| 24 | 아이콘 props | 색은 `className`으로 | 시안의 크기·색 조합 고정 | ☑ `size`만 받고 색은 내부, 작은 테두리 하트는 회색 ([0024](adr/0024-icon-component-props.md)) |
+| 25 | 클래스 이름 합치기 | clsx | 조건부 클래스가 여러 컴포넌트에 필요, 0.2KB | ☑ clsx ([0025](adr/0025-clsx.md)) |
+| 26 | Header 반응형 배치 | 넓은 화면은 시안 그대로 3단계 | 1024px쯤에서 로고와 탭이 겹침 | ☑ 3단계 + 탭 항상 가운데 ([0026](adr/0026-header-responsive.md)) |
+| 27 | SearchBox 검색어·배치 | 페이지가 관리, 좁은 화면은 입력창만 줄임 | URL 동기화·상세 검색 초기화를 페이지에서 처리 | ☑ 추천안 ([0027](adr/0027-searchbox-controlled.md)) |
+| 28 | Button 여백 | 변형별 좌우 여백 | 덮어쓰기 없이 상세보기 아이콘을 넣기 위해 | ☑ 여백 없이 가운데, 너비는 쓰는 쪽 ([0028](adr/0028-button-no-padding.md)) |
+| 29 | 책 행 모바일 배치 | 세로로 쌓기 | 시안의 모든 요소 유지 | ☑ 세로로 쌓기 ([0029](adr/0029-book-row-responsive.md)) |
 
 ---
 
@@ -195,21 +210,23 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 - [x] Playwright 설정 (`E2E_PORT`, `e2e:record` → `recordings/` 영상)
 - [x] `package.json` 스크립트: `dev`, `build`, `typecheck`, `lint`, `test`, `e2e`, `e2e:record`
 
-### Step 2. 공통 UI · 레이아웃 (Figma Elements `754:70`)
+### Step 2. 공통 UI · 레이아웃 (Figma Elements `754:70`) ✅
 Elements의 컴포넌트를 1:1로 화면 전용 컴포넌트로 만든다. 데이터는 props로만 받고, 검색·찜·펼침 같은 동작 로직은 연결하지 않는다.
-- [ ] 아이콘 추출 (`Style 753:96` Icon 섹션)
+- [x] 아이콘 추출 (`Style 753:96` Icon 섹션)
   - SVG: 검색, 화살표, 닫기, 하트 line/fill
   - PNG(@2x, 160×160): NoData 책 아이콘 — Figma에서 비트맵 이미지 채우기라, SVG로 내보내도 PNG(840×859)가 base64로 통째로 들어갈 뿐 벡터가 아님 (SVG 707KB vs PNG@2x 17KB)
   - 책 표지는 API `thumbnail`을 쓰므로 Figma에서 내보내지 않는다
-- [ ] Button — 각 컴포넌트 안의 버튼에서 변형 도출 (구매하기 primary, 상세보기 secondary, 상세검색 outline / 크기별)
-- [ ] `Header` + Layout (로고, 탭 2개, 활성 탭 밑줄)
-- [ ] `NoData` (아이콘 + 문구 props — "검색된 결과가 없습니다." / "찜한 책이 없습니다.")
-- [ ] `SearchCountText` (라벨 + 건수 props — "도서 검색 결과" / "찜한 책")
-- [ ] `SearchBox` (제목, 검색 입력창, 상세검색 버튼 — 입력·이벤트는 props로)
-- [ ] `BookListItem` (접힌 행: 표지, 제목, 저자, 가격, 구매하기, 상세보기)
-- [ ] `BookListItemDetail` (펼친 행: 큰 표지 + 하트, 책 소개, 원가/할인가, 구매하기)
+- [x] Button — 각 컴포넌트 안의 버튼에서 변형 도출 (구매하기 primary, 상세보기 secondary, 상세검색 outline / 크기별)
+- [x] `Header` + Layout (로고, 탭 2개, 활성 탭 밑줄)
+- [x] `NoData` (아이콘 + 문구 props — "검색된 결과가 없습니다." / "찜한 책이 없습니다.")
+- [x] `SearchCountText` (라벨 + 건수 props — "도서 검색 결과" / "찜한 책")
+- [x] `SearchBox` (제목, 검색 입력창, 상세검색 버튼 — 입력·이벤트는 props로)
+- [x] `BookListItem` (접힌 행: 표지, 제목, 저자, 가격, 구매하기, 상세보기)
+- [x] `BookListItemDetail` (펼친 행: 큰 표지 + 하트, 책 소개, 원가/할인가, 구매하기)
   - props는 API 응답 타입이 아니라 화면에 필요한 값으로 설계 → 검색 결과(API)와 찜 목록(저장 데이터)에서 같은 컴포넌트 재사용
-  - 할인가 없으면 할인가 미노출
+  - 할인가 없으면 할인가 미노출, 원가는 취소선 없이 구매하기 위로 ([0021](adr/0021-price-and-heart-behavior.md))
+- [x] 좁은 화면 배치 — 컴포넌트별로 추천안 확인 후 구현 ([0023](adr/0023-responsive-mobile.md))
+- [x] 개발용 `/dev/elements` 확인 화면 + Playwright 테스트 ([0022](adr/0022-dev-elements-page.md))
 
 ### Step 3. 화면 구성: 도서 검색 페이지
 Figma `18:969`(초기), `18:805`(결과), `757:958`(검색 기록), `18:608`·`744:156`(상세 검색 팝업)
@@ -218,6 +235,8 @@ Figma `18:969`(초기), `18:805`(결과), `757:958`(검색 기록), `18:608`·`7
 - [ ] 페이지 레이아웃: "도서 검색" 제목, `SearchBox`, `SearchCountText`, 결과 목록
 - [ ] 초기 / 결과 없음 상태 — `NoData`
 - [ ] 결과 목록: 행별 펼침(accordion), 구매하기 새 탭
+  - 여러 권을 동시에 펼칠 수 있다. 한 권만 펼치면 위쪽 행이 접히면서 누른 행이 위로 밀려 스크롤된 것처럼 보인다 (Step 2 `/dev/elements`에서 확인)
+  - 펼치고 접을 때 키보드 포커스를 상세보기 버튼에 유지한다. 지금은 `BookListItem`과 `BookListItemDetail`이 서로 바뀌면서 누른 버튼이 사라져 포커스가 `<body>`로 간다
 - [ ] 검색 기록 드롭다운 UI (입력창 포커스 시 표시, X 버튼) — 저장 로직 없음
 - [ ] 상세 검색 팝업 UI: Popover + 조건 Select(제목/저자명/출판사), 외부 클릭·Esc로 닫기 — 검색 실행 없음
 
@@ -263,6 +282,7 @@ Figma `757:1435`(초기), `744:313`(목록)
 - [ ] 라우트 단위 코드 분할
 - [ ] 접근성 (`aria-expanded`, 키보드 조작)
 - [ ] 빌드 / 린트 최종 점검
+- [ ] 아이콘 SVG 통일 ([0024](adr/0024-icon-component-props.md)): Figma API 한도로 받은 SVG마다 상자와 여백이 제각각이다 (Chevron은 20 상자 안 10.5×6, Close는 20 상자 안 11.67, Heart는 24 상자). 그래서 크기를 바꿔 쓸 때 시안과 1~4px씩 어긋난다 (상세보기 화살표 12.6×7.2, 버튼 안 내용 4px 왼쪽, 검색 기록 X 14px). 쓰는 크기별 원본 SVG를 다시 받아 상자 규칙을 맞춘다.
 
 ### Step 10. README · 제출
 - [ ] 프로젝트 개요
