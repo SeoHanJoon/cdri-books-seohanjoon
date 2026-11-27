@@ -17,7 +17,7 @@
 | 스타일 | Tailwind CSS v4 | Figma 스타일 가이드를 `@theme` 토큰으로 이식 |
 | 폰트 | `@fontsource-variable/noto-sans-kr` | 글자 범위별 조각 자체 호스팅 ([0013](adr/0013-font-fontsource-variable.md)) |
 | 클라이언트 상태 | Zustand + persist | 찜 목록, 검색 기록 (localStorage 유지) |
-| 코드 품질 | ESLint + Prettier | 폴더 구조는 역할별 ([0012](adr/0012-folder-structure-by-role.md)) |
+| 코드 품질 | ESLint + Prettier | 폴더 구조는 역할별 + `types/` ([0020](adr/0020-folder-structure-types.md)) |
 | 런타임 | Node.js 26.13.1 (LTS) | `.nvmrc`로 고정 |
 | 패키지 매니저 | pnpm 12 | `package.json`의 `packageManager`로 고정 |
 | 단위 테스트 | Vitest | 화면과 분리된 로직 (검색 기록, 가격 표시, 찜 store 등) |
@@ -171,6 +171,14 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 13 | 폰트 불러오기 | `@fontsource-variable` | 전체 파일 4.2MB vs 조각 방식 약 200KB, 외부 서버 불필요 | ☑ `@fontsource-variable` ([0013](adr/0013-font-fontsource-variable.md)) |
 | 14 | 라우터 사용 방식 | 데이터 모드 | route `lazy`로 코드 분할, `errorElement` | ☑ 데이터 모드 ([0014](adr/0014-react-router-data-mode.md)) |
 | 15 | 갓 배포된 버전 설치 | pnpm 최소 배포 기간(24시간) 규칙 준수 | 악성 버전이 발견·삭제되기 전 설치를 피함. vite 8.4.0 대신 8.3.8 | ☑ 규칙 준수 ([0015](adr/0015-pnpm-minimum-release-age.md)) |
+| 16 | 가이드 밖 시안 값 | 토큰 추가 | 시안 1:1 구현, 규칙 "실측 후 토큰 추가"와 일치 | ☑ 토큰 추가 ([0016](adr/0016-design-values-beyond-guide.md)) |
+| 17 | 아이콘 확보·사용 | Figma 직접 내보내기 + React 컴포넌트 | API 한도 초과, 아이콘 7개뿐이라 플러그인 불필요 | ☑ 직접 내보내기 + 컴포넌트 ([0017](adr/0017-icons-react-components.md)) |
+| 18 | Button 링크 처리 | `variant` + 스타일 함수 | 구매하기는 링크(`<a>`)여야 함 | ☑ `href` 유무로 `<a>`/`<button>` 분기 ([0018](adr/0018-button-href.md)) |
+| 19 | 책 컴포넌트 데이터 | 화면용 `Book` 타입 | 카카오 규칙(-1 등)을 변환 함수 한 곳에 가둠 | ☑ `Book` + 공통 props 확장 ([0019](adr/0019-book-view-type.md)) |
+| 20 | 공용 타입 위치 | `src/types/` | 여러 역할이 같이 쓰는 타입 | ☑ `src/types/` 추가 ([0020](adr/0020-folder-structure-types.md)) |
+| 21 | 가격·하트 동작 (미명시) | 할인가 우선, 할인가 없으면 원가만, 작은 하트는 표시만 | 실제 결제 가격, 취소선은 비교 시에만 의미 | ☑ 작은 하트도 찜 토글 ([0021](adr/0021-price-and-heart-behavior.md)) |
+| 22 | 공통 컴포넌트 확인 화면 | 개발용 `/dev/elements` | Elements와 비교, PR 영상, 운영 빌드 제외 | ☑ `/dev/elements` ([0022](adr/0022-dev-elements-page.md)) |
+| 23 | 화면 너비 대응 | 데스크톱 기준 | 시안이 1920px 하나뿐 | ☑ 모바일까지 ([0023](adr/0023-responsive-mobile.md)) |
 
 ---
 
@@ -209,7 +217,9 @@ Elements의 컴포넌트를 1:1로 화면 전용 컴포넌트로 만든다. 데�
 - [ ] `BookListItem` (접힌 행: 표지, 제목, 저자, 가격, 구매하기, 상세보기)
 - [ ] `BookListItemDetail` (펼친 행: 큰 표지 + 하트, 책 소개, 원가/할인가, 구매하기)
   - props는 API 응답 타입이 아니라 화면에 필요한 값으로 설계 → 검색 결과(API)와 찜 목록(저장 데이터)에서 같은 컴포넌트 재사용
-  - 할인가 없으면 할인가 미노출
+  - 할인가 없으면 할인가 미노출, 원가는 취소선 없이 구매하기 위로 ([0021](adr/0021-price-and-heart-behavior.md))
+- [ ] 좁은 화면 배치 — 컴포넌트별로 추천안 확인 후 구현 ([0023](adr/0023-responsive-mobile.md))
+- [ ] 개발용 `/dev/elements` 확인 화면 + Playwright 테스트 ([0022](adr/0022-dev-elements-page.md))
 
 ### Step 3. 화면 구성: 도서 검색 페이지
 Figma `18:969`(초기), `18:805`(결과), `757:958`(검색 기록), `18:608`·`744:156`(상세 검색 팝업)
