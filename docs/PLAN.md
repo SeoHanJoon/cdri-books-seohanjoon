@@ -18,7 +18,7 @@
 | 폰트 | `@fontsource-variable/noto-sans-kr` | 글자 범위별 조각 자체 호스팅 ([0013](adr/0013-font-fontsource-variable.md)) |
 | 클래스 이름 | clsx | 조건부 클래스 합치기 ([0025](adr/0025-clsx.md)) |
 | 클라이언트 상태 | Zustand + persist | 찜 목록, 검색 기록 (localStorage 유지) |
-| 코드 품질 | ESLint + Prettier | 폴더 구조는 역할별 + `types/` ([0020](adr/0020-folder-structure-types.md)) |
+| 코드 품질 | ESLint + Prettier | 폴더 구조는 역할별 + `types/`, `assets/` ([0020](adr/0020-folder-structure-types.md)) |
 | 런타임 | Node.js 26.13.1 (LTS) | `.nvmrc`로 고정 |
 | 패키지 매니저 | pnpm 12 | `package.json`의 `packageManager`로 고정 |
 | 단위 테스트 | Vitest | 화면과 분리된 로직 (검색 기록, 가격 표시, 찜 store 등) |
@@ -176,7 +176,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 17 | 아이콘 확보·사용 | Figma 직접 내보내기 + React 컴포넌트 | API 한도 초과, 아이콘 7개뿐이라 플러그인 불필요 | ☑ 직접 내보내기 + 컴포넌트 ([0017](adr/0017-icons-react-components.md)) |
 | 18 | Button 링크 처리 | `variant` + 스타일 함수 | 구매하기는 링크(`<a>`)여야 함 | ☑ `href` 유무로 `<a>`/`<button>` 분기 ([0018](adr/0018-button-href.md)) |
 | 19 | 책 컴포넌트 데이터 | 화면용 `Book` 타입 | 카카오 규칙(-1 등)을 변환 함수 한 곳에 가둠 | ☑ `Book` + 공통 props 확장 ([0019](adr/0019-book-view-type.md)) |
-| 20 | 공용 타입 위치 | `src/types/` | 여러 역할이 같이 쓰는 타입 | ☑ `src/types/` 추가 ([0020](adr/0020-folder-structure-types.md)) |
+| 20 | 공용 타입·이미지 위치 | `src/types/`, `src/assets/` | 여러 역할이 같이 쓰는 타입, import하는 이미지 | ☑ `src/types/`, `src/assets/` 추가 ([0020](adr/0020-folder-structure-types.md)) |
 | 21 | 가격·하트 동작 (미명시) | 할인가 우선, 할인가 없으면 원가만, 작은 하트는 표시만 | 실제 결제 가격, 취소선은 비교 시에만 의미 | ☑ 작은 하트도 찜 토글 ([0021](adr/0021-price-and-heart-behavior.md)) |
 | 22 | 공통 컴포넌트 확인 화면 | 개발용 `/dev/elements` | Elements와 비교, PR 영상, 운영 빌드 제외 | ☑ `/dev/elements` ([0022](adr/0022-dev-elements-page.md)) |
 | 23 | 화면 너비 대응 | 데스크톱 기준 | 시안이 1920px 하나뿐 | ☑ 모바일까지 ([0023](adr/0023-responsive-mobile.md)) |
@@ -209,14 +209,14 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 
 ### Step 2. 공통 UI · 레이아웃 (Figma Elements `754:70`)
 Elements의 컴포넌트를 1:1로 화면 전용 컴포넌트로 만든다. 데이터는 props로만 받고, 검색·찜·펼침 같은 동작 로직은 연결하지 않는다.
-- [ ] 아이콘 추출 (`Style 753:96` Icon 섹션)
+- [x] 아이콘 추출 (`Style 753:96` Icon 섹션)
   - SVG: 검색, 화살표, 닫기, 하트 line/fill
   - PNG(@2x, 160×160): NoData 책 아이콘 — Figma에서 비트맵 이미지 채우기라, SVG로 내보내도 PNG(840×859)가 base64로 통째로 들어갈 뿐 벡터가 아님 (SVG 707KB vs PNG@2x 17KB)
   - 책 표지는 API `thumbnail`을 쓰므로 Figma에서 내보내지 않는다
 - [ ] Button — 각 컴포넌트 안의 버튼에서 변형 도출 (구매하기 primary, 상세보기 secondary, 상세검색 outline / 크기별)
 - [x] `Header` + Layout (로고, 탭 2개, 활성 탭 밑줄)
-- [ ] `NoData` (아이콘 + 문구 props — "검색된 결과가 없습니다." / "찜한 책이 없습니다.")
-- [ ] `SearchCountText` (라벨 + 건수 props — "도서 검색 결과" / "찜한 책")
+- [x] `NoData` (아이콘 + 문구 props — "검색된 결과가 없습니다." / "찜한 책이 없습니다.")
+- [x] `SearchCountText` (라벨 + 건수 props — "도서 검색 결과" / "찜한 책")
 - [ ] `SearchBox` (제목, 검색 입력창, 상세검색 버튼 — 입력·이벤트는 props로)
 - [ ] `BookListItem` (접힌 행: 표지, 제목, 저자, 가격, 구매하기, 상세보기)
 - [ ] `BookListItemDetail` (펼친 행: 큰 표지 + 하트, 책 소개, 원가/할인가, 구매하기)

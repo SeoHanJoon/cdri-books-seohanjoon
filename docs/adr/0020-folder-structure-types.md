@@ -1,4 +1,4 @@
-# 0020. 역할별 폴더 구조에 src/types/를 추가한다
+# 0020. 역할별 폴더 구조에 src/types/와 src/assets/를 추가한다
 
 - 상태: 채택
 - 날짜: 2026-11-27
@@ -17,4 +17,5 @@ A안. 역할별 구조는 그대로 두고 `types/`(여러 역할이 같이 쓰�
 한 곳에서만 쓰는 타입(예: 카카오 응답 타입은 `api/`, 컴포넌트 props는 그 컴포넌트 파일)은 쓰는 곳 옆에 둔다.
 
 ## 결과
-- 폴더 구조: `app/`, `pages/`, `components/`, `hooks/`, `api/`, `stores/`, `lib/`, `types/`, `mocks/`, `styles/`
+- 폴더 구조: `app/`, `pages/`, `components/`, `hooks/`, `api/`, `stores/`, `lib/`, `types/`, `assets/`, `mocks/`, `styles/`
+- 코드에서 import하는 이미지(NoData 책 아이콘)는 `assets/`에 둔다. 빌드 때 파일 이름에 내용 해시가 붙어 이미지가 바뀌면 캐시가 자동으로 갱신되고, 경로 오타는 빌드에서 걸린다.
