@@ -73,6 +73,31 @@ test.describe('도서 검색 페이지', () => {
     await expect(dialog).toHaveCount(0);
   });
 
+  test('팝업 뒤에 포커스 받을 요소가 없어도 Tab으로 나가면 닫힌다', async ({ page }) => {
+    // 운영 빌드처럼 개발 도구 버튼이 없는 상태를 만든다. 초기 화면에서는 팝업이 마지막 포커스 요소다.
+    await page.getByRole('button', { name: 'Open Tanstack query devtools' }).waitFor();
+    await page.evaluate(() => document.querySelector('.tsqd-parent-container')?.remove());
+    const dialog = await openPopup(page);
+    for (let i = 0; i < 3; i += 1) await page.keyboard.press('Tab');
+    await expect(dialog.getByRole('button', { name: '상세 검색 닫기' })).toBeFocused();
+
+    await page.keyboard.press('Tab');
+
+    await expect(dialog).toHaveCount(0);
+  });
+
+  test('검색 결과가 있으면 Tab으로 나갈 때 포커스가 다음 요소로 간다', async ({ page }) => {
+    await page.goto('/?query=무라카미 하루키');
+    await expect(page.getByRole('article')).toHaveCount(10);
+    const dialog = await openPopup(page);
+    for (let i = 0; i < 3; i += 1) await page.keyboard.press('Tab');
+
+    await page.keyboard.press('Tab');
+
+    await expect(dialog).toHaveCount(0);
+    await expect(page.getByRole('button', { name: '상세보기' }).first()).toBeFocused();
+  });
+
   test('검색 조건을 마우스로 고르면 고른 항목은 목록에서 빠진다', async ({ page }) => {
     const dialog = await openPopup(page);
     const select = dialog.getByRole('combobox', { name: '검색 조건' });
