@@ -267,19 +267,23 @@ Figma `757:1435`(초기), `744:313`(목록)
   - 버튼은 새로고침 없이 이동한다. Button의 링크를 `Link`로 그린다 ([0040](adr/0040-button-href-router-link.md))
 
 ### Step 5. API 연결
-- [ ] MSW 설정: 카카오 검색 handler (Step 3 fixture 사용, `page`/`size`/`is_end` 처리, 지연·에러·0건 시나리오)
-  - 개발 서버: `VITE_API_MOCKING=enabled`일 때만 시작, 운영 빌드에 포함되지 않게
+- [x] MSW 설정: 카카오 검색 handler (Step 3 fixture 사용, `page`/`size`/`is_end` 처리, 지연·에러·0건 시나리오)
+  - 개발 서버: `VITE_API_MOCKING=enabled`일 때만 시작(`pnpm dev:mock`), 운영 빌드에 포함되지 않게 — `msw/vite` 플러그인은 worker 파일 제공에만 쓴다
   - Vitest: Node용 서버로 같은 handler 사용
   - Playwright: 모킹 켠 개발 서버로 실행
-- [ ] `fetch` 래퍼 (`Authorization: KakaoAK {key}`), 요청 / 응답 타입
-- [ ] query key factory
-- [ ] `useInfiniteQuery` 검색 훅 (`meta.is_end`로 다음 페이지 판단)
-- [ ] 도서 검색 페이지의 fixture를 API 데이터로 교체: Enter 검색, 건수, 결과 목록
-- [ ] 무한 스크롤 (IntersectionObserver)
-- [ ] 로딩 / 에러 / 빈 상태
-- [ ] 검색 조건을 URL 쿼리(`?query=&target=`)로 관리 → 새로고침·뒤로가기 유지
-- [ ] URL을 읽을 때 `target` 검증: 허용 값이 아니면 NotFound 화면, API 호출 안 함. `SearchTarget` 타입으로 검증 안 된 값이 API 함수에 못 들어가게
-- [ ] 실제 키로 잘못된 `target` 요청 시 카카오 응답 확인 → MSW handler에 같은 동작 재현
+  - 실제 응답 page 1~3 저장, 3페이지에서 `is_end: true`. 지연·에러는 검색어로 고름 ([0043](adr/0043-msw-fixtures-and-scenarios.md))
+- [x] `fetch` 래퍼 (`Authorization: KakaoAK {key}`), 요청 / 응답 타입 — 실패는 상태 코드를 담은 `KakaoApiError`, 4xx는 재시도 안 함 ([0045](adr/0045-api-layer-and-tests.md))
+- [x] query key factory
+- [x] `useInfiniteQuery` 검색 훅 (`meta.is_end`로 다음 페이지 판단)
+  - 실제 API는 문서의 50페이지 너머도 응답하고 마지막에 `is_end`를 줘서 상한을 두지 않음
+  - isbn이 같은 책은 처음 것만 보여줌 (866건 중 7건, [0046](adr/0046-dedupe-books-by-isbn.md))
+- [x] 도서 검색 페이지의 fixture를 API 데이터로 교체: Enter 검색, 건수, 결과 목록
+- [x] 무한 스크롤 (IntersectionObserver) — 목록 끝 200px 전에 다음 page. 목록이 화면보다 짧아도 이어서 부름
+- [x] 로딩 / 에러 / 빈 상태 — 스켈레톤, 안내 + 다시 시도 ([0044](adr/0044-loading-error-ui.md)), 불러오는 동안 직전 건수 유지 ([0047](adr/0047-count-while-loading.md))
+- [x] 검색 조건을 URL 쿼리(`?query=&target=`)로 관리 → 새로고침·뒤로가기 유지 ([0042](adr/0042-search-state-url.md))
+- [x] URL을 읽을 때 `target` 검증: 허용 값이 아니면 NotFound 화면, API 호출 안 함. `SearchTarget` 타입으로 검증 안 된 값이 API 함수에 못 들어가게
+- [x] 실제 키로 잘못된 `target` 요청 시 카카오 응답 확인 → MSW handler에 같은 동작 재현
+  - 카카오는 허용되지 않은 `target`을 에러 없이 무시하고 전체 검색(200), 대소문자는 가리지 않음
 
 ### Step 6. 검색 기록 기능
 - [ ] 검색 기록 store (Zustand + persist): 최대 8개, 중복 시 맨 앞으로 이동
