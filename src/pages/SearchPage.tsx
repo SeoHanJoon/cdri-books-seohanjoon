@@ -32,9 +32,12 @@ export function SearchPage() {
   const [query, setQuery] = useState(urlQuery);
   // 뒤로가기 등으로 URL의 검색어가 바뀌면 입력창도 따라간다. 렌더 중에 맞춰야 이전 글자가 한 번 그려지지 않는다.
   const [syncedQuery, setSyncedQuery] = useState(urlQuery);
+  // URL은 검색 직후가 아니라 조금 뒤에 바뀐다. 직접 검색한 결과로 바뀐 것이면 그 사이 입력한 글자를 덮어쓰지 않는다.
+  const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
   if (syncedQuery !== urlQuery) {
     setSyncedQuery(urlQuery);
-    setQuery(urlQuery);
+    if (urlQuery === submittedQuery) setSubmittedQuery(null);
+    else setQuery(urlQuery);
   }
 
   const {
@@ -65,9 +68,12 @@ export function SearchPage() {
   if (parsed.status === 'invalid') return <NotFoundPage />;
 
   const submit = () => {
-    const next = query.trim() === '' ? new URLSearchParams() : toSearchParams({ query });
+    const trimmed = query.trim();
+    const next = trimmed === '' ? new URLSearchParams() : toSearchParams({ query: trimmed });
     // 같은 검색을 다시 하면 방문 기록을 쌓지 않는다.
-    if (next.toString() !== searchParams.toString()) setSearchParams(next);
+    if (next.toString() === searchParams.toString()) return;
+    setSubmittedQuery(trimmed);
+    setSearchParams(next);
   };
 
   const books = data?.books ?? [];
