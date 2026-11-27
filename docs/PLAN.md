@@ -11,12 +11,13 @@
 | 구분 | 선택 | 비고 |
 |---|---|---|
 | 빌드 | Vite 8 | CSR 앱이라 SSR/RSC 불필요 |
-| UI | React 19 + TypeScript | |
+| UI | React 19 + TypeScript 6.0 | typescript-eslint가 TS 6.0까지 지원 ([0011](adr/0011-eslint-typescript-6.md)) |
 | 서버 상태 | TanStack Query v5 | `useInfiniteQuery`로 페이지 단위 조회 |
-| 라우팅 | React Router | `/` 도서 검색, `/wishlist` 내가 찜한 책 |
+| 라우팅 | React Router 8 (데이터 모드) | `/` 도서 검색, `/wishlist` 내가 찜한 책 ([0014](adr/0014-react-router-data-mode.md)) |
 | 스타일 | Tailwind CSS v4 | Figma 스타일 가이드를 `@theme` 토큰으로 이식 |
+| 폰트 | `@fontsource-variable/noto-sans-kr` | 글자 범위별 조각 자체 호스팅 ([0013](adr/0013-font-fontsource-variable.md)) |
 | 클라이언트 상태 | Zustand + persist | 찜 목록, 검색 기록 (localStorage 유지) |
-| 코드 품질 | ESLint + Prettier | |
+| 코드 품질 | ESLint + Prettier | 폴더 구조는 역할별 ([0012](adr/0012-folder-structure-by-role.md)) |
 | 런타임 | Node.js 26.13.1 (LTS) | `.nvmrc`로 고정 |
 | 패키지 매니저 | pnpm 12 | `package.json`의 `packageManager`로 고정 |
 | 단위 테스트 | Vitest | 화면과 분리된 로직 (검색 기록, 가격 표시, 찜 store 등) |
@@ -165,6 +166,10 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 8 | 스타일링 | Tailwind v4 + Figma 토큰 | `@theme`에 스타일 가이드 이식, 가이드 밖 색 사용 차단 | ☑ Tailwind v4 ([0002](adr/0002-tailwind-figma-tokens.md)) |
 | 9 | 작업 순서 · API 모킹 | 화면 구성 먼저, API 연결은 그 다음. 모킹은 MSW | 화면을 Figma와 먼저 맞춰 확정하고 데이터만 바꿔 끼움. 가짜 데이터를 한 곳에서 관리 | ☑ 화면 먼저 + MSW ([0009](adr/0009-screens-first-msw.md)) |
 | 10 | 잘못된 경로·검색 조건 | "존재하지 않는 페이지입니다." 화면 | 잘못된 조건으로 검색을 진행하지 않음. 없는 경로와 같은 화면으로 일관되게 처리 | ☑ NotFound 화면 ([0010](adr/0010-not-found.md)) |
+| 11 | 린트 · TypeScript 버전 | ESLint + TS 6.0 | typescript-eslint가 TS `<6.1.0`만 지원. 타입 기반 린트 규칙 유지 | ☑ ESLint + TS 6.0 ([0011](adr/0011-eslint-typescript-6.md)) |
+| 12 | 폴더 구조 | 기능별 | 기능 PR이 폴더 하나에서 끝남 | ☑ 역할별 ([0012](adr/0012-folder-structure-by-role.md)) |
+| 13 | 폰트 불러오기 | `@fontsource-variable` | 전체 파일 4.2MB vs 조각 방식 약 200KB, 외부 서버 불필요 | ☑ `@fontsource-variable` ([0013](adr/0013-font-fontsource-variable.md)) |
+| 14 | 라우터 사용 방식 | 데이터 모드 | route `lazy`로 코드 분할, `errorElement` | ☑ 데이터 모드 ([0014](adr/0014-react-router-data-mode.md)) |
 
 ---
 
@@ -178,16 +183,16 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 - **기능 단계**: fixture 자리에 실제 데이터와 저장 로직을 연결한다. 개발·테스트 중 API 응답은 MSW가 같은 fixture로 돌려준다.
 
 ### Step 1. 프로젝트 기반
-- [ ] Vite + React 19 + TypeScript 초기화
-- [ ] `package.json`에 `packageManager: pnpm@12.x`, `engines.node: >=26` 지정 (`.nvmrc`는 생성됨)
-- [ ] ESLint / Prettier, `@/` 경로 별칭
-- [ ] `.env.example`, `.gitignore` (`.env` 제외)
-- [ ] Tailwind v4 + `@theme` 토큰 (색상, 타이포), Noto Sans KR
-- [ ] QueryClient Provider + Devtools
-- [ ] React Router 라우트 (`/`, `/wishlist`, 그 외 경로 → NotFound 자리)
-- [ ] Vitest 설정
-- [ ] Playwright 설정 (`E2E_PORT`, `e2e:record` → `recordings/` 영상)
-- [ ] `package.json` 스크립트: `dev`, `build`, `typecheck`, `lint`, `test`, `e2e`, `e2e:record`
+- [x] Vite + React 19 + TypeScript 초기화
+- [x] `package.json`에 `packageManager: pnpm@12.x`, `engines.node: >=26` 지정 (`.nvmrc`는 생성됨)
+- [x] ESLint / Prettier, `@/` 경로 별칭
+- [x] `.env.example`, `.gitignore` (`.env` 제외)
+- [x] Tailwind v4 + `@theme` 토큰 (색상, 타이포), Noto Sans KR
+- [x] QueryClient Provider + Devtools
+- [x] React Router 라우트 (`/`, `/wishlist`, 그 외 경로 → NotFound 자리)
+- [x] Vitest 설정
+- [x] Playwright 설정 (`E2E_PORT`, `e2e:record` → `recordings/` 영상)
+- [x] `package.json` 스크립트: `dev`, `build`, `typecheck`, `lint`, `test`, `e2e`, `e2e:record`
 
 ### Step 2. 공통 UI · 레이아웃 (Figma Elements `754:70`)
 Elements의 컴포넌트를 1:1로 화면 전용 컴포넌트로 만든다. 데이터는 props로만 받고, 검색·찜·펼침 같은 동작 로직은 연결하지 않는다.
