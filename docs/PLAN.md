@@ -174,7 +174,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 15 | 갓 배포된 버전 설치 | pnpm 최소 배포 기간(24시간) 규칙 준수 | 악성 버전이 발견·삭제되기 전 설치를 피함. vite 8.4.0 대신 8.3.8 | ☑ 규칙 준수 ([0015](adr/0015-pnpm-minimum-release-age.md)) |
 | 16 | 가이드 밖 시안 값 | 토큰 추가 | 시안 1:1 구현, 규칙 "실측 후 토큰 추가"와 일치 | ☑ 토큰 추가 ([0016](adr/0016-design-values-beyond-guide.md)) |
 | 17 | 아이콘 확보·사용 | Figma 직접 내보내기 + React 컴포넌트 | API 한도 초과, 아이콘 7개뿐이라 플러그인 불필요 | ☑ 직접 내보내기 + 컴포넌트 ([0017](adr/0017-icons-react-components.md)) |
-| 18 | Button 링크 처리 | `variant` + 스타일 함수 | 구매하기는 링크(`<a>`)여야 함 | ☑ `href` 유무로 `<a>`/`<button>` 분기 ([0018](adr/0018-button-href.md)) |
+| 18 | Button 링크 처리 | `variant` + 스타일 함수 | 구매하기는 링크(`<a>`)여야 함 | ☑ `href` 유무로 `<a>`/`<button>` 분기 ([0018](adr/0018-button-href.md), `<a>`는 → `Link` [0040](adr/0040-button-href-router-link.md)) |
 | 19 | 책 컴포넌트 데이터 | 화면용 `Book` 타입 | 카카오 규칙(-1 등)을 변환 함수 한 곳에 가둠 | ☑ `Book` + 공통 props 확장 ([0019](adr/0019-book-view-type.md), props는 → [0032](adr/0032-book-list-item-single-component.md)) |
 | 20 | 공용 타입·이미지 위치 | `src/types/`, `src/assets/` | 여러 역할이 같이 쓰는 타입, import하는 이미지 | ☑ `src/types/`, `src/assets/` 추가 ([0020](adr/0020-folder-structure-types.md)) |
 | 21 | 가격·하트 동작 (미명시) | 할인가 우선, 할인가 없으면 원가만, 작은 하트는 표시만 | 실제 결제 가격, 취소선은 비교 시에만 의미 | ☑ 작은 하트도 찜 토글 ([0021](adr/0021-price-and-heart-behavior.md)) |
@@ -194,6 +194,9 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 35 | 책 목록·펼침 상태 위치 | `BookList` 컴포넌트 | 두 페이지 재사용, 검색어 바뀌면 초기화 | ☑ 추천안 ([0035](adr/0035-book-list-component.md)) |
 | 36 | 상세 검색 컴포넌트·두 입력창 관계 | 버튼+팝업 한 컴포넌트, 글자 안 옮김, 닫으면 버림 | 상호 초기화를 페이지 한 곳에서 | ☑ 추천안 ([0036](adr/0036-detail-search-component.md)) |
 | 37 | 본문 위치·좁은 화면 여백·잘린 책 소개 (미명시) | 가운데, 768px 미만 40px, 잘리면 "…" | 시안 프레임 불일치, 카카오가 250자에서 자름 | ☑ 추천안 ([0037](adr/0037-search-page-layout-and-contents.md)) |
+| 38 | 찜 페이지 세로 간격 | 도서 검색과 맞춤 | 탭을 오가도 제목·목록 위치 그대로 | ☑ 추천안 ([0038](adr/0038-wishlist-page-spacing.md)) |
+| 39 | 화면 단계 찜 페이지 상태 | 개발용 쿼리로 목록/빈 상태 전환 | 두 상태 모두 시연 | ☑ 목록만 고정, 빈 상태는 Step 8 ([0039](adr/0039-wishlist-fixture-list-only.md)) |
+| 40 | 앱 안으로 가는 Button 링크 | `to` prop 추가 | 새로고침 없이 이동 | ☑ `href` 분기를 `Link`로 (사용자 제안, [0040](adr/0040-button-href-router-link.md)) |
 
 ---
 
