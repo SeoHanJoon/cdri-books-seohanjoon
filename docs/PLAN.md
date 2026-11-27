@@ -209,8 +209,9 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 50 | 검색 기록 저장 시점·중복·탭 동기화 (미명시) | 실행마다 맨 앞, 완전 일치, `storage` 이벤트 | 사용자가 실행한 검색만 남김, 탭끼리 덮어쓰지 않음 | ☑ 추천안 ([0050](adr/0050-search-history-store.md)) |
 | 51 | 상세 검색 빈 검색어·개발 데이터·로직 위치 | 초기 화면으로, 실제 저자명 응답, `useSearchInput` | 전체 검색과 같은 규칙, 조건별 결과 시연, 상호 초기화 한 곳 | ☑ 빈 검색어는 팝업 유지, 나머지 추천안 ([0051](adr/0051-detail-search-execution.md), 로직 위치는 → [0052](adr/0052-search-hooks-split.md)) |
 | 52 | 검색 입력 훅 나누기·검색 후 입력창 글자 | 훅 3개(URL·전체·상세), 조합은 페이지 / URL 값으로 맞춤 | 훅마다 일 하나, 상호 초기화가 페이지에 보임 | ☑ 추천안 ([0052](adr/0052-search-hooks-split.md)) |
-| 53 | 찜 저장 모양·순서·찜 페이지 해제·10개 단위 (미명시) | `Book[]`, 최근 찜 위, 페이지에 있는 동안 남김, 개수 10씩 늘림 | 코드 짧음, 방금 찜한 책 바로 확인, 실수 복구·포커스 유지, 데이터가 이미 브라우저에 있음 | ☑ 추천안 ([0053](adr/0053-wishlist-store-and-page.md)) |
+| 53 | 찜 저장 모양·순서·찜 페이지 해제·10개 단위 (미명시) | `Book[]`, 최근 찜 위, 페이지에 있는 동안 남김, 개수 10씩 늘림 | 코드 짧음, 방금 찜한 책 바로 확인, 실수 복구·포커스 유지, 데이터가 이미 브라우저에 있음 | ☑ 추천안 ([0053](adr/0053-wishlist-store-and-page.md), 테스트 방법은 → [0055](adr/0055-wishlist-page-test-scope.md)) |
 | 54 | 찜 연결 코드·테스트용 저장소 위치 | `useWishlist` 훅, `src/stores/testStorage.ts` | 두 페이지의 같은 코드를 한 곳에, 새 폴더 없이 두 store 테스트가 공유 | ☑ 추천안 ([0054](adr/0054-wishlist-hook-and-test-storage.md)) |
+| 55 | 찜 페이지 테스트 범위 | 보여줄 목록 규칙은 순수 함수로 Vitest, 10권씩 늘리기는 Playwright | 훅 테스트 도구 없음, 자르기는 한 줄, 의존성 추가 없음 | ☑ 추천안 ([0055](adr/0055-wishlist-page-test-scope.md)) |
 
 ---
 
@@ -314,7 +315,9 @@ Figma `757:1435`(초기), `744:313`(목록)
   - 화면용 `Book` 배열, 최근 찜한 책이 맨 앞, isbn이 같으면 같은 책. 다른 탭과 `storage` 이벤트로 맞춤 ([0053](adr/0053-wishlist-store-and-page.md))
   - 테스트용 메모리 저장소를 `src/stores/testStorage.ts`로 빼서 검색 기록 store 테스트와 함께 씀 ([0054](adr/0054-wishlist-hook-and-test-storage.md))
 - [x] 하트 토글 — 도서 검색 페이지의 큰·작은 하트를 `useWishlist` 훅으로 연결 ([0054](adr/0054-wishlist-hook-and-test-storage.md))
-- [ ] 찜 페이지의 fixture를 store 데이터로 교체 (10개 단위 무한 스크롤), 빈 상태 화면 확인·브라우저 테스트 ([0039](adr/0039-wishlist-fixture-list-only.md))
+- [x] 찜 페이지의 fixture를 store 데이터로 교체 (10개 단위 무한 스크롤), 빈 상태 화면 확인·브라우저 테스트 ([0039](adr/0039-wishlist-fixture-list-only.md))
+  - 해제한 책은 페이지에 있는 동안 빈 하트로 제자리에 남고, 건수는 실제 찜 수. 다른 탭에서 새로 찜한 책은 맨 위에 ([0053](adr/0053-wishlist-store-and-page.md))
+  - 보여줄 목록 규칙은 `mergeShownBooks`로 단위 테스트, 10권씩 늘리기는 `usePagedList` + `LoadMoreFooter`를 브라우저 테스트로 ([0055](adr/0055-wishlist-page-test-scope.md))
 
 ### Step 9. 성능 최적화 · 마무리
 - [ ] `BookListItem` `memo`, 이미지 `loading="lazy"`
