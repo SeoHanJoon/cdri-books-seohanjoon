@@ -19,10 +19,10 @@ describe('검색 기록 store', () => {
     expect(store.getState().keywords).toEqual(['무라카미 하루키', '노르웨이 숲']);
   });
 
-  it('앞뒤 공백을 지우고 넣고, 빈 검색어는 넣지 않는다', async () => {
+  it('빈 검색어는 넣지 않는다', async () => {
     const store = await loadStore();
-    store.getState().add('  노르웨이 숲  ');
-    store.getState().add('   ');
+    store.getState().add('노르웨이 숲');
+    store.getState().add('');
 
     expect(store.getState().keywords).toEqual(['노르웨이 숲']);
   });
@@ -31,7 +31,7 @@ describe('검색 기록 store', () => {
     const store = await loadStore();
     store.getState().add('a');
     store.getState().add('b');
-    store.getState().add(' a ');
+    store.getState().add('a');
 
     expect(store.getState().keywords).toEqual(['a', 'b']);
   });

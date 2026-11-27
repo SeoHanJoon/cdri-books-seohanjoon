@@ -16,10 +16,9 @@ export const useSearchHistoryStore = create<SearchHistoryState>()(
     (set) => ({
       keywords: [],
       add: (keyword) => {
-        const trimmed = keyword.trim();
-        if (trimmed === '') return;
+        if (keyword === '') return;
         set(({ keywords }) => ({
-          keywords: [trimmed, ...keywords.filter((item) => item !== trimmed)].slice(
+          keywords: [keyword, ...keywords.filter((item) => item !== keyword)].slice(
             0,
             MAX_SEARCH_HISTORY,
           ),
