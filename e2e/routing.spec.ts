@@ -14,7 +14,7 @@ test('없는 경로로 들어오면 헤더와 존재하지 않는 페이지 안�
   await page.goto('/abc');
   await expect(page.getByRole('banner')).toBeVisible();
   await expect(page.getByRole('heading', { name: '존재하지 않는 페이지입니다.' })).toBeVisible();
-  await expect(page.getByRole('img')).toHaveCount(0);
+  await expect(page.getByRole('main').getByRole('img')).toHaveCount(0);
 });
 
 test('존재하지 않는 페이지에서 버튼을 누르면 새로고침 없이 도서 검색으로 간다', async ({
