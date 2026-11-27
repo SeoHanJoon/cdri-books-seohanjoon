@@ -23,7 +23,7 @@
 | 패키지 매니저 | pnpm 12 | `package.json`의 `packageManager`로 고정 |
 | 단위 테스트 | Vitest | 화면과 분리된 로직 (검색 기록, 가격 표시, 찜 store 등) |
 | 브라우저 테스트 | Playwright | PR의 as-is / to-be 영상 녹화에도 사용 |
-| API 모킹 | MSW | 카카오 API 가짜 응답. 개발 서버·Vitest·Playwright가 같은 handler 공유 (Step 5부터) |
+| API 모킹 | MSW 3 | 카카오 API 가짜 응답. 개발 서버·Vitest·Playwright가 같은 handler 공유. worker는 `msw/vite`로 개발 서버에만 ([0048](adr/0048-msw-vite-plugin.md)) |
 
 ### 작업 흐름
 
@@ -165,7 +165,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 6 | 패키지 매니저 | pnpm | 설치 빠름, `.claude/` 훅·스킬이 pnpm 기준 | ☑ pnpm ([0008](adr/0008-pnpm.md)) |
 | 7 | 빌드 도구 | Vite + React | SSR 이점 없는 CSR 서비스, 요구사항 "React.js"와 일치 | ☑ Vite + React ([0001](adr/0001-vite-react.md)) |
 | 8 | 스타일링 | Tailwind v4 + Figma 토큰 | `@theme`에 스타일 가이드 이식, 가이드 밖 색 사용 차단 | ☑ Tailwind v4 ([0002](adr/0002-tailwind-figma-tokens.md)) |
-| 9 | 작업 순서 · API 모킹 | 화면 구성 먼저, API 연결은 그 다음. 모킹은 MSW | 화면을 Figma와 먼저 맞춰 확정하고 데이터만 바꿔 끼움. 가짜 데이터를 한 곳에서 관리 | ☑ 화면 먼저 + MSW ([0009](adr/0009-screens-first-msw.md)) |
+| 9 | 작업 순서 · API 모킹 | 화면 구성 먼저, API 연결은 그 다음. 모킹은 MSW | 화면을 Figma와 먼저 맞춰 확정하고 데이터만 바꿔 끼움. 가짜 데이터를 한 곳에서 관리 | ☑ 화면 먼저 + MSW ([0009](adr/0009-screens-first-msw.md), worker 제공은 → [0048](adr/0048-msw-vite-plugin.md)) |
 | 10 | 잘못된 경로·검색 조건 | "존재하지 않는 페이지입니다." 화면 | 잘못된 조건으로 검색을 진행하지 않음. 없는 경로와 같은 화면으로 일관되게 처리 | ☑ NotFound 화면 ([0010](adr/0010-not-found.md), 화면 구성은 → [0041](adr/0041-not-found-without-nodata.md)) |
 | 11 | 린트 · TypeScript 버전 | ESLint + TS 6.0 | typescript-eslint가 TS `<6.1.0`만 지원. 타입 기반 린트 규칙 유지 | ☑ ESLint + TS 6.0 ([0011](adr/0011-eslint-typescript-6.md)) |
 | 12 | 폴더 구조 | 기능별 | 기능 PR이 폴더 하나에서 끝남 | ☑ 역할별 ([0012](adr/0012-folder-structure-by-role.md)) |
@@ -204,6 +204,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 45 | API·훅 구조, 테스트 범위 | 순수 함수·fetch는 Vitest, 화면은 Playwright, 감지 훅 직접 작성 | 의존성은 MSW 하나만 추가 | ☑ 추천안 ([0045](adr/0045-api-layer-and-tests.md)) |
 | 46 | isbn이 같은 검색 결과 | 처음 것만 보여줌 | 실제 응답 866건 중 7건 겹침, isbn이 목록 key·찜 기준 | ☑ 추천안 ([0046](adr/0046-dedupe-books-by-isbn.md)) |
 | 47 | 로딩 중 건수 표시 (미명시) | 숫자 자리만 스켈레톤 | 틀린 숫자를 보이지 않음 | ☑ 직전 건수 유지 ([0047](adr/0047-count-while-loading.md)) |
+| 48 | MSW worker 파일 제공 | `msw/vite` 플러그인 | 저장소·운영 빌드에 파일 없음, 실행은 안정 API | ☑ 추천안 ([0048](adr/0048-msw-vite-plugin.md)) |
 
 ---
 
@@ -266,7 +267,7 @@ Figma `757:1435`(초기), `744:313`(목록)
 - [x] NotFound 화면: Header 유지, "존재하지 않는 페이지입니다." 제목 + 도서 검색으로 돌아가는 버튼 — Figma에 없는 화면. 책 아이콘이 어울리지 않아 `NoData`는 쓰지 않음 ([0041](adr/0041-not-found-without-nodata.md))
   - 버튼은 새로고침 없이 이동한다. Button의 링크를 `Link`로 그린다 ([0040](adr/0040-button-href-router-link.md))
 
-### Step 5. API 연결
+### Step 5. API 연결 ✅
 - [x] MSW 설정: 카카오 검색 handler (Step 3 fixture 사용, `page`/`size`/`is_end` 처리, 지연·에러·0건 시나리오)
   - 개발 서버: `VITE_API_MOCKING=enabled`일 때만 시작(`pnpm dev:mock`), 운영 빌드에 포함되지 않게 — `msw/vite` 플러그인은 worker 파일 제공에만 쓴다
   - Vitest: Node용 서버로 같은 handler 사용
