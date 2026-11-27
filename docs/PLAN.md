@@ -313,7 +313,7 @@ Figma `757:1435`(초기), `744:313`(목록)
 - [x] 찜 store (Zustand + persist): 찜한 시점 데이터 스냅샷 저장
   - 화면용 `Book` 배열, 최근 찜한 책이 맨 앞, isbn이 같으면 같은 책. 다른 탭과 `storage` 이벤트로 맞춤 ([0053](adr/0053-wishlist-store-and-page.md))
   - 테스트용 메모리 저장소를 `src/stores/testStorage.ts`로 빼서 검색 기록 store 테스트와 함께 씀 ([0054](adr/0054-wishlist-hook-and-test-storage.md))
-- [ ] 하트 토글
+- [x] 하트 토글 — 도서 검색 페이지의 큰·작은 하트를 `useWishlist` 훅으로 연결 ([0054](adr/0054-wishlist-hook-and-test-storage.md))
 - [ ] 찜 페이지의 fixture를 store 데이터로 교체 (10개 단위 무한 스크롤), 빈 상태 화면 확인·브라우저 테스트 ([0039](adr/0039-wishlist-fixture-list-only.md))
 
 ### Step 9. 성능 최적화 · 마무리
