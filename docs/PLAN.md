@@ -16,6 +16,7 @@
 | 라우팅 | React Router 8 (데이터 모드) | `/` 도서 검색, `/wishlist` 내가 찜한 책 ([0014](adr/0014-react-router-data-mode.md)) |
 | 스타일 | Tailwind CSS v4 | Figma 스타일 가이드를 `@theme` 토큰으로 이식 |
 | 폰트 | `@fontsource-variable/noto-sans-kr` | 글자 범위별 조각 자체 호스팅 ([0013](adr/0013-font-fontsource-variable.md)) |
+| 클래스 이름 | clsx | 조건부 클래스 합치기 ([0025](adr/0025-clsx.md)) |
 | 클라이언트 상태 | Zustand + persist | 찜 목록, 검색 기록 (localStorage 유지) |
 | 코드 품질 | ESLint + Prettier | 폴더 구조는 역할별 + `types/` ([0020](adr/0020-folder-structure-types.md)) |
 | 런타임 | Node.js 26.13.1 (LTS) | `.nvmrc`로 고정 |
@@ -180,6 +181,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 22 | 공통 컴포넌트 확인 화면 | 개발용 `/dev/elements` | Elements와 비교, PR 영상, 운영 빌드 제외 | ☑ `/dev/elements` ([0022](adr/0022-dev-elements-page.md)) |
 | 23 | 화면 너비 대응 | 데스크톱 기준 | 시안이 1920px 하나뿐 | ☑ 모바일까지 ([0023](adr/0023-responsive-mobile.md)) |
 | 24 | 아이콘 props | 색은 `className`으로 | 시안의 크기·색 조합 고정 | ☑ `size`만 받고 색은 내부, 작은 테두리 하트는 회색 ([0024](adr/0024-icon-component-props.md)) |
+| 25 | 클래스 이름 합치기 | clsx | 조건부 클래스가 여러 컴포넌트에 필요, 0.2KB | ☑ clsx ([0025](adr/0025-clsx.md)) |
 
 ---
 
