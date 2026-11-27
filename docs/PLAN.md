@@ -205,6 +205,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 46 | isbn이 같은 검색 결과 | 처음 것만 보여줌 | 실제 응답 866건 중 7건 겹침, isbn이 목록 key·찜 기준 | ☑ 추천안 ([0046](adr/0046-dedupe-books-by-isbn.md)) |
 | 47 | 로딩 중 건수 표시 (미명시) | 숫자 자리만 스켈레톤 | 틀린 숫자를 보이지 않음 | ☑ 직전 건수 유지 ([0047](adr/0047-count-while-loading.md)) |
 | 48 | MSW worker 파일 제공 | `msw/vite` 플러그인 | 저장소·운영 빌드에 파일 없음, 실행은 안정 API | ☑ 추천안 ([0048](adr/0048-msw-vite-plugin.md)) |
+| 49 | 도서 검색 페이지 구조 | 훅 1 + 컴포넌트 2 | 한 컴포넌트의 네 가지 일 분리, 목록 끝 처리는 Step 8 재사용 | ☑ 추천안 ([0049](adr/0049-search-page-split.md)) |
 
 ---
 
