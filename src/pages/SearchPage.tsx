@@ -13,12 +13,11 @@ import { useBookSearch } from '@/hooks/useBookSearch';
 import { useSearchInput } from '@/hooks/useSearchInput';
 import { toSearchParams } from '@/lib/searchParams';
 import { NotFoundPage } from '@/pages/NotFoundPage';
+import { useSearchHistoryStore } from '@/stores/searchHistoryStore';
 import type { BookSearch, DetailSearchCondition } from '@/types/search';
 
 const isLiked = () => false;
 const ignoreToggleLike = () => {};
-const NO_HISTORY: string[] = [];
-const ignoreHistory = () => {};
 const EMPTY_DETAIL_SEARCH: DetailSearchCondition = { target: 'title', keyword: '' };
 const ignoreDetailSearch = () => {};
 
@@ -94,7 +93,9 @@ function SearchResults({ search }: SearchResultsProps) {
 }
 
 export function SearchPage() {
-  const { parsed, query, setQuery, submit } = useSearchInput();
+  const { parsed, query, setQuery, submit, searchKeyword } = useSearchInput();
+  const history = useSearchHistoryStore((state) => state.keywords);
+  const removeHistory = useSearchHistoryStore((state) => state.remove);
 
   if (parsed.status === 'invalid') return <NotFoundPage />;
 
@@ -107,9 +108,9 @@ export function SearchPage() {
         detailSearch={
           <DetailSearch defaultValue={EMPTY_DETAIL_SEARCH} onSubmit={ignoreDetailSearch} />
         }
-        history={NO_HISTORY}
-        onHistorySelect={ignoreHistory}
-        onHistoryRemove={ignoreHistory}
+        history={history}
+        onHistorySelect={searchKeyword}
+        onHistoryRemove={removeHistory}
       />
       <SearchResults search={parsed.status === 'ready' ? parsed.search : null} />
     </div>
