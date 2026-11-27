@@ -1,11 +1,11 @@
 interface ViteTypeOptions {
-  strictImportMetaEnv: unknown
+  strictImportMetaEnv: unknown;
 }
 
 interface ImportMetaEnv {
-  readonly VITE_KAKAO_REST_API_KEY: string
+  readonly VITE_KAKAO_REST_API_KEY: string;
 }
 
 interface ImportMeta {
-  readonly env: ImportMetaEnv
+  readonly env: ImportMetaEnv;
 }
