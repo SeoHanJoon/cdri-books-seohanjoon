@@ -251,12 +251,13 @@ Figma `18:969`(초기), `18:805`(결과), `757:958`(검색 기록), `18:608`·`7
 - [x] 검색 기록 드롭다운 UI (입력창 포커스 시 표시, X 버튼) — 저장 로직 없음, 페이지는 빈 기록 ([0033](adr/0033-search-history-dropdown.md))
 - [x] 상세 검색 팝업 UI: Popover + 조건 Select(제목/저자명/출판사), 외부 클릭·Esc로 닫기 — 검색 실행 없음 ([0034](adr/0034-detail-search-popover.md), [0036](adr/0036-detail-search-component.md))
 
-### Step 4. 화면 구성: 내가 찜한 책 · NotFound 페이지
+### Step 4. 화면 구성: 내가 찜한 책 · NotFound 페이지 ✅
 Figma `757:1435`(초기), `744:313`(목록)
-- [ ] 페이지 레이아웃: "내가 찜한 책" 제목, `SearchCountText`("찜한 책"), 목록
-- [ ] 빈 상태 — `NoData`("찜한 책이 없습니다.")
-- [ ] 목록: Step 3과 같은 `BookList` 재사용 (fixture 데이터, [0035](adr/0035-book-list-component.md))
-- [ ] NotFound 화면: Header 유지, `NoData` 재사용("존재하지 않는 페이지입니다.") + 도서 검색으로 돌아가는 버튼 — Figma에 없는 화면이라 기존 컴포넌트로 구성
+- [x] 페이지 레이아웃: "내가 찜한 책" 제목, `SearchCountText`("찜한 책"), 목록 — 세로 간격은 도서 검색과 같게 ([0038](adr/0038-wishlist-page-spacing.md))
+- [x] 빈 상태 — `NoData`("찜한 책이 없습니다.") — 분기만 넣고, 화면 확인·테스트는 Step 8 ([0039](adr/0039-wishlist-fixture-list-only.md))
+- [x] 목록: Step 3과 같은 `BookList` 재사용 (fixture 10권, 하트는 모두 찜한 상태, [0035](adr/0035-book-list-component.md))
+- [x] NotFound 화면: Header 유지, `NoData` 재사용("존재하지 않는 페이지입니다.") + 도서 검색으로 돌아가는 버튼 — Figma에 없는 화면이라 기존 컴포넌트로 구성
+  - 버튼은 새로고침 없이 이동한다. Button의 링크를 `Link`로 그린다 ([0040](adr/0040-button-href-router-link.md))
 
 ### Step 5. API 연결
 - [ ] MSW 설정: 카카오 검색 handler (Step 3 fixture 사용, `page`/`size`/`is_end` 처리, 지연·에러·0건 시나리오)
@@ -285,7 +286,7 @@ Figma `757:1435`(초기), `744:313`(목록)
 ### Step 8. 찜하기 기능
 - [ ] 찜 store (Zustand + persist): 찜한 시점 데이터 스냅샷 저장
 - [ ] 하트 토글
-- [ ] 찜 페이지의 fixture를 store 데이터로 교체 (10개 단위 무한 스크롤), 빈 상태
+- [ ] 찜 페이지의 fixture를 store 데이터로 교체 (10개 단위 무한 스크롤), 빈 상태 화면 확인·브라우저 테스트 ([0039](adr/0039-wishlist-fixture-list-only.md))
 
 ### Step 9. 성능 최적화 · 마무리
 - [ ] `BookListItem` `memo`, 이미지 `loading="lazy"`
