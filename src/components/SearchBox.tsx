@@ -15,7 +15,6 @@ interface SearchBoxProps {
   value: string;
   onValueChange: (value: string) => void;
   onSubmit: () => void;
-  /** 입력창 오른쪽, 상세검색 버튼 자리 */
   detailSearch: ReactNode;
   history: string[];
   onHistorySelect: (keyword: string) => void;
@@ -49,8 +48,6 @@ export function SearchBox({
     if (event.key === 'Escape') setHistoryOpen(false);
   };
 
-  // 누른 버튼이 목록에서 사라지면 포커스가 <body>로 빠지므로 입력창으로 돌려놓는다.
-  // focus()가 여는 onFocus보다 닫기가 나중에 반영되도록 순서를 지킨다.
   const selectHistory = (keyword: string) => {
     inputRef.current?.focus();
     setHistoryOpen(false);
@@ -99,7 +96,6 @@ export function SearchBox({
                     key={keyword}
                     className="relative h-10 hover:bg-gray has-focus-visible:bg-gray"
                   >
-                    {/* 검색어 버튼이 줄 전체를 덮고 X는 그 위에 얹는다. 오른쪽 여백(8 + 24 + 25px)은 긴 검색어가 X 밑으로 들어가지 않게 한다. */}
                     <button
                       type="button"
                       onClick={() => selectHistory(keyword)}

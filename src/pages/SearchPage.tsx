@@ -9,7 +9,6 @@ import { SearchCountText } from '@/components/SearchCountText';
 import { getSearchFixture } from '@/mocks/searchFixture';
 import type { DetailSearchCondition } from '@/types/search';
 
-// 찜하기는 Step 8, 검색 기록은 Step 6, 상세 검색은 Step 7에서 연결한다.
 const isLiked = () => false;
 const ignoreToggleLike = () => {};
 const NO_HISTORY: string[] = [];

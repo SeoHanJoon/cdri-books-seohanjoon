@@ -17,7 +17,6 @@ interface DetailSearchPanelProps {
   onClose: () => void;
 }
 
-// 열 때마다 새로 마운트되어 defaultValue로 시작한다. 닫으면 쓰던 내용은 버린다.
 function DetailSearchPanel({ defaultValue, onSubmit, onClose }: DetailSearchPanelProps) {
   const [target, setTarget] = useState(defaultValue.target);
   const [keyword, setKeyword] = useState(defaultValue.keyword);
@@ -87,11 +86,9 @@ export function DetailSearch({ defaultValue, onSubmit }: DetailSearchProps) {
   useEffect(() => {
     if (!open) return;
 
-    // 바깥을 누를 때는 누른 곳으로 포커스가 가야 하므로 버튼으로 돌려놓지 않는다.
     const handlePointerDown = (event: PointerEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
     };
-    // Select가 Esc로 자기 목록만 닫았으면 defaultPrevented가 true다.
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape' || event.defaultPrevented) return;
       setOpen(false);
@@ -111,7 +108,6 @@ export function DetailSearch({ defaultValue, onSubmit }: DetailSearchProps) {
       ref={rootRef}
       className="relative shrink-0"
       onBlur={(event) => {
-        // 포커스가 다른 요소로 옮겨 갔을 때만 닫는다. relatedTarget이 null인 경우(바깥 빈 곳 클릭)는 pointerdown이 맡는다.
         if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget)) {
           setOpen(false);
         }

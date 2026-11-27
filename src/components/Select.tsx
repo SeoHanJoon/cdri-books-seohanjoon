@@ -16,10 +16,6 @@ interface SelectProps<T extends string> {
   autoFocus?: boolean;
 }
 
-/**
- * WAI-ARIA "select-only combobox" 패턴. 포커스는 항상 버튼에 두고,
- * 목록에서 가리키는 항목은 aria-activedescendant로 알린다.
- */
 export function Select<T extends string>({
   label,
   options,
@@ -32,12 +28,10 @@ export function Select<T extends string>({
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // 시안은 고른 항목을 목록에서 뺀다.
   const choices = options.filter((option) => option.value !== value);
   const selected = options.find((option) => option.value === value);
   const optionId = (index: number) => `${id}-option-${index}`;
 
-  // 마우스로 열면 시안처럼 아무 항목도 강조하지 않고, 키보드로 열면 첫 항목을 가리킨다.
   const openList = (index: number) => {
     setActiveIndex(index);
     setOpen(true);
@@ -49,7 +43,6 @@ export function Select<T extends string>({
   };
 
   const handleClick = () => {
-    // Safari는 버튼을 눌러도 포커스를 주지 않아 직접 준다. 그래야 방향키와 바깥 클릭 닫기가 동작한다.
     triggerRef.current?.focus();
     if (open) setOpen(false);
     else openList(-1);
@@ -79,7 +72,6 @@ export function Select<T extends string>({
         choose(activeIndex);
         break;
       case 'Escape':
-        // 목록만 닫고, 바깥 팝업까지 닫히지 않게 한다.
         event.preventDefault();
         event.stopPropagation();
         setOpen(false);
@@ -126,7 +118,6 @@ export function Select<T extends string>({
               id={optionId(index)}
               role="option"
               aria-selected={index === activeIndex}
-              // 누르는 순간 버튼에서 포커스가 빠져 목록이 닫히지 않게 한다.
               onMouseDown={(event) => event.preventDefault()}
               onMouseEnter={() => setActiveIndex(index)}
               onClick={() => choose(index)}

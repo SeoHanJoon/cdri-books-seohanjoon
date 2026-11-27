@@ -30,7 +30,7 @@ function pickIsbn(isbn: string): string | undefined {
   return parts.find((part) => part.length === 13) ?? parts.find((part) => part.length === 10);
 }
 
-// 카카오는 책 소개를 250자 안팎에서 문장 중간에 자른다. 문장 끝 부호로 끝나지 않으면 잘린 것으로 보고 말줄임표를 붙인다.
+// 카카오는 책 소개를 250자 안팎에서 문장 중간에 자른다.
 const SENTENCE_END = /[.!?。…"'”’」』)]$/;
 
 function formatContents(contents: string): string {

@@ -151,7 +151,6 @@ export function BookListItem({
           : 'grid grid-cols-2 gap-x-2 gap-y-3 lg:flex lg:h-25 lg:items-center lg:gap-0 lg:py-0 lg:pr-4 lg:pl-12',
       )}
     >
-      {/* 펼치고 접어도 같은 요소로 남아야 키보드 포커스가 유지된다. 그래서 상태와 관계없이 맨 앞에 두고 위치는 CSS로 옮긴다. */}
       <Button
         variant="secondary"
         onClick={onToggleDetail}
