@@ -13,8 +13,8 @@ export interface BookItemBaseProps {
 
 export function BookListItem({ book, liked, onToggleLike, onToggleDetail }: BookItemBaseProps) {
   return (
-    <article className="flex gap-4 border-b border-divider py-4 lg:h-25 lg:items-center lg:gap-12 lg:py-0 lg:pr-4 lg:pl-12">
-      <div className="relative h-17 w-12 shrink-0">
+    <article className="flex flex-wrap gap-x-4 gap-y-3 border-b border-divider py-4 lg:h-25 lg:flex-nowrap lg:items-center lg:gap-0 lg:py-0 lg:pr-4 lg:pl-12">
+      <div className="relative h-17 w-12 shrink-0 lg:mr-12">
         {book.thumbnail ? (
           <img src={book.thumbnail} alt="" className="size-full object-cover" />
         ) : (
@@ -39,20 +39,26 @@ export function BookListItem({ book, liked, onToggleLike, onToggleDetail }: Book
         <p className="shrink-0 text-title3 text-text-primary lg:ml-5.5 lg:w-33">
           {formatPrice(getFinalPrice(book))}
         </p>
-        <div className="flex shrink-0 gap-2">
-          <Button variant="primary" href={book.url} target="_blank" className="w-28.75">
-            구매하기
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={onToggleDetail}
-            aria-expanded={false}
-            className="w-28.75"
-          >
-            상세보기
-            <ChevronIcon size={24} />
-          </Button>
-        </div>
+      </div>
+
+      <div className="flex w-full gap-2 lg:w-auto lg:shrink-0">
+        <Button
+          variant="primary"
+          href={book.url}
+          target="_blank"
+          className="flex-1 lg:w-28.75 lg:flex-none"
+        >
+          구매하기
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={onToggleDetail}
+          aria-expanded={false}
+          className="flex-1 lg:w-28.75 lg:flex-none"
+        >
+          상세보기
+          <ChevronIcon size={24} />
+        </Button>
       </div>
     </article>
   );

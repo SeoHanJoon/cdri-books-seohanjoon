@@ -58,21 +58,22 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
+function toggleInSet(set: Set<string>, value: string) {
+  const next = new Set(set);
+  if (next.has(value)) next.delete(value);
+  else next.add(value);
+  return next;
+}
+
 export function DevElementsPage() {
   const [query, setQuery] = useState('');
   const [searches, setSearches] = useState<string[]>([]);
   const [detailSearchClicks, setDetailSearchClicks] = useState(0);
   const [likedIsbns, setLikedIsbns] = useState(() => new Set(['sale']));
-  const [expandedIsbn, setExpandedIsbn] = useState<string | null>('sale');
+  const [expandedIsbns, setExpandedIsbns] = useState(() => new Set(['sale']));
 
-  const toggleLike = (isbn: string) => {
-    setLikedIsbns((prev) => {
-      const next = new Set(prev);
-      if (next.has(isbn)) next.delete(isbn);
-      else next.add(isbn);
-      return next;
-    });
-  };
+  const toggleLike = (isbn: string) => setLikedIsbns((prev) => toggleInSet(prev, isbn));
+  const toggleDetail = (isbn: string) => setExpandedIsbns((prev) => toggleInSet(prev, isbn));
 
   return (
     <div className="flex flex-col gap-10 py-10">
@@ -110,16 +111,14 @@ export function DevElementsPage() {
       <Section title="BookListItem / BookListItemDetail">
         <div>
           {BOOKS.map((book) => {
-            const Item = expandedIsbn === book.isbn ? BookListItemDetail : BookListItem;
+            const Item = expandedIsbns.has(book.isbn) ? BookListItemDetail : BookListItem;
             return (
               <Item
                 key={book.isbn}
                 book={book}
                 liked={likedIsbns.has(book.isbn)}
                 onToggleLike={() => toggleLike(book.isbn)}
-                onToggleDetail={() =>
-                  setExpandedIsbn((prev) => (prev === book.isbn ? null : book.isbn))
-                }
+                onToggleDetail={() => toggleDetail(book.isbn)}
               />
             );
           })}
