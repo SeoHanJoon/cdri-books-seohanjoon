@@ -310,7 +310,7 @@ Figma `757:1435`(초기), `744:313`(목록)
   - 상세 검색은 검색 기록에 남지 않음 — 브라우저 테스트로 확인 ([0004](adr/0004-search-history-scope.md))
 - [x] 검색 입력 훅을 `useSearchUrl` · `useMainSearch` · `useDetailSearch`로 나누고 페이지에서 조합, 검색하면 입력창도 공백을 지운 값으로 ([0052](adr/0052-search-hooks-split.md))
 
-### Step 8. 찜하기 기능
+### Step 8. 찜하기 기능 ✅
 - [x] 찜 store (Zustand + persist): 찜한 시점 데이터 스냅샷 저장
   - 화면용 `Book` 배열, 최근 찜한 책이 맨 앞, isbn이 같으면 같은 책. 다른 탭과 `storage` 이벤트로 맞춤 ([0053](adr/0053-wishlist-store-and-page.md))
   - 테스트용 메모리 저장소를 `src/stores/testStorage.ts`로 빼서 검색 기록 store 테스트와 함께 씀 ([0054](adr/0054-wishlist-hook-and-test-storage.md))
