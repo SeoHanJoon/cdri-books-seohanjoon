@@ -182,6 +182,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 23 | 화면 너비 대응 | 데스크톱 기준 | 시안이 1920px 하나뿐 | ☑ 모바일까지 ([0023](adr/0023-responsive-mobile.md)) |
 | 24 | 아이콘 props | 색은 `className`으로 | 시안의 크기·색 조합 고정 | ☑ `size`만 받고 색은 내부, 작은 테두리 하트는 회색 ([0024](adr/0024-icon-component-props.md)) |
 | 25 | 클래스 이름 합치기 | clsx | 조건부 클래스가 여러 컴포넌트에 필요, 0.2KB | ☑ clsx ([0025](adr/0025-clsx.md)) |
+| 26 | Header 반응형 배치 | 넓은 화면은 시안 그대로 3단계 | 1024px쯤에서 로고와 탭이 겹침 | ☑ 3단계 + 탭 항상 가운데 ([0026](adr/0026-header-responsive.md)) |
 
 ---
 
@@ -213,7 +214,7 @@ Elements의 컴포넌트를 1:1로 화면 전용 컴포넌트로 만든다. 데�
   - PNG(@2x, 160×160): NoData 책 아이콘 — Figma에서 비트맵 이미지 채우기라, SVG로 내보내도 PNG(840×859)가 base64로 통째로 들어갈 뿐 벡터가 아님 (SVG 707KB vs PNG@2x 17KB)
   - 책 표지는 API `thumbnail`을 쓰므로 Figma에서 내보내지 않는다
 - [ ] Button — 각 컴포넌트 안의 버튼에서 변형 도출 (구매하기 primary, 상세보기 secondary, 상세검색 outline / 크기별)
-- [ ] `Header` + Layout (로고, 탭 2개, 활성 탭 밑줄)
+- [x] `Header` + Layout (로고, 탭 2개, 활성 탭 밑줄)
 - [ ] `NoData` (아이콘 + 문구 props — "검색된 결과가 없습니다." / "찜한 책이 없습니다.")
 - [ ] `SearchCountText` (라벨 + 건수 props — "도서 검색 결과" / "찜한 책")
 - [ ] `SearchBox` (제목, 검색 입력창, 상세검색 버튼 — 입력·이벤트는 props로)
