@@ -227,7 +227,7 @@ Figma 스타일 가이드의 색과 글자 스타일을 [`src/styles/index.css`]
 | 라우트 코드 분할                       | 나눠 보니 첫 화면 JS가 오히려 0.6KB 커져서 **하지 않았습니다** ([0061](docs/adr/0061-no-route-code-splitting.md)) |
 | 팝업·Select 직접 구현                  | 라이브러리를 쓰면 +33~39KB, 직접 만들어 약 2KB                                                           |
 
-운영 빌드 JS는 gzip 119.51KB이고, MSW 코드와 worker 파일은 들어가지 않습니다.
+운영 빌드 JS는 gzip 약 120KB이고, MSW 코드와 worker 파일은 들어가지 않습니다.
 
 ### 키보드·화면 낭독기·한글 입력
 
