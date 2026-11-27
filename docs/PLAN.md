@@ -198,6 +198,10 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 39 | 화면 단계 찜 페이지 상태 | 개발용 쿼리로 목록/빈 상태 전환 | 두 상태 모두 시연 | ☑ 목록만 고정, 빈 상태는 Step 8 ([0039](adr/0039-wishlist-fixture-list-only.md)) |
 | 40 | 앱 안으로 가는 Button 링크 | `to` prop 추가 | 새로고침 없이 이동 | ☑ `href` 분기를 `Link`로 (사용자 제안, [0040](adr/0040-button-href-router-link.md)) |
 | 41 | NotFound 화면 구성 | 제목 + 버튼만 (NoData 없이) | 책 아이콘은 "데이터 없음" 뜻이라 잘못된 주소와 안 맞음 | ☑ 추천안 ([0041](adr/0041-not-found-without-nodata.md)) |
+| 42 | 검색 조건 위치 | URL이 기준 + 검색마다 push | 새로고침·뒤로가기·공유, 상호 초기화가 URL 한 번 바꾸기로 끝남 | ☑ 추천안 ([0042](adr/0042-search-state-url.md)) |
+| 43 | MSW 다음 페이지·시나리오 | 실제 page 2~3 저장, 지연·에러는 검색어로 | 실제 데이터, 손으로 재현·PR 영상에 보임 | ☑ 추천안 ([0043](adr/0043-msw-fixtures-and-scenarios.md)) |
+| 44 | 로딩·에러 화면 (미명시) | 스켈레톤 + 다시 시도 | 레이아웃 흔들림 적음, 다음 페이지 실패에도 목록 유지 | ☑ 추천안 ([0044](adr/0044-loading-error-ui.md)) |
+| 45 | API·훅 구조, 테스트 범위 | 순수 함수·fetch는 Vitest, 화면은 Playwright, 감지 훅 직접 작성 | 의존성은 MSW 하나만 추가 | ☑ 추천안 ([0045](adr/0045-api-layer-and-tests.md)) |
 
 ---
 
