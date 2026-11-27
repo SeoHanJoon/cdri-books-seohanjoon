@@ -1,6 +1,6 @@
 # 0022. 공통 컴포넌트는 개발용 /dev/elements 화면에서 확인한다
 
-- 상태: 채택
+- 상태: 폐기 (→ [0060](0060-remove-dev-elements-page.md))
 - 날짜: 2026-11-27
 - 관련 Step: Step 2
 

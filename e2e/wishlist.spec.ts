@@ -141,3 +141,32 @@ test('탭을 오가도 제목 위 여백이 도서 검색과 같다', async ({ p
     expect(wishlistGap, `${width}px`).toBe(searchGap);
   }
 });
+
+test('찜할 때 할인가가 없던 책은 원가만 취소선 없이 보여준다', async ({ page }) => {
+  const noSaleBook = {
+    isbn: '9788937434488',
+    title: '노르웨이의 숲',
+    authors: ['무라카미 하루키'],
+    thumbnail: '',
+    price: 13300,
+    salePrice: null,
+    url: 'https://example.com/no-sale',
+    contents: '',
+  };
+  await page.evaluate((book) => {
+    localStorage.setItem(
+      'cdri-books/wishlist',
+      JSON.stringify({ state: { books: [book] }, version: 1 }),
+    );
+  }, noSaleBook);
+  await page.goto('/wishlist');
+
+  const row = bookRow(page, '노르웨이의 숲');
+  await expect(row.getByText('13,300원')).toBeVisible();
+
+  await row.getByRole('button', { name: '상세보기' }).click();
+  await expect(row.getByRole('term')).toHaveText(['원가']);
+  const original = row.getByRole('definition');
+  await expect(original).toHaveText('13,300원');
+  await expect(original).not.toHaveCSS('text-decoration-line', 'line-through');
+});

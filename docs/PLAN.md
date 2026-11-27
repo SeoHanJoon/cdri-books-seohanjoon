@@ -178,7 +178,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 19 | 책 컴포넌트 데이터 | 화면용 `Book` 타입 | 카카오 규칙(-1 등)을 변환 함수 한 곳에 가둠 | ☑ `Book` + 공통 props 확장 ([0019](adr/0019-book-view-type.md), props는 → [0032](adr/0032-book-list-item-single-component.md)) |
 | 20 | 공용 타입·이미지 위치 | `src/types/`, `src/assets/` | 여러 역할이 같이 쓰는 타입, import하는 이미지 | ☑ `src/types/`, `src/assets/` 추가 ([0020](adr/0020-folder-structure-types.md)) |
 | 21 | 가격·하트 동작 (미명시) | 할인가 우선, 할인가 없으면 원가만, 작은 하트는 표시만 | 실제 결제 가격, 취소선은 비교 시에만 의미 | ☑ 작은 하트도 찜 토글 ([0021](adr/0021-price-and-heart-behavior.md)) |
-| 22 | 공통 컴포넌트 확인 화면 | 개발용 `/dev/elements` | Elements와 비교, PR 영상, 운영 빌드 제외 | ☑ `/dev/elements` ([0022](adr/0022-dev-elements-page.md)) |
+| 22 | 공통 컴포넌트 확인 화면 | 개발용 `/dev/elements` | Elements와 비교, PR 영상, 운영 빌드 제외 | ☑ `/dev/elements` ([0022](adr/0022-dev-elements-page.md), Step 9에서 지움 → [0060](adr/0060-remove-dev-elements-page.md)) |
 | 23 | 화면 너비 대응 | 데스크톱 기준 | 시안이 1920px 하나뿐 | ☑ 모바일까지 ([0023](adr/0023-responsive-mobile.md)) |
 | 24 | 아이콘 props | 색은 `className`으로 | 시안의 크기·색 조합 고정 | ☑ `size`만 받고 색은 내부, 작은 테두리 하트는 회색 ([0024](adr/0024-icon-component-props.md)) |
 | 25 | 클래스 이름 합치기 | clsx | 조건부 클래스가 여러 컴포넌트에 필요, 0.2KB | ☑ clsx ([0025](adr/0025-clsx.md)) |
@@ -212,6 +212,13 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 53 | 찜 저장 모양·순서·찜 페이지 해제·10개 단위 (미명시) | `Book[]`, 최근 찜 위, 페이지에 있는 동안 남김, 개수 10씩 늘림 | 코드 짧음, 방금 찜한 책 바로 확인, 실수 복구·포커스 유지, 데이터가 이미 브라우저에 있음 | ☑ 추천안 ([0053](adr/0053-wishlist-store-and-page.md), 테스트 방법은 → [0055](adr/0055-wishlist-page-test-scope.md)) |
 | 54 | 찜 연결 코드·테스트용 저장소 위치 | `useWishlist` 훅, `src/stores/testStorage.ts` | 두 페이지의 같은 코드를 한 곳에, 새 폴더 없이 두 store 테스트가 공유 | ☑ 추천안 ([0054](adr/0054-wishlist-hook-and-test-storage.md)) |
 | 55 | 찜 페이지 테스트 범위 | 보여줄 목록 규칙은 순수 함수로 Vitest, 10권씩 늘리기는 Playwright | 훅 테스트 도구 없음, 자르기는 한 줄, 의존성 추가 없음 | ☑ 추천안 ([0055](adr/0055-wishlist-page-test-scope.md)) |
+| 56 | BookListItem memo | 콜백을 `onToggleLike(book)`·`onToggleDetail(isbn)`으로 바꾸고 `memo` | 지금은 한 글자 입력에 모든 행이 다시 그려짐, 행마다 새 함수라 `memo`만으로는 효과 없음 | ☑ 추천안 ([0056](adr/0056-book-list-item-memo.md)) |
+| 57 | 검색 결과 캐시 | `staleTime` 5분 | 기본값은 탭 복귀·뒤로가기마다 불러온 페이지 수만큼 재요청, 책 정보는 자주 안 바뀜 | ☑ 추천안 ([0057](adr/0057-search-stale-time.md)) |
+| 58 | 라우트 분할 범위 | 찜·NotFound만 `lazy` | 첫 화면을 늦추지 않음, 페이지 코드가 작아 효과는 1KB 안팎 | ☑ 추천안 ([0058](adr/0058-route-code-splitting.md)) → 측정 후 나누지 않음 ([0061](adr/0061-no-route-code-splitting.md)) |
+| 59 | 아이콘 크기 어긋남 | Figma에서 크기별 SVG 다시 받기 | 시안과 1~4px 차이, Figma API 막힘 | ☑ 맞추지 않음, 0024 유지 ([0059](adr/0059-icon-size-mismatch-kept.md)) |
+| 60 | 개발용 `/dev/elements` 화면 | 실제 페이지로 테스트를 옮기고 지움 | 화면이 모두 연결되어 비교할 일 없음, 테스트 약 25개 중 일부는 이 화면에서만 확인 | ☑ 추천안 (사용자 제안, [0060](adr/0060-remove-dev-elements-page.md)) |
+| 61 | 라우트 분할 (측정 후) | 나누지 않음 | 나누면 preload helper 때문에 첫 화면 JS +0.6KB, NotFound는 도서 검색이 직접 import해서 안 나뉨 | ☑ 추천안 ([0061](adr/0061-no-route-code-splitting.md)) |
+| 62 | 접근성 보완 (미명시) | 빈 검색어는 숨긴 안내 + `aria-invalid`, 버튼에 책 제목 연결, 건수 알림, 검색창 포커스 테두리 | 화면 낭독기가 막힌 이유·버튼의 책·건수를 읽음 | ☑ 추천안, 단 새 탭 안내·검색창 테두리는 제외 (테두리는 마우스로도 켜져서, [0062](adr/0062-accessibility-polish.md)) |
 
 ---
 
@@ -319,14 +326,18 @@ Figma `757:1435`(초기), `744:313`(목록)
   - 해제한 책은 페이지에 있는 동안 빈 하트로 제자리에 남고, 건수는 실제 찜 수. 다른 탭에서 새로 찜한 책은 맨 위에 ([0053](adr/0053-wishlist-store-and-page.md))
   - 보여줄 목록 규칙은 `mergeShownBooks`로 단위 테스트, 10권씩 늘리기는 `usePagedList` + `LoadMoreFooter`를 브라우저 테스트로 ([0055](adr/0055-wishlist-page-test-scope.md))
 
-### Step 9. 성능 최적화 · 마무리
-- [ ] `BookListItem` `memo`, 이미지 `loading="lazy"`
-- [ ] `staleTime` 등 캐시 전략
-- [ ] 라우트 단위 코드 분할
-- [ ] 접근성 (`aria-expanded`, 키보드 조작)
-  - 상세 검색어가 비어 '검색하기'가 막힐 때 화면 낭독기에 알릴 방법 ([0051](adr/0051-detail-search-execution.md))
-- [ ] 빌드 / 린트 최종 점검
-- [ ] 아이콘 SVG 통일 ([0024](adr/0024-icon-component-props.md)): Figma API 한도로 받은 SVG마다 상자와 여백이 제각각이다 (Chevron은 20 상자 안 10.5×6, Close는 20 상자 안 11.67, Heart는 24 상자). 그래서 크기를 바꿔 쓸 때 시안과 1~4px씩 어긋난다 (상세보기 화살표 12.6×7.2, 버튼 안 내용 4px 왼쪽, 검색 기록 X 14px). 쓰는 크기별 원본 SVG를 다시 받아 상자 규칙을 맞춘다.
+### Step 9. 성능 최적화 · 마무리 ✅
+- [x] `BookListItem` `memo`, 이미지 `loading="lazy"` — 콜백이 책·isbn을 받게 바꿔 바뀐 행만 다시 그림 ([0056](adr/0056-book-list-item-memo.md))
+- [x] `staleTime` 등 캐시 전략 — 검색 결과 5분. 찜 페이지 왕복·탭 복귀 때 요청 5번 → 0번 ([0057](adr/0057-search-stale-time.md))
+- [x] 라우트 단위 코드 분할 — 측정 결과 나누면 첫 화면 JS가 0.6KB 커져서 하지 않음 ([0061](adr/0061-no-route-code-splitting.md))
+- [x] 접근성 (`aria-expanded`, 키보드 조작) — 점검 결과 이미 되어 있음, 아래를 보완 ([0062](adr/0062-accessibility-polish.md))
+  - 상세 검색어가 비어 '검색하기'가 막힐 때 화면 낭독기에 알릴 방법 ([0051](adr/0051-detail-search-execution.md)) — `aria-invalid` + 숨긴 안내
+  - 행의 상세보기·찜하기·구매하기에 책 제목을 설명으로 연결, 검색 건수를 `aria-live`로 알림
+  - 검색 입력창 포커스 테두리는 넣지 않음 — `:focus-visible`이 입력창에서는 마우스로도 켜져, 스크립트 없이는 Tab일 때만 보일 수 없음
+- [x] 개발용 `/dev/elements` 화면 제거, 그 테스트를 실제 페이지로 옮김 ([0060](adr/0060-remove-dev-elements-page.md))
+- [x] 빌드 / 린트 최종 점검 — 경고 없음, 운영 빌드 JS gzip 119.51KB, MSW 코드·worker 파일 없음
+- [x] 펼친 행의 원가·할인가 라벨이 위로 떠 보여 줄 가운데보다 2px 아래로 내림 (라벨 위 여백 4px, Figma API가 막혀 화면을 보고 맞춤)
+- [x] ~~아이콘 SVG 통일~~ — 시안에 맞추지 않고 0024 유지 ([0059](adr/0059-icon-size-mismatch-kept.md)). 원래 계획 ([0024](adr/0024-icon-component-props.md)): Figma API 한도로 받은 SVG마다 상자와 여백이 제각각이다 (Chevron은 20 상자 안 10.5×6, Close는 20 상자 안 11.67, Heart는 24 상자). 그래서 크기를 바꿔 쓸 때 시안과 1~4px씩 어긋난다 (상세보기 화살표 12.6×7.2, 버튼 안 내용 4px 왼쪽, 검색 기록 X 14px). 쓰는 크기별 원본 SVG를 다시 받아 상자 규칙을 맞춘다.
 
 ### Step 10. README · 제출
 - [ ] 프로젝트 개요

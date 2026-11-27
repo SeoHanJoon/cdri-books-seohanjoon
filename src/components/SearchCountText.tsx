@@ -7,7 +7,11 @@ interface SearchCountTextProps {
 
 export function SearchCountText({ label, count }: SearchCountTextProps) {
   return (
-    <p className="flex gap-4 text-caption leading-6 text-text-primary">
+    <p
+      aria-live="polite"
+      aria-atomic="true"
+      className="flex gap-4 text-caption leading-6 text-text-primary"
+    >
       <span>{label}</span>
       <span className="font-normal">
         총 <span className="font-medium text-primary">{formatNumber(count)}</span>건
