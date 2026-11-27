@@ -4,5 +4,4 @@ playwright-report
 test-results
 recordings
 pnpm-lock.yaml
-# 직접 쓴 문서(PLAN, ADR, .claude)는 서식을 자동으로 바꾸지 않는다.
 *.md

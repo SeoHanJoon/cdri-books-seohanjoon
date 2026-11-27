@@ -9,7 +9,6 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-      {/* 개발 서버에서만 보인다. 운영 빌드에서는 빈 컴포넌트로 바뀌어 번들에서 빠진다. */}
       <ReactQueryDevtools buttonPosition="bottom-left" />
     </QueryClientProvider>
   )

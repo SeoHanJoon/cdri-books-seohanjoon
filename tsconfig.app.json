@@ -22,7 +22,7 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
 
-    /* Path alias — vite.config.ts의 resolve.tsconfigPaths가 이 설정을 읽는다 */
+    /* Path alias */
     "paths": {
       "@/*": ["./src/*"]
     }

@@ -12,7 +12,6 @@ export default defineConfig([
     files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,
-      // 타입 정보를 쓰는 규칙: await 빠뜨린 Promise, any 전파 등 타입 검사만으로는 못 잡는 실수를 잡는다.
       tseslint.configs.recommendedTypeChecked,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite(),
@@ -30,6 +29,5 @@ export default defineConfig([
     extends: [js.configs.recommended],
     languageOptions: { globals: globals.node },
   },
-  // 서식은 Prettier가 맡는다. 서식 관련 ESLint 규칙을 꺼서 둘이 충돌하지 않게 한다.
   prettier,
 ])
