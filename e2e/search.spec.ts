@@ -253,15 +253,3 @@ test('검색 건수는 바뀌면 화면 낭독기가 읽도록 알림 영역에 
   await search(page, '무라카미 하루키');
   await expect(count).toHaveText(/도서 검색 결과\s*총 866건/);
 });
-
-test('검색 입력창에 포커스가 있으면 검색창에 테두리를 보여준다', async ({ page }) => {
-  const box = page.getByRole('search');
-  await expect(box).toHaveCSS('outline-style', 'none');
-
-  await page.getByRole('textbox', { name: '검색어' }).click();
-  await expect(box).toHaveCSS('outline-style', 'solid');
-  await expect(box).toHaveCSS('outline-color', 'rgb(72, 128, 238)');
-
-  await page.getByRole('heading', { name: '도서 검색' }).click();
-  await expect(box).toHaveCSS('outline-style', 'none');
-});

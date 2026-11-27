@@ -218,7 +218,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 59 | 아이콘 크기 어긋남 | Figma에서 크기별 SVG 다시 받기 | 시안과 1~4px 차이, Figma API 막힘 | ☑ 맞추지 않음, 0024 유지 ([0059](adr/0059-icon-size-mismatch-kept.md)) |
 | 60 | 개발용 `/dev/elements` 화면 | 실제 페이지로 테스트를 옮기고 지움 | 화면이 모두 연결되어 비교할 일 없음, 테스트 약 25개 중 일부는 이 화면에서만 확인 | ☑ 추천안 (사용자 제안, [0060](adr/0060-remove-dev-elements-page.md)) |
 | 61 | 라우트 분할 (측정 후) | 나누지 않음 | 나누면 preload helper 때문에 첫 화면 JS +0.6KB, NotFound는 도서 검색이 직접 import해서 안 나뉨 | ☑ 추천안 ([0061](adr/0061-no-route-code-splitting.md)) |
-| 62 | 접근성 보완 (미명시) | 빈 검색어는 숨긴 안내 + `aria-invalid`, 버튼에 책 제목 연결, 건수 알림, 검색창 포커스 테두리 | 화면 낭독기가 막힌 이유·버튼의 책·건수를 읽음. `:focus-visible`은 입력창에서 마우스로도 켜져 항상 테두리 | ☑ 추천안 (새 탭 안내는 제외, [0062](adr/0062-accessibility-polish.md)) |
+| 62 | 접근성 보완 (미명시) | 빈 검색어는 숨긴 안내 + `aria-invalid`, 버튼에 책 제목 연결, 건수 알림, 검색창 포커스 테두리 | 화면 낭독기가 막힌 이유·버튼의 책·건수를 읽음 | ☑ 추천안, 단 새 탭 안내·검색창 테두리는 제외 (테두리는 마우스로도 켜져서, [0062](adr/0062-accessibility-polish.md)) |
 
 ---
 
@@ -333,7 +333,7 @@ Figma `757:1435`(초기), `744:313`(목록)
 - [x] 접근성 (`aria-expanded`, 키보드 조작) — 점검 결과 이미 되어 있음, 아래를 보완 ([0062](adr/0062-accessibility-polish.md))
   - 상세 검색어가 비어 '검색하기'가 막힐 때 화면 낭독기에 알릴 방법 ([0051](adr/0051-detail-search-execution.md)) — `aria-invalid` + 숨긴 안내
   - 행의 상세보기·찜하기·구매하기에 책 제목을 설명으로 연결, 검색 건수를 `aria-live`로 알림
-  - 검색 입력창에 포커스 테두리 (마우스로 눌러도 보임, 시안과 다름)
+  - 검색 입력창 포커스 테두리는 넣지 않음 — `:focus-visible`이 입력창에서는 마우스로도 켜져, 스크립트 없이는 Tab일 때만 보일 수 없음
 - [x] 개발용 `/dev/elements` 화면 제거, 그 테스트를 실제 페이지로 옮김 ([0060](adr/0060-remove-dev-elements-page.md))
 - [x] 빌드 / 린트 최종 점검 — 경고 없음, 운영 빌드 JS gzip 119.53KB, MSW 코드·worker 파일 없음
 - [x] ~~아이콘 SVG 통일~~ — 시안에 맞추지 않고 0024 유지 ([0059](adr/0059-icon-size-mismatch-kept.md)). 원래 계획 ([0024](adr/0024-icon-component-props.md)): Figma API 한도로 받은 SVG마다 상자와 여백이 제각각이다 (Chevron은 20 상자 안 10.5×6, Close는 20 상자 안 11.67, Heart는 24 상자). 그래서 크기를 바꿔 쓸 때 시안과 1~4px씩 어긋난다 (상세보기 화살표 12.6×7.2, 버튼 안 내용 4px 왼쪽, 검색 기록 X 14px). 쓰는 크기별 원본 SVG를 다시 받아 상자 규칙을 맞춘다.
