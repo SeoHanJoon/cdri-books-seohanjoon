@@ -93,16 +93,17 @@ export function SearchBox({
               />
             </div>
             {showHistory && (
-              <ul
-                aria-label="검색 기록"
-                className="flex flex-col gap-4 pt-3.75 pr-6.25 pb-6 pl-12.75"
-              >
+              <ul aria-label="검색 기록" className="flex flex-col pt-1.75 pb-4">
                 {history.map((keyword) => (
-                  <li key={keyword} className="flex h-6 items-center gap-2">
+                  <li
+                    key={keyword}
+                    className="relative h-10 hover:bg-gray has-focus-visible:bg-gray"
+                  >
+                    {/* 검색어 버튼이 줄 전체를 덮고 X는 그 위에 얹는다. 오른쪽 여백(8 + 24 + 25px)은 긴 검색어가 X 밑으로 들어가지 않게 한다. */}
                     <button
                       type="button"
                       onClick={() => selectHistory(keyword)}
-                      className="h-full min-w-0 flex-1 truncate text-left text-caption text-text-subtitle"
+                      className="size-full truncate pr-14.25 pl-12.75 text-left text-caption text-text-subtitle outline-none"
                     >
                       {keyword}
                     </button>
@@ -110,7 +111,7 @@ export function SearchBox({
                       type="button"
                       aria-label={`${keyword} 검색 기록 삭제`}
                       onClick={() => removeHistory(keyword)}
-                      className="shrink-0"
+                      className="absolute top-1/2 right-6.25 -translate-y-1/2"
                     >
                       <CloseIcon size={24} className="text-black" />
                     </button>

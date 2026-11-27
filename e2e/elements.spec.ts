@@ -189,6 +189,23 @@ test.describe('검색 기록 드롭다운', () => {
     await expect(history).toHaveCount(0);
   });
 
+  test('X는 아이콘 크기만 누를 수 있고, 줄의 나머지는 어디를 눌러도 검색어를 고른다', async ({
+    page,
+  }) => {
+    await page.getByRole('textbox', { name: '검색어' }).click();
+    const history = page.getByRole('list', { name: '검색 기록' });
+    const row = history.getByRole('listitem').first();
+    const remove = page.getByRole('button', { name: '노르웨이 숲 검색 기록 삭제' });
+
+    const removeBox = (await remove.boundingBox())!;
+    expect([removeBox.width, removeBox.height]).toEqual([24, 24]);
+
+    // 줄 오른쪽 끝에서 2px 안쪽 — X 아이콘 바깥이다.
+    const rowBox = (await row.boundingBox())!;
+    await page.mouse.click(rowBox.x + rowBox.width - 2, rowBox.y + rowBox.height / 2);
+    await expect(page.getByTestId('search-log')).toContainText('검색 1회: 노르웨이 숲');
+  });
+
   test('기록을 누르면 그 검색어로 검색하고 닫힌다', async ({ page }) => {
     const input = page.getByRole('textbox', { name: '검색어' });
 
@@ -199,6 +216,24 @@ test.describe('검색 기록 드롭다운', () => {
     await expect(page.getByTestId('search-log')).toContainText('검색 1회: 무라카미 하루키');
     await expect(page.getByRole('list', { name: '검색 기록' })).toHaveCount(0);
     await expect(input).toBeFocused();
+  });
+
+  test('기록 줄에 마우스를 올리거나 키보드로 포커스하면 배경이 진해진다', async ({ page }) => {
+    await page.getByRole('textbox', { name: '검색어' }).click();
+    const rows = page.getByRole('list', { name: '검색 기록' }).getByRole('listitem');
+    const TRANSPARENT = 'rgba(0, 0, 0, 0)';
+    const GRAY = 'rgb(218, 218, 218)';
+
+    await expect(rows.nth(0)).toHaveCSS('background-color', TRANSPARENT);
+    await rows.nth(0).hover();
+    await expect(rows.nth(0)).toHaveCSS('background-color', GRAY);
+    await expect(rows.nth(1)).toHaveCSS('background-color', TRANSPARENT);
+
+    await page.mouse.move(0, 0);
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Tab');
+    await expect(rows.nth(1)).toHaveCSS('background-color', GRAY);
   });
 
   test('Enter로 검색하면 닫힌다', async ({ page }) => {
