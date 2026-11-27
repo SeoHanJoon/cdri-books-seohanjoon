@@ -237,15 +237,15 @@ Elements의 컴포넌트를 1:1로 화면 전용 컴포넌트로 만든다. 데�
 
 ### Step 3. 화면 구성: 도서 검색 페이지
 Figma `18:969`(초기), `18:805`(결과), `757:958`(검색 기록), `18:608`·`744:156`(상세 검색 팝업)
-- [ ] fixture: 카카오 응답 형식 JSON (`src/mocks/fixtures/`) — 결과 있음, 결과 없음
-- [ ] 카카오 응답 → `BookListItem` props 변환 함수 (Step 5에서 그대로 재사용)
-- [ ] 페이지 레이아웃: "도서 검색" 제목, `SearchBox`, `SearchCountText`, 결과 목록
-- [ ] 초기 / 결과 없음 상태 — `NoData`
-- [ ] 결과 목록: 행별 펼침(accordion), 구매하기 새 탭
-  - 여러 권을 동시에 펼칠 수 있다. 한 권만 펼치면 위쪽 행이 접히면서 누른 행이 위로 밀려 스크롤된 것처럼 보인다 (Step 2 `/dev/elements`에서 확인)
-  - 펼치고 접을 때 키보드 포커스를 상세보기 버튼에 유지한다. 지금은 `BookListItem`과 `BookListItemDetail`이 서로 바뀌면서 누른 버튼이 사라져 포커스가 `<body>`로 간다
-- [ ] 검색 기록 드롭다운 UI (입력창 포커스 시 표시, X 버튼) — 저장 로직 없음
-- [ ] 상세 검색 팝업 UI: Popover + 조건 Select(제목/저자명/출판사), 외부 클릭·Esc로 닫기 — 검색 실행 없음
+- [x] fixture: 카카오 응답 형식 JSON (`src/mocks/fixtures/`) — 결과 있음, 결과 없음 ([0030](adr/0030-fixture-real-response.md))
+- [x] 카카오 응답 → `BookListItem` props 변환 함수 (Step 5에서 그대로 재사용) ([0031](adr/0031-book-isbn-identifier.md))
+- [x] 페이지 레이아웃: "도서 검색" 제목, `SearchBox`, `SearchCountText`, 결과 목록
+- [x] 초기 / 결과 없음 상태 — `NoData`
+- [x] 결과 목록: 행별 펼침(accordion), 구매하기 새 탭 ([0035](adr/0035-book-list-component.md))
+  - 여러 권을 동시에 펼칠 수 있다. 새로 검색하면 펼침이 초기화된다
+  - 펼치고 접을 때 키보드 포커스를 상세보기 버튼에 유지한다. 접힌 행·펼친 행을 하나의 `BookListItem`으로 합쳐 버튼이 같은 요소로 남게 했다 ([0032](adr/0032-book-list-item-single-component.md))
+- [x] 검색 기록 드롭다운 UI (입력창 포커스 시 표시, X 버튼) — 저장 로직 없음, 페이지는 빈 기록 ([0033](adr/0033-search-history-dropdown.md))
+- [x] 상세 검색 팝업 UI: Popover + 조건 Select(제목/저자명/출판사), 외부 클릭·Esc로 닫기 — 검색 실행 없음 ([0034](adr/0034-detail-search-popover.md), [0036](adr/0036-detail-search-component.md))
 
 ### Step 4. 화면 구성: 내가 찜한 책 · NotFound 페이지
 Figma `757:1435`(초기), `744:313`(목록)
