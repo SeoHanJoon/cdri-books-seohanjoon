@@ -193,6 +193,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 34 | 상세 검색 팝업·Select | 직접 구현 | Headless UI는 앱 JS +37% | ☑ 직접 구현 ([0034](adr/0034-detail-search-popover.md)) |
 | 35 | 책 목록·펼침 상태 위치 | `BookList` 컴포넌트 | 두 페이지 재사용, 검색어 바뀌면 초기화 | ☑ 추천안 ([0035](adr/0035-book-list-component.md)) |
 | 36 | 상세 검색 컴포넌트·두 입력창 관계 | 버튼+팝업 한 컴포넌트, 글자 안 옮김, 닫으면 버림 | 상호 초기화를 페이지 한 곳에서 | ☑ 추천안 ([0036](adr/0036-detail-search-component.md)) |
+| 37 | 본문 위치·좁은 화면 여백·잘린 책 소개 (미명시) | 가운데, 768px 미만 40px, 잘리면 "…" | 시안 프레임 불일치, 카카오가 250자에서 자름 | ☑ 추천안 ([0037](adr/0037-search-page-layout-and-contents.md)) |
 
 ---
 
@@ -235,7 +236,7 @@ Elements의 컴포넌트를 1:1로 화면 전용 컴포넌트로 만든다. 데�
 - [x] 좁은 화면 배치 — 컴포넌트별로 추천안 확인 후 구현 ([0023](adr/0023-responsive-mobile.md))
 - [x] 개발용 `/dev/elements` 확인 화면 + Playwright 테스트 ([0022](adr/0022-dev-elements-page.md))
 
-### Step 3. 화면 구성: 도서 검색 페이지
+### Step 3. 화면 구성: 도서 검색 페이지 ✅
 Figma `18:969`(초기), `18:805`(결과), `757:958`(검색 기록), `18:608`·`744:156`(상세 검색 팝업)
 - [x] fixture: 카카오 응답 형식 JSON (`src/mocks/fixtures/`) — 결과 있음, 결과 없음 ([0030](adr/0030-fixture-real-response.md))
 - [x] 카카오 응답 → `BookListItem` props 변환 함수 (Step 5에서 그대로 재사용) ([0031](adr/0031-book-isbn-identifier.md))
@@ -251,7 +252,7 @@ Figma `18:969`(초기), `18:805`(결과), `757:958`(검색 기록), `18:608`·`7
 Figma `757:1435`(초기), `744:313`(목록)
 - [ ] 페이지 레이아웃: "내가 찜한 책" 제목, `SearchCountText`("찜한 책"), 목록
 - [ ] 빈 상태 — `NoData`("찜한 책이 없습니다.")
-- [ ] 목록: Step 3과 같은 `BookListItem` 재사용 (fixture 데이터)
+- [ ] 목록: Step 3과 같은 `BookList` 재사용 (fixture 데이터, [0035](adr/0035-book-list-component.md))
 - [ ] NotFound 화면: Header 유지, `NoData` 재사용("존재하지 않는 페이지입니다.") + 도서 검색으로 돌아가는 버튼 — Figma에 없는 화면이라 기존 컴포넌트로 구성
 
 ### Step 5. API 연결
