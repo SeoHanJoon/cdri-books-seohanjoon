@@ -351,8 +351,10 @@ Figma `757:1435`(초기), `744:313`(목록)
 - [x] 강조하고 싶은 기능 (디자인 미명시 사항에 대한 판단 근거 포함) — 대표 7개(아이콘 통일 포함) + 나머지 표, 스크린샷 `docs/images/` ([0063](adr/0063-readme-structure.md))
 - [x] 제출: 담당자 이메일로 GitHub 링크 + `.env` 공유, 제목 `[CDRI] 프론트엔드 사전과제 제출 - [이름]` — README가 main에 있어야 해서 PR #10 머지 후 진행
 
-### Step 11. 리팩터링 검토
+### Step 11. 리팩터링 검토 ✅
 제출 뒤 코드 품질 개선. 화면과 동작은 바꾸지 않고, 기존 브라우저 테스트 103개가 그대로 통과해야 한다. 예외는 검색 기록 드롭다운 안의 빈 여백을 눌러도 닫히지 않게 하는 것 하나다 ([0066](adr/0066-function-duplication.md)).
-- [ ] 폴더 구조: `components/`를 `ui/`·`book/`·`search/`·`feedback/`로, Header는 `app/`, `SearchCountText` → `CountText` ([0064](adr/0064-components-subfolders.md))
-- [ ] 겹치는 컴포넌트: 스켈레톤과 책 행이 배치 클래스 공유, 도서 검색 제목을 SearchPage로 ([0065](adr/0065-component-duplication.md))
-- [ ] 겹치는 함수: 팝업 닫기 `useDismiss` 훅(검색 기록 드롭다운도 안쪽 빈 여백에서는 닫히지 않게), 검색어 공백은 URL 읽기·사용자 입력에서만 정리 ([0066](adr/0066-function-duplication.md))
+- [x] 폴더 구조: `components/`를 `ui/`·`book/`·`search/`·`feedback/`로, Header는 `app/`, `SearchCountText` → `CountText` ([0064](adr/0064-components-subfolders.md))
+- [x] 겹치는 컴포넌트: 스켈레톤과 책 행이 배치 클래스 공유, 도서 검색 제목을 SearchPage로. 아이콘 버튼과 NoData·ErrorMessage는 검토 후 유지 ([0065](adr/0065-component-duplication.md))
+- [x] 겹치는 함수: 팝업 닫기 `useDismiss` 훅(검색 기록 드롭다운도 안쪽 빈 여백에서는 닫히지 않게), 검색어 공백은 URL 읽기·사용자 입력에서만 정리 ([0066](adr/0066-function-duplication.md))
+- [x] API 호출·Zustand store: 검토 결과 바꾸지 않음 (queryKey, 4xx 재시도 제외, 요청 취소, `useShallow`, 두 store의 persist 설정 모두 그대로)
+- [x] 화면이 그대로인지 확인: README 스크린샷 5장, 스켈레톤·결과 없음·에러 화면(데스크톱·모바일)을 main과 바이트 단위로 비교. 브라우저 테스트 103 → 105개 (드롭다운 빈 곳, 상세 검색어 공백)
