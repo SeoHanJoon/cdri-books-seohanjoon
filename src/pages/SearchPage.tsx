@@ -7,6 +7,7 @@ import { NoData } from '@/components/NoData';
 import { SearchBox } from '@/components/SearchBox';
 import { SearchCountText } from '@/components/SearchCountText';
 import { useBookSearch } from '@/hooks/useBookSearch';
+import { useInView } from '@/hooks/useInView';
 import { parseSearchParams, toSearchParams } from '@/lib/searchParams';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import type { DetailSearchCondition } from '@/types/search';
@@ -33,7 +34,12 @@ export function SearchPage() {
     setQuery(urlQuery);
   }
 
-  const { data } = useBookSearch(search);
+  const { data, hasNextPage, isFetchingNextPage, isFetchNextPageError, fetchNextPage } =
+    useBookSearch(search);
+  const loadMoreRef = useInView(() => void fetchNextPage());
+  // 불러오는 중이나 실패한 뒤에는 감지 요소를 빼서 같은 page를 거듭 부르지 않는다.
+  // 다시 그려질 때 새로 관찰하므로, 받은 page가 짧아 목록 끝이 계속 보여도 다음 page를 부른다.
+  const canLoadMore = hasNextPage && !isFetchingNextPage && !isFetchNextPageError;
 
   if (parsed.status === 'invalid') return <NotFoundPage />;
 
@@ -69,6 +75,7 @@ export function SearchPage() {
             isLiked={isLiked}
             onToggleLike={ignoreToggleLike}
           />
+          {canLoadMore && <div ref={loadMoreRef} />}
         </div>
       ) : (
         <div className="mt-30">
