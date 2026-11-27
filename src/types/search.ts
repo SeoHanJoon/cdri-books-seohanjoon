@@ -4,3 +4,8 @@ export interface DetailSearchCondition {
   target: SearchTarget;
   keyword: string;
 }
+
+export interface BookSearch {
+  query: string;
+  target?: SearchTarget;
+}

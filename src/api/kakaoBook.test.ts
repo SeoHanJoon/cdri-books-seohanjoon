@@ -1,6 +1,10 @@
+import { http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
 
-import { type KakaoBookDocument, toBook } from './kakaoBook';
+import { server } from '@/mocks/node';
+import { FIXTURE_QUERY, getSearchFixture } from '@/mocks/searchFixture';
+
+import { KAKAO_BOOK_SEARCH_URL, type KakaoBookDocument, searchBooks, toBook } from './kakaoBook';
 
 const DOCUMENT: KakaoBookDocument = {
   title: '노르웨이의 숲',
@@ -83,5 +87,36 @@ describe('toBook', () => {
     const book = toBook({ ...DOCUMENT, authors: [], thumbnail: '' });
     expect(book.authors).toEqual([]);
     expect(book.thumbnail).toBe('');
+  });
+});
+
+describe('searchBooks', () => {
+  it('검색어, page, 10개 단위로 요청한다', async () => {
+    let params: URLSearchParams | undefined;
+    server.use(
+      http.get(KAKAO_BOOK_SEARCH_URL, ({ request }) => {
+        params = new URL(request.url).searchParams;
+        return HttpResponse.json(getSearchFixture(FIXTURE_QUERY, 2));
+      }),
+    );
+
+    const response = await searchBooks({ query: FIXTURE_QUERY }, 2);
+
+    expect(Object.fromEntries(params!)).toEqual({ query: FIXTURE_QUERY, page: '2', size: '10' });
+    expect(response.documents).toHaveLength(10);
+  });
+
+  it('상세 검색은 target을 함께 보낸다', async () => {
+    let target: string | null = null;
+    server.use(
+      http.get(KAKAO_BOOK_SEARCH_URL, ({ request }) => {
+        target = new URL(request.url).searchParams.get('target');
+        return HttpResponse.json(getSearchFixture(''));
+      }),
+    );
+
+    await searchBooks({ query: '하루키', target: 'person' }, 1);
+
+    expect(target).toBe('person');
   });
 });

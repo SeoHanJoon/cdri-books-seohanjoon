@@ -23,7 +23,7 @@
 | 패키지 매니저 | pnpm 12 | `package.json`의 `packageManager`로 고정 |
 | 단위 테스트 | Vitest | 화면과 분리된 로직 (검색 기록, 가격 표시, 찜 store 등) |
 | 브라우저 테스트 | Playwright | PR의 as-is / to-be 영상 녹화에도 사용 |
-| API 모킹 | MSW | 카카오 API 가짜 응답. 개발 서버·Vitest·Playwright가 같은 handler 공유 (Step 5부터) |
+| API 모킹 | MSW 3 | 카카오 API 가짜 응답. 개발 서버·Vitest·Playwright가 같은 handler 공유. worker는 `msw/vite`로 개발 서버에만 ([0048](adr/0048-msw-vite-plugin.md)) |
 
 ### 작업 흐름
 
@@ -165,7 +165,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 6 | 패키지 매니저 | pnpm | 설치 빠름, `.claude/` 훅·스킬이 pnpm 기준 | ☑ pnpm ([0008](adr/0008-pnpm.md)) |
 | 7 | 빌드 도구 | Vite + React | SSR 이점 없는 CSR 서비스, 요구사항 "React.js"와 일치 | ☑ Vite + React ([0001](adr/0001-vite-react.md)) |
 | 8 | 스타일링 | Tailwind v4 + Figma 토큰 | `@theme`에 스타일 가이드 이식, 가이드 밖 색 사용 차단 | ☑ Tailwind v4 ([0002](adr/0002-tailwind-figma-tokens.md)) |
-| 9 | 작업 순서 · API 모킹 | 화면 구성 먼저, API 연결은 그 다음. 모킹은 MSW | 화면을 Figma와 먼저 맞춰 확정하고 데이터만 바꿔 끼움. 가짜 데이터를 한 곳에서 관리 | ☑ 화면 먼저 + MSW ([0009](adr/0009-screens-first-msw.md)) |
+| 9 | 작업 순서 · API 모킹 | 화면 구성 먼저, API 연결은 그 다음. 모킹은 MSW | 화면을 Figma와 먼저 맞춰 확정하고 데이터만 바꿔 끼움. 가짜 데이터를 한 곳에서 관리 | ☑ 화면 먼저 + MSW ([0009](adr/0009-screens-first-msw.md), worker 제공은 → [0048](adr/0048-msw-vite-plugin.md)) |
 | 10 | 잘못된 경로·검색 조건 | "존재하지 않는 페이지입니다." 화면 | 잘못된 조건으로 검색을 진행하지 않음. 없는 경로와 같은 화면으로 일관되게 처리 | ☑ NotFound 화면 ([0010](adr/0010-not-found.md), 화면 구성은 → [0041](adr/0041-not-found-without-nodata.md)) |
 | 11 | 린트 · TypeScript 버전 | ESLint + TS 6.0 | typescript-eslint가 TS `<6.1.0`만 지원. 타입 기반 린트 규칙 유지 | ☑ ESLint + TS 6.0 ([0011](adr/0011-eslint-typescript-6.md)) |
 | 12 | 폴더 구조 | 기능별 | 기능 PR이 폴더 하나에서 끝남 | ☑ 역할별 ([0012](adr/0012-folder-structure-by-role.md)) |
@@ -198,6 +198,14 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 39 | 화면 단계 찜 페이지 상태 | 개발용 쿼리로 목록/빈 상태 전환 | 두 상태 모두 시연 | ☑ 목록만 고정, 빈 상태는 Step 8 ([0039](adr/0039-wishlist-fixture-list-only.md)) |
 | 40 | 앱 안으로 가는 Button 링크 | `to` prop 추가 | 새로고침 없이 이동 | ☑ `href` 분기를 `Link`로 (사용자 제안, [0040](adr/0040-button-href-router-link.md)) |
 | 41 | NotFound 화면 구성 | 제목 + 버튼만 (NoData 없이) | 책 아이콘은 "데이터 없음" 뜻이라 잘못된 주소와 안 맞음 | ☑ 추천안 ([0041](adr/0041-not-found-without-nodata.md)) |
+| 42 | 검색 조건 위치 | URL이 기준 + 검색마다 push | 새로고침·뒤로가기·공유, 상호 초기화가 URL 한 번 바꾸기로 끝남 | ☑ 추천안 ([0042](adr/0042-search-state-url.md)) |
+| 43 | MSW 다음 페이지·시나리오 | 실제 page 2~3 저장, 지연·에러는 검색어로 | 실제 데이터, 손으로 재현·PR 영상에 보임 | ☑ 추천안 ([0043](adr/0043-msw-fixtures-and-scenarios.md)) |
+| 44 | 로딩·에러 화면 (미명시) | 스켈레톤 + 다시 시도 | 레이아웃 흔들림 적음, 다음 페이지 실패에도 목록 유지 | ☑ 추천안 ([0044](adr/0044-loading-error-ui.md)) |
+| 45 | API·훅 구조, 테스트 범위 | 순수 함수·fetch는 Vitest, 화면은 Playwright, 감지 훅 직접 작성 | 의존성은 MSW 하나만 추가 | ☑ 추천안 ([0045](adr/0045-api-layer-and-tests.md)) |
+| 46 | isbn이 같은 검색 결과 | 처음 것만 보여줌 | 실제 응답 866건 중 7건 겹침, isbn이 목록 key·찜 기준 | ☑ 추천안 ([0046](adr/0046-dedupe-books-by-isbn.md)) |
+| 47 | 로딩 중 건수 표시 (미명시) | 숫자 자리만 스켈레톤 | 틀린 숫자를 보이지 않음 | ☑ 직전 건수 유지 ([0047](adr/0047-count-while-loading.md)) |
+| 48 | MSW worker 파일 제공 | `msw/vite` 플러그인 | 저장소·운영 빌드에 파일 없음, 실행은 안정 API | ☑ 추천안 ([0048](adr/0048-msw-vite-plugin.md)) |
+| 49 | 도서 검색 페이지 구조 | 훅 1 + 컴포넌트 2 | 한 컴포넌트의 네 가지 일 분리, 목록 끝 처리는 Step 8 재사용 | ☑ 추천안 ([0049](adr/0049-search-page-split.md)) |
 
 ---
 
@@ -260,20 +268,24 @@ Figma `757:1435`(초기), `744:313`(목록)
 - [x] NotFound 화면: Header 유지, "존재하지 않는 페이지입니다." 제목 + 도서 검색으로 돌아가는 버튼 — Figma에 없는 화면. 책 아이콘이 어울리지 않아 `NoData`는 쓰지 않음 ([0041](adr/0041-not-found-without-nodata.md))
   - 버튼은 새로고침 없이 이동한다. Button의 링크를 `Link`로 그린다 ([0040](adr/0040-button-href-router-link.md))
 
-### Step 5. API 연결
-- [ ] MSW 설정: 카카오 검색 handler (Step 3 fixture 사용, `page`/`size`/`is_end` 처리, 지연·에러·0건 시나리오)
-  - 개발 서버: `VITE_API_MOCKING=enabled`일 때만 시작, 운영 빌드에 포함되지 않게
+### Step 5. API 연결 ✅
+- [x] MSW 설정: 카카오 검색 handler (Step 3 fixture 사용, `page`/`size`/`is_end` 처리, 지연·에러·0건 시나리오)
+  - 개발 서버: `VITE_API_MOCKING=enabled`일 때만 시작(`pnpm dev:mock`), 운영 빌드에 포함되지 않게 — `msw/vite` 플러그인은 worker 파일 제공에만 쓴다
   - Vitest: Node용 서버로 같은 handler 사용
   - Playwright: 모킹 켠 개발 서버로 실행
-- [ ] `fetch` 래퍼 (`Authorization: KakaoAK {key}`), 요청 / 응답 타입
-- [ ] query key factory
-- [ ] `useInfiniteQuery` 검색 훅 (`meta.is_end`로 다음 페이지 판단)
-- [ ] 도서 검색 페이지의 fixture를 API 데이터로 교체: Enter 검색, 건수, 결과 목록
-- [ ] 무한 스크롤 (IntersectionObserver)
-- [ ] 로딩 / 에러 / 빈 상태
-- [ ] 검색 조건을 URL 쿼리(`?query=&target=`)로 관리 → 새로고침·뒤로가기 유지
-- [ ] URL을 읽을 때 `target` 검증: 허용 값이 아니면 NotFound 화면, API 호출 안 함. `SearchTarget` 타입으로 검증 안 된 값이 API 함수에 못 들어가게
-- [ ] 실제 키로 잘못된 `target` 요청 시 카카오 응답 확인 → MSW handler에 같은 동작 재현
+  - 실제 응답 page 1~3 저장, 3페이지에서 `is_end: true`. 지연·에러는 검색어로 고름 ([0043](adr/0043-msw-fixtures-and-scenarios.md))
+- [x] `fetch` 래퍼 (`Authorization: KakaoAK {key}`), 요청 / 응답 타입 — 실패는 상태 코드를 담은 `KakaoApiError`, 4xx는 재시도 안 함 ([0045](adr/0045-api-layer-and-tests.md))
+- [x] query key factory
+- [x] `useInfiniteQuery` 검색 훅 (`meta.is_end`로 다음 페이지 판단)
+  - 실제 API는 문서의 50페이지 너머도 응답하고 마지막에 `is_end`를 줘서 상한을 두지 않음
+  - isbn이 같은 책은 처음 것만 보여줌 (866건 중 7건, [0046](adr/0046-dedupe-books-by-isbn.md))
+- [x] 도서 검색 페이지의 fixture를 API 데이터로 교체: Enter 검색, 건수, 결과 목록
+- [x] 무한 스크롤 (IntersectionObserver) — 목록 끝 200px 전에 다음 page. 목록이 화면보다 짧아도 이어서 부름
+- [x] 로딩 / 에러 / 빈 상태 — 스켈레톤, 안내 + 다시 시도 ([0044](adr/0044-loading-error-ui.md)), 불러오는 동안 직전 건수 유지 ([0047](adr/0047-count-while-loading.md))
+- [x] 검색 조건을 URL 쿼리(`?query=&target=`)로 관리 → 새로고침·뒤로가기 유지 ([0042](adr/0042-search-state-url.md))
+- [x] URL을 읽을 때 `target` 검증: 허용 값이 아니면 NotFound 화면, API 호출 안 함. `SearchTarget` 타입으로 검증 안 된 값이 API 함수에 못 들어가게
+- [x] 실제 키로 잘못된 `target` 요청 시 카카오 응답 확인 → MSW handler에 같은 동작 재현
+  - 카카오는 허용되지 않은 `target`을 에러 없이 무시하고 전체 검색(200), 대소문자는 가리지 않음
 
 ### Step 6. 검색 기록 기능
 - [ ] 검색 기록 store (Zustand + persist): 최대 8개, 중복 시 맨 앞으로 이동

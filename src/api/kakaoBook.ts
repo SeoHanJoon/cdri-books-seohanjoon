@@ -1,4 +1,9 @@
+import { kakaoGet } from '@/api/kakaoClient';
 import type { Book } from '@/types/book';
+import type { BookSearch } from '@/types/search';
+
+export const KAKAO_BOOK_SEARCH_URL = 'https://dapi.kakao.com/v3/search/book';
+export const BOOK_PAGE_SIZE = 10;
 
 export interface KakaoBookDocument {
   title: string;
@@ -51,4 +56,14 @@ export function toBook(document: KakaoBookDocument): Book {
     url: document.url,
     contents: formatContents(document.contents),
   };
+}
+
+export function searchBooks(
+  { query, target }: BookSearch,
+  page: number,
+  signal?: AbortSignal,
+): Promise<KakaoBookSearchResponse> {
+  const params = new URLSearchParams({ query, page: String(page), size: String(BOOK_PAGE_SIZE) });
+  if (target) params.set('target', target);
+  return kakaoGet(KAKAO_BOOK_SEARCH_URL, params, signal);
 }

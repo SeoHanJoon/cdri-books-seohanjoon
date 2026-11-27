@@ -41,6 +41,7 @@ export default defineConfig({
   webServer: {
     command: `pnpm dev --port ${port} --strictPort`,
     url: baseURL,
+    env: { VITE_API_MOCKING: 'enabled' },
     // CI에서는 항상 새로 띄운다. 다른 코드로 떠 있는 서버를 재사용하지 않기 위해서다.
     reuseExistingServer: !process.env.CI,
   },
