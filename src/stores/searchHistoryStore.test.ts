@@ -23,6 +23,7 @@ async function loadStore() {
 
 beforeEach(() => {
   vi.stubGlobal('localStorage', createMemoryStorage());
+  vi.stubGlobal('window', new EventTarget());
 });
 
 afterEach(() => {
@@ -95,5 +96,19 @@ describe('검색 기록 store', () => {
 
     const after = await loadStore();
     expect(after.getState().keywords).toEqual(['b', 'a']);
+  });
+
+  it('다른 탭이 바꾼 기록을 받아서, 덮어쓰지 않고 이어서 쌓는다', async () => {
+    const tabA = await loadStore();
+    const tabB = await loadStore();
+
+    tabA.getState().add('a');
+    window.dispatchEvent(
+      Object.assign(new Event('storage'), { key: tabA.persist.getOptions().name }),
+    );
+    tabB.getState().add('b');
+
+    expect(tabB.getState().keywords).toEqual(['b', 'a']);
+    expect((await loadStore()).getState().keywords).toEqual(['b', 'a']);
   });
 });

@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { syncAcrossTabs } from '@/stores/syncAcrossTabs';
+
 const MAX_SEARCH_HISTORY = 8;
 
 interface SearchHistoryState {
@@ -34,3 +36,5 @@ export const useSearchHistoryStore = create<SearchHistoryState>()(
     },
   ),
 );
+
+syncAcrossTabs(useSearchHistoryStore);
