@@ -18,12 +18,12 @@ type ButtonAsLink = BaseProps &
 export type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 const BASE_CLASS =
-  'inline-flex shrink-0 items-center justify-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+  'inline-flex shrink-0 items-center justify-center rounded-lg whitespace-nowrap focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
 
 const VARIANT_CLASS: Record<ButtonVariant, string> = {
-  primary: 'h-12 px-5 text-caption bg-primary text-white',
-  secondary: 'h-12 px-5 text-caption bg-light-gray text-text-secondary',
-  outline: 'h-9 px-2.5 text-body2 border border-text-subtitle text-text-subtitle',
+  primary: 'h-12 text-caption bg-primary text-white',
+  secondary: 'h-12 text-caption bg-light-gray text-text-secondary',
+  outline: 'h-9 text-body2 border border-text-subtitle text-text-subtitle',
 };
 
 export function Button(props: ButtonProps) {
