@@ -1,5 +1,5 @@
-import { BookListSkeleton } from '@/components/BookListSkeleton';
-import { ErrorMessage } from '@/components/ErrorMessage';
+import { BookListSkeleton } from '@/components/book/BookListSkeleton';
+import { ErrorMessage } from '@/components/feedback/ErrorMessage';
 import { useInView } from '@/hooks/useInView';
 
 interface LoadMoreFooterProps {

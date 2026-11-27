@@ -5,6 +5,6 @@ import type { DetailSearchCondition } from '@/types/search';
 export function useDetailSearch({ parsed, push }: SearchUrl) {
   return {
     defaultValue: toDetailSearchCondition(parsed),
-    submit: ({ target, keyword }: DetailSearchCondition) => push({ query: keyword, target }),
+    submit: ({ target, keyword }: DetailSearchCondition) => push({ query: keyword.trim(), target }),
   };
 }

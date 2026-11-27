@@ -312,6 +312,15 @@ test.describe('상세 검색 실행', () => {
     await expect(page).toHaveURL(`/?${new URLSearchParams({ query: '민음사', target: 'title' })}`);
   });
 
+  test('상세 검색어 앞뒤 공백은 지우고 검색한다', async ({ page }) => {
+    const request = page.waitForRequest((req) => req.url().includes('dapi.kakao.com'));
+    await detailSearch(page, '저자명', `  ${KEYWORD} `);
+
+    expect(new URL((await request).url()).searchParams.get('query')).toBe(KEYWORD);
+    await expect(page).toHaveURL(PERSON_URL);
+    await expect(page.getByText('총 780건')).toBeVisible();
+  });
+
   test('검색하지 않고 닫으면 쓰던 내용은 버리고, 다시 열면 실행 중인 조건으로 시작한다', async ({
     page,
   }) => {

@@ -1,11 +1,11 @@
 import { formatNumber } from '@/lib/number';
 
-interface SearchCountTextProps {
+interface CountTextProps {
   label: string;
   count: number;
 }
 
-export function SearchCountText({ label, count }: SearchCountTextProps) {
+export function CountText({ label, count }: CountTextProps) {
   return (
     <p
       aria-live="polite"

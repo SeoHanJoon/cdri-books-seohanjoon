@@ -20,7 +20,7 @@ export function parseSearchParams(params: URLSearchParams): ParsedSearchParams {
 }
 
 export function toSearchParams({ query, target }: BookSearch): URLSearchParams {
-  const params = new URLSearchParams({ query: query.trim() });
+  const params = new URLSearchParams({ query });
   if (target) params.set('target', target);
   return params;
 }

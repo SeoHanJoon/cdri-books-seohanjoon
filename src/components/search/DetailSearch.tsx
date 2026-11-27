@@ -1,8 +1,9 @@
-import { type SubmitEvent, useEffect, useId, useRef, useState } from 'react';
+import { type SubmitEvent, useId, useRef, useState } from 'react';
 
-import { Button } from '@/components/Button';
-import { CloseIcon } from '@/components/icons/CloseIcon';
-import { Select, type SelectOption } from '@/components/Select';
+import { Button } from '@/components/ui/Button';
+import { CloseIcon } from '@/components/ui/icons/CloseIcon';
+import { Select, type SelectOption } from '@/components/ui/Select';
+import { useDismiss } from '@/hooks/useDismiss';
 import type { DetailSearchCondition, SearchTarget } from '@/types/search';
 
 const TARGET_OPTIONS: readonly SelectOption<SearchTarget>[] = [
@@ -104,36 +105,13 @@ export function DetailSearch({ defaultValue, onSubmit }: DetailSearchProps) {
     triggerRef.current?.focus();
   };
 
-  useEffect(() => {
-    if (!open) return;
-
-    const handlePointerDown = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
-    };
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape' || event.defaultPrevented) return;
-      setOpen(false);
-      triggerRef.current?.focus();
-    };
-
-    document.addEventListener('pointerdown', handlePointerDown);
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [open]);
+  useDismiss(rootRef, open, (reason) => {
+    if (reason === 'escape') closeAndFocusTrigger();
+    else setOpen(false);
+  });
 
   return (
-    <div
-      ref={rootRef}
-      className="relative shrink-0"
-      onBlur={(event) => {
-        if (event.relatedTarget && !event.currentTarget.contains(event.relatedTarget)) {
-          setOpen(false);
-        }
-      }}
-    >
+    <div ref={rootRef} className="relative shrink-0">
       <Button
         ref={triggerRef}
         variant="outline"

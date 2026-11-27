@@ -220,6 +220,9 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 61 | 라우트 분할 (측정 후) | 나누지 않음 | 나누면 preload helper 때문에 첫 화면 JS +0.6KB, NotFound는 도서 검색이 직접 import해서 안 나뉨 | ☑ 추천안 ([0061](adr/0061-no-route-code-splitting.md)) |
 | 62 | 접근성 보완 (미명시) | 빈 검색어는 숨긴 안내 + `aria-invalid`, 버튼에 책 제목 연결, 건수 알림, 검색창 포커스 테두리 | 화면 낭독기가 막힌 이유·버튼의 책·건수를 읽음 | ☑ 추천안, 단 새 탭 안내·검색창 테두리는 제외 (테두리는 마우스로도 켜져서, [0062](adr/0062-accessibility-polish.md)) |
 | 63 | README 구성 | 과제 양식 다섯 항목, 대표 판단 5~6개 + 표, 스크린샷 + PR 영상 링크 | 평가자가 항목을 바로 찾고, 판단 근거는 필요한 곳만 링크 | ☑ 다섯 항목 양식 + ADR은 골라서 링크 (사용자 지정, [0063](adr/0063-readme-structure.md)) |
+| 64 | components 폴더 구조 | `ui/`·`book/`·`search/`·`feedback/`, Header는 `app/` | 폴더 이름으로 역할이 보임, 0012의 역할별 원칙 유지 | ☑ 추천안 ([0064](adr/0064-components-subfolders.md)) |
+| 65 | 겹치는 컴포넌트 | 스켈레톤·책 행 배치 클래스 공유, 제목은 페이지가 | 행 배치가 어긋날 수 없음, 두 페이지가 같은 방식 | ☑ 추천안, 아이콘 버튼·안내 컴포넌트는 유지 ([0065](adr/0065-component-duplication.md)) |
+| 66 | 겹치는 함수 | `useDismiss` 훅, 검색어 공백은 들어오는 곳에서만 | 닫기 규칙 한 곳, 공백 규칙 분명 | ☑ 추천안, 드롭다운도 안쪽 여백에서 닫히지 않게, isbn 함수는 유지 ([0066](adr/0066-function-duplication.md)) |
 
 ---
 
@@ -347,3 +350,11 @@ Figma `757:1435`(초기), `744:313`(목록)
 - [x] 라이브러리 선택 이유
 - [x] 강조하고 싶은 기능 (디자인 미명시 사항에 대한 판단 근거 포함) — 대표 7개(아이콘 통일 포함) + 나머지 표, 스크린샷 `docs/images/` ([0063](adr/0063-readme-structure.md))
 - [x] 제출: 담당자 이메일로 GitHub 링크 + `.env` 공유, 제목 `[CDRI] 프론트엔드 사전과제 제출 - [이름]` — README가 main에 있어야 해서 PR #10 머지 후 진행
+
+### Step 11. 리팩터링 검토 ✅
+제출 뒤 코드 품질 개선. 화면과 동작은 바꾸지 않고, 기존 브라우저 테스트 103개가 그대로 통과해야 한다. 예외는 검색 기록 드롭다운 안의 빈 여백을 눌러도 닫히지 않게 하는 것 하나다 ([0066](adr/0066-function-duplication.md)).
+- [x] 폴더 구조: `components/`를 `ui/`·`book/`·`search/`·`feedback/`로, Header는 `app/`, `SearchCountText` → `CountText` ([0064](adr/0064-components-subfolders.md))
+- [x] 겹치는 컴포넌트: 스켈레톤과 책 행이 배치 클래스 공유, 도서 검색 제목을 SearchPage로. 아이콘 버튼과 NoData·ErrorMessage는 검토 후 유지 ([0065](adr/0065-component-duplication.md))
+- [x] 겹치는 함수: 팝업 닫기 `useDismiss` 훅(검색 기록 드롭다운도 안쪽 빈 여백에서는 닫히지 않게), 검색어 공백은 URL 읽기·사용자 입력에서만 정리 ([0066](adr/0066-function-duplication.md))
+- [x] API 호출·Zustand store: 검토 결과 바꾸지 않음 (queryKey, 4xx 재시도 제외, 요청 취소, `useShallow`, 두 store의 persist 설정 모두 그대로)
+- [x] 화면이 그대로인지 확인: README 스크린샷 5장, 스켈레톤·결과 없음·에러 화면(데스크톱·모바일)을 main과 바이트 단위로 비교. 브라우저 테스트 103 → 105개 (드롭다운 빈 곳, 상세 검색어 공백)

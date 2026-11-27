@@ -1,14 +1,14 @@
 import { useState } from 'react';
 
 import { BOOK_PAGE_SIZE } from '@/api/kakaoBook';
-import { BookList } from '@/components/BookList';
-import { BookListSkeleton } from '@/components/BookListSkeleton';
-import { DetailSearch } from '@/components/DetailSearch';
-import { ErrorMessage } from '@/components/ErrorMessage';
-import { LoadMoreFooter } from '@/components/LoadMoreFooter';
-import { NoData } from '@/components/NoData';
-import { SearchBox } from '@/components/SearchBox';
-import { SearchCountText } from '@/components/SearchCountText';
+import { BookList } from '@/components/book/BookList';
+import { BookListSkeleton } from '@/components/book/BookListSkeleton';
+import { DetailSearch } from '@/components/search/DetailSearch';
+import { ErrorMessage } from '@/components/feedback/ErrorMessage';
+import { LoadMoreFooter } from '@/components/book/LoadMoreFooter';
+import { NoData } from '@/components/feedback/NoData';
+import { SearchBox } from '@/components/search/SearchBox';
+import { CountText } from '@/components/feedback/CountText';
 import { useBookSearch } from '@/hooks/useBookSearch';
 import { useDetailSearch } from '@/hooks/useDetailSearch';
 import { useMainSearch } from '@/hooks/useMainSearch';
@@ -84,7 +84,7 @@ function SearchResults({ search }: SearchResultsProps) {
   return (
     <>
       <div className="mt-6.25">
-        <SearchCountText label="도서 검색 결과" count={currentCount ?? shownCount} />
+        <CountText label="도서 검색 결과" count={currentCount ?? shownCount} />
       </div>
       {renderList()}
     </>
@@ -102,23 +102,26 @@ export function SearchPage() {
 
   return (
     <div className="pt-10 pb-40 md:pt-26">
-      <SearchBox
-        value={main.query}
-        onValueChange={main.setQuery}
-        onSubmit={main.submit}
-        detailSearch={
-          <DetailSearch
-            defaultValue={detail.defaultValue}
-            onSubmit={(condition) => {
-              main.clear();
-              detail.submit(condition);
-            }}
-          />
-        }
-        history={history}
-        onHistorySelect={main.searchKeyword}
-        onHistoryRemove={removeHistory}
-      />
+      <h1 className="text-title2 text-text-primary">도서 검색</h1>
+      <div className="mt-7">
+        <SearchBox
+          value={main.query}
+          onValueChange={main.setQuery}
+          onSubmit={main.submit}
+          detailSearch={
+            <DetailSearch
+              defaultValue={detail.defaultValue}
+              onSubmit={(condition) => {
+                main.clear();
+                detail.submit(condition);
+              }}
+            />
+          }
+          history={history}
+          onHistorySelect={main.searchKeyword}
+          onHistoryRemove={removeHistory}
+        />
+      </div>
       <SearchResults search={url.parsed.status === 'ready' ? url.parsed.search : null} />
     </div>
   );
