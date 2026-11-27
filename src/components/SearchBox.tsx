@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 
 import { Button } from '@/components/Button';
 import { SearchIcon } from '@/components/icons/SearchIcon';
@@ -11,7 +11,7 @@ interface SearchBoxProps {
 }
 
 export function SearchBox({ value, onValueChange, onSubmit, onDetailSearchClick }: SearchBoxProps) {
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSubmit();
   };
