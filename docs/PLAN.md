@@ -210,7 +210,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 - [x] Playwright 설정 (`E2E_PORT`, `e2e:record` → `recordings/` 영상)
 - [x] `package.json` 스크립트: `dev`, `build`, `typecheck`, `lint`, `test`, `e2e`, `e2e:record`
 
-### Step 2. 공통 UI · 레이아웃 (Figma Elements `754:70`)
+### Step 2. 공통 UI · 레이아웃 (Figma Elements `754:70`) ✅
 Elements의 컴포넌트를 1:1로 화면 전용 컴포넌트로 만든다. 데이터는 props로만 받고, 검색·찜·펼침 같은 동작 로직은 연결하지 않는다.
 - [x] 아이콘 추출 (`Style 753:96` Icon 섹션)
   - SVG: 검색, 화살표, 닫기, 하트 line/fill
