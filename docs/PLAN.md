@@ -219,6 +219,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 60 | 개발용 `/dev/elements` 화면 | 실제 페이지로 테스트를 옮기고 지움 | 화면이 모두 연결되어 비교할 일 없음, 테스트 약 25개 중 일부는 이 화면에서만 확인 | ☑ 추천안 (사용자 제안, [0060](adr/0060-remove-dev-elements-page.md)) |
 | 61 | 라우트 분할 (측정 후) | 나누지 않음 | 나누면 preload helper 때문에 첫 화면 JS +0.6KB, NotFound는 도서 검색이 직접 import해서 안 나뉨 | ☑ 추천안 ([0061](adr/0061-no-route-code-splitting.md)) |
 | 62 | 접근성 보완 (미명시) | 빈 검색어는 숨긴 안내 + `aria-invalid`, 버튼에 책 제목 연결, 건수 알림, 검색창 포커스 테두리 | 화면 낭독기가 막힌 이유·버튼의 책·건수를 읽음 | ☑ 추천안, 단 새 탭 안내·검색창 테두리는 제외 (테두리는 마우스로도 켜져서, [0062](adr/0062-accessibility-polish.md)) |
+| 63 | README 구성 | 과제 양식 다섯 항목, 대표 판단 5~6개 + 표, 스크린샷 + PR 영상 링크 | 평가자가 항목을 바로 찾고, 판단 근거는 필요한 곳만 링크 | ☑ 다섯 항목 양식 + ADR은 골라서 링크 (사용자 지정, [0063](adr/0063-readme-structure.md)) |
 
 ---
 
