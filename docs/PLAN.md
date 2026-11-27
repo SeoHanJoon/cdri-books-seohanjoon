@@ -170,6 +170,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 12 | 폴더 구조 | 기능별 | 기능 PR이 폴더 하나에서 끝남 | ☑ 역할별 ([0012](adr/0012-folder-structure-by-role.md)) |
 | 13 | 폰트 불러오기 | `@fontsource-variable` | 전체 파일 4.2MB vs 조각 방식 약 200KB, 외부 서버 불필요 | ☑ `@fontsource-variable` ([0013](adr/0013-font-fontsource-variable.md)) |
 | 14 | 라우터 사용 방식 | 데이터 모드 | route `lazy`로 코드 분할, `errorElement` | ☑ 데이터 모드 ([0014](adr/0014-react-router-data-mode.md)) |
+| 15 | 갓 배포된 버전 설치 | pnpm 최소 배포 기간(24시간) 규칙 준수 | 악성 버전이 발견·삭제되기 전 설치를 피함. vite 8.4.0 대신 8.3.8 | ☑ 규칙 준수 ([0015](adr/0015-pnpm-minimum-release-age.md)) |
 
 ---
 
@@ -182,7 +183,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 - **화면 구성 단계**: 화면에 보이는 것과 화면 안에서만 일어나는 동작(행 펼침, 팝업 열고 닫기, 드롭다운 표시)까지. 데이터는 카카오 응답 형식의 fixture JSON(`src/mocks/fixtures/`)을 직접 넣는다.
 - **기능 단계**: fixture 자리에 실제 데이터와 저장 로직을 연결한다. 개발·테스트 중 API 응답은 MSW가 같은 fixture로 돌려준다.
 
-### Step 1. 프로젝트 기반
+### Step 1. 프로젝트 기반 ✅
 - [x] Vite + React 19 + TypeScript 초기화
 - [x] `package.json`에 `packageManager: pnpm@12.x`, `engines.node: >=26` 지정 (`.nvmrc`는 생성됨)
 - [x] ESLint / Prettier, `@/` 경로 별칭
