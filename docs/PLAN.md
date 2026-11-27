@@ -166,7 +166,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 7 | 빌드 도구 | Vite + React | SSR 이점 없는 CSR 서비스, 요구사항 "React.js"와 일치 | ☑ Vite + React ([0001](adr/0001-vite-react.md)) |
 | 8 | 스타일링 | Tailwind v4 + Figma 토큰 | `@theme`에 스타일 가이드 이식, 가이드 밖 색 사용 차단 | ☑ Tailwind v4 ([0002](adr/0002-tailwind-figma-tokens.md)) |
 | 9 | 작업 순서 · API 모킹 | 화면 구성 먼저, API 연결은 그 다음. 모킹은 MSW | 화면을 Figma와 먼저 맞춰 확정하고 데이터만 바꿔 끼움. 가짜 데이터를 한 곳에서 관리 | ☑ 화면 먼저 + MSW ([0009](adr/0009-screens-first-msw.md)) |
-| 10 | 잘못된 경로·검색 조건 | "존재하지 않는 페이지입니다." 화면 | 잘못된 조건으로 검색을 진행하지 않음. 없는 경로와 같은 화면으로 일관되게 처리 | ☑ NotFound 화면 ([0010](adr/0010-not-found.md)) |
+| 10 | 잘못된 경로·검색 조건 | "존재하지 않는 페이지입니다." 화면 | 잘못된 조건으로 검색을 진행하지 않음. 없는 경로와 같은 화면으로 일관되게 처리 | ☑ NotFound 화면 ([0010](adr/0010-not-found.md), 화면 구성은 → [0041](adr/0041-not-found-without-nodata.md)) |
 | 11 | 린트 · TypeScript 버전 | ESLint + TS 6.0 | typescript-eslint가 TS `<6.1.0`만 지원. 타입 기반 린트 규칙 유지 | ☑ ESLint + TS 6.0 ([0011](adr/0011-eslint-typescript-6.md)) |
 | 12 | 폴더 구조 | 기능별 | 기능 PR이 폴더 하나에서 끝남 | ☑ 역할별 ([0012](adr/0012-folder-structure-by-role.md)) |
 | 13 | 폰트 불러오기 | `@fontsource-variable` | 전체 파일 4.2MB vs 조각 방식 약 200KB, 외부 서버 불필요 | ☑ `@fontsource-variable` ([0013](adr/0013-font-fontsource-variable.md)) |
@@ -197,6 +197,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 | 38 | 찜 페이지 세로 간격 | 도서 검색과 맞춤 | 탭을 오가도 제목·목록 위치 그대로 | ☑ 추천안 ([0038](adr/0038-wishlist-page-spacing.md)) |
 | 39 | 화면 단계 찜 페이지 상태 | 개발용 쿼리로 목록/빈 상태 전환 | 두 상태 모두 시연 | ☑ 목록만 고정, 빈 상태는 Step 8 ([0039](adr/0039-wishlist-fixture-list-only.md)) |
 | 40 | 앱 안으로 가는 Button 링크 | `to` prop 추가 | 새로고침 없이 이동 | ☑ `href` 분기를 `Link`로 (사용자 제안, [0040](adr/0040-button-href-router-link.md)) |
+| 41 | NotFound 화면 구성 | 제목 + 버튼만 (NoData 없이) | 책 아이콘은 "데이터 없음" 뜻이라 잘못된 주소와 안 맞음 | ☑ 추천안 ([0041](adr/0041-not-found-without-nodata.md)) |
 
 ---
 
@@ -256,7 +257,7 @@ Figma `757:1435`(초기), `744:313`(목록)
 - [x] 페이지 레이아웃: "내가 찜한 책" 제목, `SearchCountText`("찜한 책"), 목록 — 세로 간격은 도서 검색과 같게 ([0038](adr/0038-wishlist-page-spacing.md))
 - [x] 빈 상태 — `NoData`("찜한 책이 없습니다.") — 분기만 넣고, 화면 확인·테스트는 Step 8 ([0039](adr/0039-wishlist-fixture-list-only.md))
 - [x] 목록: Step 3과 같은 `BookList` 재사용 (fixture 10권, 하트는 Step 8 전까지 찜 안 함, [0035](adr/0035-book-list-component.md))
-- [x] NotFound 화면: Header 유지, `NoData` 재사용("존재하지 않는 페이지입니다.") + 도서 검색으로 돌아가는 버튼 — Figma에 없는 화면이라 기존 컴포넌트로 구성
+- [x] NotFound 화면: Header 유지, "존재하지 않는 페이지입니다." 제목 + 도서 검색으로 돌아가는 버튼 — Figma에 없는 화면. 책 아이콘이 어울리지 않아 `NoData`는 쓰지 않음 ([0041](adr/0041-not-found-without-nodata.md))
   - 버튼은 새로고침 없이 이동한다. Button의 링크를 `Link`로 그린다 ([0040](adr/0040-button-href-router-link.md))
 
 ### Step 5. API 연결

@@ -13,7 +13,8 @@ test('/wishlist에서 내가 찜한 책 페이지가 보인다', async ({ page }
 test('없는 경로로 들어오면 헤더와 존재하지 않는 페이지 안내가 보인다', async ({ page }) => {
   await page.goto('/abc');
   await expect(page.getByRole('banner')).toBeVisible();
-  await expect(page.getByText('존재하지 않는 페이지입니다.')).toBeVisible();
+  await expect(page.getByRole('heading', { name: '존재하지 않는 페이지입니다.' })).toBeVisible();
+  await expect(page.getByRole('img')).toHaveCount(0);
 });
 
 test('존재하지 않는 페이지에서 버튼을 누르면 새로고침 없이 도서 검색으로 간다', async ({
